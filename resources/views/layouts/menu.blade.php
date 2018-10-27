@@ -80,3 +80,23 @@
     <a href="{!! route('admin.permissions.index') !!}"><i class="fa fa-edit"></i><span>Permissions</span></a>
 </li>
 
+<li class="{{ Request::is('postCategories*') ? 'active' : '' }}">
+    <a href="{!! route('postCategories.index') !!}"><i class="fa fa-edit"></i><span>Post Categories</span></a>
+</li>
+
+<li class="{{ Request::is('postCategories*') ? 'active' : '' }}">
+    <a href="{!! route('admin.postCategories.index') !!}"><i class="fa fa-edit"></i><span>Post Categories</span></a>
+</li>
+
+<li class="{{ Request::is('posts*') ? 'active' : '' }}">
+    <a href="{!! route('admin.posts.index') !!}"><i class="fa fa-edit"></i><span>Posts</span></a>
+</li>
+
+<li class="{{ Request::is('memberShipPlans*') ? 'active' : '' }}">
+    <a href="{!! route('memberShipPlans.index') !!}"><i class="fa fa-edit"></i><span>Member Ship Plans</span></a>
+</li>
+
+<li class="{{ Request::is('memberShipPlans*') ? 'active' : '' }}">
+    <a href="{!! route('admin.memberShipPlans.index') !!}"><i class="fa fa-edit"></i><span>Member Ship Plans</span></a>
+</li>
+

@@ -9,6 +9,7 @@
 
 
 <div class="row">
+
   <div class="col-sm-12">
     <div class="col-sm-12 form-group">
         <label>Name</label>
@@ -20,7 +21,7 @@
   <div class="col-sm-12">
     <div class="col-sm-12 form-group">
       <label for="permission">Permissions</label>
-      <select class="form-control" id="permission" multiple>
+      <select class="form-control" name="permission" id="permission" multiple>
         @if(isset($role))
 
           @foreach($permissions as $permission)
@@ -34,14 +35,10 @@
           @endforeach
 
         @endif
-        </select>
+      </select>
+          <label id="categoryIds-error" class="error" for="permission"></label>
     </div>
-  <label id="categoryIds-error" class="error" for="permission"></label>
   </div>
-
-
-
-
 
 </div>
 
@@ -78,15 +75,11 @@
       });
 
       $('#role').on('submit', function(e) {
-
         var permissionArr =  $('#permission').val();
-
         $('#permissionArr').val(permissionArr);
-
         return true;
       });
       
-
 
       // Initialize Select2
       $(function() {
@@ -94,8 +87,6 @@
           placeholder: 'Select value',
         });
       });
-
-
   </script>
 
 

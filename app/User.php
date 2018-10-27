@@ -17,7 +17,13 @@ class User extends Authenticatable
      * @var array
      */
     protected $fillable = [
-        'name', 'email', 'password',
+        'name', 
+        'email', 
+        'password',
+        'phone',
+        'status',
+        'plan_code',
+        'image'
     ];
 
     /**
@@ -37,4 +43,13 @@ class User extends Authenticatable
     public static $rules = [
         
     ];
+
+
+    /**
+     * @return \Illuminate\Database\Eloquent\Relations\BelongsTo
+     **/
+    public function memberShip()
+    {
+        return $this->belongsTo(\App\Models\Admin\MemberShipPlan::class,'plan_code','id');
+    }
 }

@@ -7,7 +7,7 @@ use App\Http\Requests\Admin\UpdateUserRequest;
 use App\Repositories\Admin\UserRepository;
 use App\Http\Controllers\Controller;
 use Illuminate\Http\Request;
-use Flash;
+
 use Prettus\Repository\Criteria\RequestCriteria;
 use Response;
 
@@ -15,8 +15,11 @@ use Spatie\Permission\Models\Role;
 use Spatie\Permission\Models\Permission;
 
 use Auth;
+use Flash;
 use Session;
 use App\User;
+use App\Models\Admin\MemberShipPlan;
+use App\Models\Admin\Subscription;
 
 class UserController extends Controller
 {
@@ -76,10 +79,13 @@ class UserController extends Controller
      * @return Redirect
      */
     public function logout()
-    {
-        Auth::logout();
-        session()->flush();
-        return redirect()->route('admin.login');
+    {    
+        $user = Auth::user();
+        if($user->hasAnyRole(['Admin','Web Master']))
+        {
+            Auth::logout();
+            return redirect()->route('admin.login');
+        }
     }
 
     /**
@@ -139,10 +145,14 @@ class UserController extends Controller
     public function create()
     {
         $roles = Role::all();
+        $memberships = MemberShipPlan::all();
 
         $data = [
-            'roles'     => $roles
+            'roles'         => $roles,
+            'memberships'   => $memberships
         ];
+
+
 
         return view('admin.users.create',$data);
     }
@@ -156,7 +166,13 @@ class UserController extends Controller
      */
     public function store(CreateUserRequest $request)
     {
+        $this->validate($request,[
+            'name' => 'required|max:20|min:3',
+            'email'  => 'required|unique:users,email',
+        ]);
+
         $input = $request->all();
+
         $permissions = Permission::all();
         $user = new User;
         $user->assignRole($input['role']);
@@ -175,11 +191,40 @@ class UserController extends Controller
 
         $user->name = $input['name'];
         $user->email = $input['email'];
-        $user->password = $input['password'];
+        $user->password = bycrypt($input['password']);
+        $user->phone = $input['phone'];
+        $user->status = $input['status'];
+        $user->plan_code = $input['plan_code'];
+        if($request->hasFile('pic'))
+        {
+            $path = $request->file('pic')->store('/public/users');
+            $path = explode("/", $path);
+            $count = count($path)-1;
+            $user->image = $path[$count];
+        }   
+        else
+        {
+            $user->image = "default.png";
+        }
+
         if($user->save())
         {
-            Flash::success('User saved successfully.');
-            return redirect()->route('admin.users.index');
+            $subscription = new Subscription;
+            $subscription->user_id = $user->id;
+            $subscription->plan_code = $user->plan_code;
+            $subscription->status = $user->status;
+            $subscription->renewal_date = date('Y-m-d');
+            $subscription->renewed_date = date('Y-m-d', strtotime('+1 months'));
+            if($subscription->save())
+            {
+                Flash::success('User saved successfully.');
+                return redirect()->route('admin.users.index');                
+            }
+            else
+            {
+                Flash::error('User saved but not subscription');
+                return redirect()->route('admin.users.index');                
+            }
         }
         else
         {
@@ -218,6 +263,7 @@ class UserController extends Controller
     public function edit($id)
     {
         $user = User::find($id);
+        $memberships = MemberShipPlan::all();
         if (empty($user)) 
         {
             Flash::error('User not found');
@@ -234,9 +280,10 @@ class UserController extends Controller
         }
 
         $data = [
-            'user'      => $user,
-            'roles'     => $roles,
-            'myrole'   => $myrole
+            'user'          => $user,
+            'roles'         => $roles,
+            'myrole'        => $myrole,
+            'memberships'   => $memberships
         ];
 
         return view('admin.users.edit',$data);
@@ -260,7 +307,6 @@ class UserController extends Controller
         $input = $request->except(['_token','_method']);
 
         $permissions = Permission::all();
-
         $user = User::find($id);
 
         if (empty($user)) 
@@ -298,6 +344,25 @@ class UserController extends Controller
         {
             $user->password = $input['password'];
         }
+        $user->phone = $input['phone'];
+        $user->status = $input['status'];
+        $user->plan_code = $input['plan_code'];
+        if($request->hasFile('pic'))
+        {
+            $file_path =  $_SERVER['SCRIPT_FILENAME'];
+            $file = str_replace("/index.php", "", $file_path)."/storage/users/".$user->image;
+            if(is_file($file))
+            {
+                unlink($file);
+            }
+
+            $path = $request->file('pic')->store('/public/users');
+            $path = explode("/", $path);
+            $count = count($path)-1;
+            $user->image = $path[$count];
+        } 
+
+
         if($user->save())
         {
             Flash::success('User updated successfully.');

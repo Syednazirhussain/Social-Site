@@ -167,8 +167,20 @@ class RoleController extends Controller
     {
         $input = $request->except(['_token','_method']);
 
-        $role = $this->roleRepository->findWithoutFail($id);
+        $this->validate($request,[
+            'name' => 'required'
+        ]);
 
+        if(is_null($input['permissionArr']))
+        {
+            $error = \Illuminate\Validation\ValidationException::withMessages([
+               'Permissions' => ['Please select atleat one permission']
+            ]);
+            throw $error;
+            return redirect()->back();
+        }
+
+        $role = $this->roleRepository->findWithoutFail($id);
         if (empty($role)) 
         {
             Flash::error('Role not found');
