@@ -7,6 +7,8 @@
     <meta name="description" content="">
     <meta name="author" content="">
     <title>Home | Creatifny</title>
+    
+    <link href="{{ asset('/skin-1/assets/css/pixeladmin.min.css') }}" rel="stylesheet">
 
     <link href="{{ asset('/theme/css/bootstrap.min.css') }}" rel="stylesheet">
     <link href="{{ asset('/theme/css/font-awesome.min.css') }}" rel="stylesheet">
@@ -16,6 +18,8 @@
     <link href="{{ asset('/theme/css/icomoon.css') }}" rel="stylesheet">
     <link href="{{ asset('/theme/css/main.css') }}" rel="stylesheet">
     <link href="{{ asset('/theme/css/responsive.css') }}" rel="stylesheet">
+
+
     <link href="{{ asset('/skin-1/assets/plugins/jasny-bootstrap/css/jasny-bootstrap.min.css') }}" rel="stylesheet">
 
     <link rel="shortcut icon" href="{{ asset('/theme/images/artist.png') }}">
@@ -23,6 +27,7 @@
     <link rel="apple-touch-icon-precomposed" sizes="114x114" href="{{ asset('/theme/images/ico/apple-touch-icon-114-precomposed.png') }}">
     <link rel="apple-touch-icon-precomposed" sizes="72x72" href="{{ asset('/theme/images/ico/apple-touch-icon-72-precomposed.png') }}">
     <link rel="apple-touch-icon-precomposed" href="{{ asset('/theme/images/ico/apple-touch-icon-57-precomposed.png') }}">
+
     @yield('css')
 </head>
 <body>
@@ -111,6 +116,8 @@
     <script src="{{ asset('/theme/js/main.js') }}"></script>
     <script src="{{ asset('/skin-1/assets/plugins/jasny-bootstrap/js/jasny-bootstrap.min.js') }}"></script>
     <script src="{{ asset('/skin-1/assets/js/jquery.validate.min.js') }}"></script>
+    <script src="{{ asset('/skin-1/assets/js/pixeladmin.min.js') }}"></script>
+   
     @yield('js')
 </body>
 </html>

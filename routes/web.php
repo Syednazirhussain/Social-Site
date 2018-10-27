@@ -113,6 +113,4 @@ Route::group(['middleware' => ['user.auth']], function () {
 	Route::get('user/membership/pricing', ['as'=> 'user.membership.pricing', 'uses' => 'User\UserController@membership']);
 	Route::get('user/membership/payment', ['as'=> 'user.membership.payment', 'uses' => 'User\PayPalController@getAccessToken']);
 
-
-	
 });

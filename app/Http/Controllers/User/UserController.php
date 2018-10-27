@@ -8,6 +8,7 @@ use App\User;
 use Spatie\Permission\Models\Role;
 use Spatie\Permission\Models\Permission;
 use App\Models\Admin\Subscription;
+use App\Models\Admin\AdditionalInfo;
 use Auth;
 use Flash;
 use Session;
@@ -77,14 +78,21 @@ class UserController extends Controller
             $subscription->status = $user->status;
             $subscription->renewal_date = date('Y-m-d');
             $subscription->renewed_date = date('Y-m-d', strtotime('+1 months'));
-            if($subscription->save())
+            $subcribe =  $subscription->save();
+
+            $additional_info = new AdditionalInfo;
+            $additional_info->user_id = $user->id;
+            $additional = $additional_info->save();
+
+
+            if( $subcribe == true && $additional == true )
             {
                 Flash::success('User register successfully.');
                 return redirect()->route('user.login');                
             }
             else
             {
-                Flash::error('User register but cannot subscrip');
+                Flash::error('User register but cannot subscribe');
                 return redirect()->route('user.login');                
             }
 

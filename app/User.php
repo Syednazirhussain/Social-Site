@@ -44,6 +44,13 @@ class User extends Authenticatable
         
     ];
 
+    /**
+     * @return \Illuminate\Database\Eloquent\Relations\BelongsTo
+     **/
+    public function additional_info()
+    {
+        return $this->belongsTo(\App\Models\Admin\AdditionalInfo::class);
+    }
 
     /**
      * @return \Illuminate\Database\Eloquent\Relations\BelongsTo

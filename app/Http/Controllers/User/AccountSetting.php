@@ -5,6 +5,7 @@ namespace App\Http\Controllers\User;
 use App\Http\Controllers\Controller;
 use Illuminate\Http\Request;
 use Spatie\Permission\Models\Role;
+use App\Models\Admin\AdditionalInfo;
 use App\User;
 use Auth;
 use Flash;
@@ -19,7 +20,12 @@ class AccountSetting extends Controller
     		$user = Auth::user();
 	    	if($user->hasAnyRole(['Fans','Talents']))
 	    	{
-	    		return view('user.dashboard.account',['user' => $user]);
+                $additional_info = AdditionalInfo::find($id);
+                $data = [
+                    'additional_info'   => $additional_info,
+                    'user'              => $user
+                ];
+	    		return view('user.dashboard.account',$data);
 	    	}
 	    	else
 	    	{
@@ -37,8 +43,9 @@ class AccountSetting extends Controller
 
     public function update($id,Request $request)
     {
-    	$user = User::find($id);
+        $input = $request->all();
 
+    	$user = User::find($id);
     	if(!empty($user))
     	{
     		$user->name = $request->input('name');
@@ -54,7 +61,6 @@ class AccountSetting extends Controller
     		}
     		if($request->hasFile('pic'))
     		{
-
 	    		$file_path =  $_SERVER['SCRIPT_FILENAME'];
 	            $file = str_replace("/index.php", "", $file_path)."/storage/users/".$user->image;
 	            if(is_file($file))
@@ -69,8 +75,22 @@ class AccountSetting extends Controller
     		}
     		if($user->save())
     		{
-    			Flash::success('Account Setting updated successfully');
-    			return redirect()->route('user.account.setting',$user->id);
+                $additional_info = AdditionalInfo::where('user_id',$user->id)->first();
+                $additional_info->about_us = $input['about_us'];
+                (isset($input['facebook'])) ? $additional_info->facebook = $input['facebook'] : $additional_info->facebook = null;
+                (isset($input['instagram'])) ? $additional_info->instagram = $input['instagram'] : $additional_info->instagram = null;
+                (isset($input['linkdin'])) ? $additional_info->linkdin = $input['linkdin'] : $additional_info->linkdin = null;
+                (isset($input['twitter'])) ? $additional_info->twitter = $input['twitter'] : $additional_info->twitter = null;
+                if($additional_info->save())
+                {
+                    Flash::success('Account Setting updated successfully');
+                    return redirect()->route('user.account.setting',$user->id);
+                }
+                else
+                {
+                    Flash::error('There is some problem while updating additional Information');
+                    return redirect()->route('user.account.setting',$user->id);                    
+                }
     		}
     		else
     		{
