@@ -23,6 +23,12 @@
             <div class="status alert alert-success" style="display: none">
                @include('flash::message')
             </div>
+            @if(Session::has('errorMsg'))
+                <div class="alert alert-danger alert-dark">
+                    <button type="button" class="close" data-dismiss="alert">×</button>
+                    <strong>{{ Session::get('errorMsg') }}</strong> 
+                </div>
+            @endif
             <div class="col-lg-12 col-md-12">
                 <div class="col-lg-6 col-md-6 col-sm-12 col-xs-12">
                     @include('user.auth.login')
@@ -86,7 +92,7 @@
             email: true,
             maxlength: 50,
             minlength: 3,
-              remote: {
+            remote: {
                 param: {
                   url: '{{ route("user.email.verify") }}',
                   type: "post",

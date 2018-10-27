@@ -14,9 +14,3 @@
     </div>
     <input type="submit" class="btn btn-primary" value="Login" />
 </form>
-@if(Session::has('errorMsg'))
-    <div class="alert alert-danger alert-dark">
-        <button type="button" class="close" data-dismiss="alert">×</button>
-        <strong>{{ Session::get('errorMsg') }}</strong> 
-    </div>
-@endif

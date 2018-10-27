@@ -17,7 +17,7 @@
     <link href="{{ asset('/theme/css/main.css') }}" rel="stylesheet">
     <link href="{{ asset('/theme/css/responsive.css') }}" rel="stylesheet">
 
-
+    <link href="{{ asset('/skin-1/assets/plugins/jasny-bootstrap/css/jasny-bootstrap.min.css') }}" rel="stylesheet">
     <link rel="shortcut icon" href="{{ asset('/theme/images/artist.png') }}">
     <link rel="apple-touch-icon-precomposed" sizes="144x144" href="{{ asset('/theme/images/ico/apple-touch-icon-144-precomposed.png') }}">
     <link rel="apple-touch-icon-precomposed" sizes="114x114" href="{{ asset('/theme/images/ico/apple-touch-icon-114-precomposed.png') }}">

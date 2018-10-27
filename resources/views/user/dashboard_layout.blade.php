@@ -16,7 +16,7 @@
     <link href="{{ asset('/theme/css/icomoon.css') }}" rel="stylesheet">
     <link href="{{ asset('/theme/css/main.css') }}" rel="stylesheet">
     <link href="{{ asset('/theme/css/responsive.css') }}" rel="stylesheet">
-
+    <link href="{{ asset('/skin-1/assets/plugins/jasny-bootstrap/css/jasny-bootstrap.min.css') }}" rel="stylesheet">
 
     <link rel="shortcut icon" href="{{ asset('/theme/images/artist.png') }}">
     <link rel="apple-touch-icon-precomposed" sizes="144x144" href="{{ asset('/theme/images/ico/apple-touch-icon-144-precomposed.png') }}">
@@ -39,6 +39,7 @@
                         <div class="social">
                             <ul class="social-share">
                                 <li>
+                                    <a href="{{ route('user.account.setting',auth::user()->id) }}" title="Account Setting"><i class="fa fa-cog"></i></a>
                                     <a href="{{ route('user.logout') }}" title="Log Out"><i class="fa fa-power-off"></i></a>
                                 </li>
                             </ul>
@@ -59,7 +60,7 @@
                         <span class="icon-bar"></span>
                         <span class="icon-bar"></span>
                     </button>
-                    <a class="navbar-brand" href="{{ route('site.dashboard') }}">
+                    <a class="navbar-brand" href="{{ route('user.dashboard') }}">
                         <img src="{{ asset('/theme/images/creatifny.png') }}" style="max-width: 115px;max-height: 52px" alt="logo">
                     </a>
                 </div>
@@ -108,6 +109,7 @@
     <script src="{{ asset('/theme/js/owl.carousel.min.js') }}"></script>
     <script src="{{ asset('/theme/js/jquery.isotope.min.js') }}"></script>
     <script src="{{ asset('/theme/js/main.js') }}"></script>
+    <script src="{{ asset('/skin-1/assets/plugins/jasny-bootstrap/js/jasny-bootstrap.min.js') }}"></script>
     <script src="{{ asset('/skin-1/assets/js/jquery.validate.min.js') }}"></script>
     @yield('js')
 </body>
