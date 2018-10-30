@@ -114,5 +114,7 @@ Route::group(['middleware' => ['user.auth']], function () {
 	Route::get('user/membership/payment', ['as'=> 'user.membership.payment', 'uses' => 'User\PayPalController@getAccessToken']);
 
 	Route::post('user/post/article',['as' => 'fan.post.article' , 'uses' => 'User\ProfileController@post_article']);
+	Route::post('user/post/images',['as' => 'talent.post.images' , 'uses' => 'User\ProfileController@post_images']);
+	Route::post('user/post/vedio',['as' => 'talent.post.vedio' , 'uses' => 'User\ProfileController@post_vedio']);
 
 });

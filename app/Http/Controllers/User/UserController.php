@@ -17,6 +17,7 @@ use App\User;
 use App\Models\Admin\AdditionalInfo;
 use App\Models\Admin\PostCategory;
 use App\Models\Admin\Post;
+use App\Models\Admin\PostMeta;
 
 class UserController extends Controller
 {
@@ -37,14 +38,42 @@ class UserController extends Controller
         $additional_info = AdditionalInfo::where('user_id',$user->id)->first();
         $postCategories = PostCategory::all();
 
+        $postMetas = PostMeta::all();
+
+        //dd($postMetas);
+
+        $vedios = [];
+        $images = [];
+
+        foreach ($postMetas as $meta) 
+        {
+            $meta_clusters = explode("_", $meta->meta_key);
+            $type  = $meta_clusters[count($meta_clusters)-1];
+            if($type == 'vedio')
+            {
+                $vedio_info = json_decode($meta->meta_value,true);
+                $vedio_post_id = $meta_clusters[0];
+                $vedios[$vedio_post_id] = $vedio_info;
+            }
+            elseif($type == 'images')
+            {
+                $images_info = explode(",", str_replace([']','['],"", $meta->meta_value));
+                $image_post_id = $meta_clusters[0];
+                $images[$image_post_id] = $images_info;
+            }
+        }
+
         $posts = Post::all();
 
         $data = [
             'user'              => $user,
             'additional_info'   => $additional_info,
             'postCategories'    => $postCategories,
-            'posts'              => $posts
+            'posts'             => $posts,
+            'images'            => $images,
+            'vedios'            => $vedios
         ];
+
 
     	return view('user.dashboard.index',$data);
     }

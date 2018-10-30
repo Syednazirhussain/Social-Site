@@ -9,14 +9,6 @@
         padding: 10px 0 !important;
     }
 
-/*    .widget-activity-item {
-        padding: 12px 15px 12px 0px !important;
-    }
-
-    .widget-activity-avatar {
-        margin-left: 0px !important;
-    }*/
-
     .post-area{
         margin: 2% 4%;
     }
@@ -26,10 +18,15 @@
         padding: 10px 10px !important;
     }
 
+    .errorTxt, .error { 
+        color: #dc3545 !important;
+        font-weight: unset !important;
+    }
+
 </style>
 
-
 @endsection
+
 
 
 @section('content')
@@ -100,13 +97,13 @@
                                     </li>
                                 </ul>
                                 <div class="tab-content">
+                                    @include('flash::message')
                                     <div class="tab-pane active" id="about">
                                         <?php echo htmlspecialchars_decode($additional_info->about_us,ENT_NOQUOTES); ?>
                                     </div>
                                     <div class="tab-pane" id="article">
                                         <div class="row">
                                             <div class="post-area">
-                                                @include('flash::message')
                                                 <form action="{{ route('fan.post.article') }}" method="POST" class="form-horizontal">
                                                     <input type="hidden" name="_token" value="{{ csrf_token() }}" >
                                                     <div class="form-group">
@@ -165,30 +162,110 @@
                                         <!--  <textarea style="resize: none;border: 1px solid #f3565d" class="form-control" name="article" ></textarea> -->
                                     </div>
                                     <div class="tab-pane" id="photo">
-                                        <p>
-                                            Howdy, I'm in Tab 3.
-                                        </p>
-                                        <p>
-                                            Duis autem vel eum iriure dolor in hendrerit in vulputate. Ut wisi enim ad minim veniam, quis nostrud exerci tation ullamcorper suscipit lobortis nisl ut aliquip ex ea commodo consequat. Duis autem vel eum iriure dolor in hendrerit in vulputate velit esse molestie consequat
-                                        </p>
-                                        <p>
-                                            <a class="btn btn-info" href="http://j.mp/metronictheme" target="_blank">
-                                                Learn more...
-                                            </a>
-                                        </p>
+                                        <div class="post-area">
+                                            <div class="row">
+                                                <form action="{{ route('talent.post.images') }}" method="POST" enctype="multipart/form-data" class="form-horizontal">
+                                                    <input type="hidden" name="_token" value="{{ csrf_token() }}">
+                                                    <div class="col-md-12">
+                                                      <div class="form-group">
+                                                          <label for="">Gallery</label>
+                                                          <input type="file" name="images" class="form-control">
+                                                      </div>
+                                                    </div>
+                                                    <button type="submit" class="btn btn-primary pull-right"><i class="fa fa-upload"></i>&nbsp;Upload</button>
+                                                </form>
+                                            </div>
+                                        </div>
                                     </div>
                                     <div class="tab-pane" id="video">
-                                        <p>
-                                            Howdy, I'm in Tab 3.
-                                        </p>
-                                        <p>
-                                            Duis autem vel eum iriure dolor in hendrerit in vulputate. Ut wisi enim ad minim veniam, quis nostrud exerci tation ullamcorper suscipit lobortis nisl ut aliquip ex ea commodo consequat. Duis autem vel eum iriure dolor in hendrerit in vulputate velit esse molestie consequat
-                                        </p>
-                                        <p>
-                                            <a class="btn btn-info" href="http://j.mp/metronictheme" target="_blank">
-                                                Learn more...
-                                            </a>
-                                        </p>
+                                        <div class="post-area">
+                                            <div class="row">
+                                                <div class="col-sm-12 col-md-12">
+                                                    <fieldset>
+                                                        <legend><i class="fa fa-upload"></i>&nbsp;Upload vedio</legend>
+                                                        <form action="{{ route('talent.post.vedio') }}" method="POST" id="post_vedio" class="form-horizontal">
+                                                            <input type="hidden" name="_token" value="{{ csrf_token() }}">
+                                                            <div class="form-group">
+                                                                <label class="control-label">Title</label>
+                                                                <input type="text" class="form-control form-control-sm" name="title" placeholder="ex Picnic">
+                                                            </div>
+                                                            <div class="form-group">
+                                                                <label class="control-label">Type</label>
+                                                                <select class="form-control form-control-sm" name="vedio_type" id="vedio_type">
+                                                                    <option value="youtube">Youtube</option>
+                                                                    <option value="dailymotion">Daily motion</option>
+                                                                    <option value="viemo">Viemo</option>
+                                                                </select>
+                                                            </div>
+                                                            <div class="form-group">
+                                                                <label class="control-label">Url</label>
+                                                                <input type="text" class="form-control form-control-sm" name="vedio_url" placeholder="ex https://youtu.be/cH6kxtzovew">
+                                                            </div>
+                                                            <input class="btn btn-primary pull-right" type="submit" value="Add">
+                                                        </form>
+                                                    </fieldset>
+                                                </div>
+                                                <div class="col-sm-12 col-md-12 m-t-2">
+                                                    @if(isset($vedios))
+                                                    <ul class="row video-list-thumbs " style="margin: 0; padding: 0">
+                                                        <!-- Loop start -->
+
+                                                        @foreach($vedios as $key => $vedio)
+
+                                                        <li class="col-sm-6 col-md-3" style="padding: 10px 10px;">
+                                                            <!-- Open vedio link -->    
+                                                            <a href="javascript:void(0)">
+
+                                                                <?php   if ($vedio['vedio_type'] == 'youtube')    {   
+
+                                                                    $url = $vedio['vedio_url'];
+
+                                                                    if (preg_match('%(?:youtube(?:-nocookie)?\.com/(?:[^/]+/.+/|(?:v|e(?:mbed)?)/|.*[?&]v=)|youtu\.be/)([^"&?/ ]{11})%i', $url, $match)) 
+                                                                    {
+                                                                        $video_id = $match[1];
+                                                                    }
+                                                                ?>  
+                                                                <!-- utube video thumbnail -->
+                                                                <img src="https://img.youtube.com/vi/<?php echo $video_id; ?>/sddefault.jpg" class="img-responsive" style="height: 190px; width: 100%;">
+                                                                    
+
+                                                                    
+                                                                <?php   } elseif ($vedio['vedio_type']  == 'vimeo') { 
+
+                                                                    $vimeo = $vedio['vedio_url']; 
+                                                                    $vimeoGetID = (int) substr(parse_url($vimeo, PHP_URL_PATH), 1);
+                                                                    $url = 'http://vimeo.com/api/v2/video/'.$vimeoGetID.'.php';
+                                                                    $contents = @file_get_contents($url);
+                                                                    $array = @unserialize(trim($contents));
+                                                                ?>
+
+                                                                <!-- vimeo video thumbnail -->
+                                                                <img src="<?php echo $array[0]['thumbnail_large']; ?>" class="img-responsive" style="height: 190px; width: 100%;">
+                                                                    
+                                                                
+                                                                <?php   } elseif ($vedio['vedio_type'] == 'dailymotion') { 
+
+                                                                    $url = $vedio['vedio_url'];
+                                                                    $lastSegment = basename(parse_url($url, PHP_URL_PATH));
+                                                                    $url = explode("_", $lastSegment); 
+                                                                ?>
+
+                                                                <!-- dailymotion video thumbnail -->
+                                                                <img src="http://www.dailymotion.com/thumbnail/video/<?php echo $url[0]; ?>" class="img-responsive" style="height: 190px; width: 100%;">
+
+                                                                <?php   } ?>
+                                                                        
+                                                                <h5 class="business-listing" style="margin-bottom: 0;">{{ $vedio['title'] }}</h5>
+                                                                <span class="glyphicon glyphicon-play-circle"></span>
+                                                                <!-- <span class="duration">03:15</span> -->
+                                                            </a>
+                                                        </li>
+                                                        @endforeach
+                                                    </ul>
+                                                    @endif
+                                                </div>
+                                            </div>
+                                        </div>
                                     </div>
                                 </div>
                             </div>
@@ -284,7 +361,6 @@
                                             </div>
                                         </div>
                                     </div>
-
                                 </div>
                             </div>
                     </aside>
@@ -325,15 +401,35 @@
       });
     });
 
+    $('#post_vedio').validate({
+        focusInvalid: false,
+        rules: {
+          'title': {
+            required: true,
+            minlength: 3,
+            maxlength: 40,
+          },
+          'vedio_url': {
+            required: true,
+            url: true
+          }
+        },
+        messages: {
+          'title': {
+            required: "Please enter title",
+          },
+          'vedio_url': {
+            required: "Please provide vedio url",
+          }
+        }
+    });
 
-</script>
-
-
-@endsection
-
-@section('js')
-
-<script type="text/javascript">
+    // Initialize Select2
+    $(function() {
+      $('#vedio_type').select2({
+        placeholder: 'Select value',
+      });
+    });
 
     // Initialize Select2
     $(function() {
@@ -341,6 +437,67 @@
         placeholder: 'Select value',
       });
     });
+
+    $('input[name="images"]').fileuploader({
+         extensions: ['jpg', 'jpeg', 'png', 'gif', 'bmp'],
+         changeInput: ' ',
+         theme: 'thumbnails',
+         enableApi: true,
+         addMore: true,
+         limit: 4,
+         fileMaxSize: 2,
+         thumbnails: {
+            box: '<div class="fileuploader-items">' +
+                         '<ul class="fileuploader-items-list">' +
+                        '<li class="fileuploader-thumbnails-input"><div class="fileuploader-thumbnails-input-inner">+</div></li>' +
+                         '</ul>' +
+                     '</div>',
+            item: '<li class="fileuploader-item">' +
+                      '<div class="fileuploader-item-inner">' +
+                              '<div class="thumbnail-holder">${image}</div>' +
+                              '<div class="actions-holder">' +
+                                  '<a class="fileuploader-action fileuploader-action-remove" title="Remove"><i class="remove"></i></a>' +
+                              '</div>' +
+                              '<div class="progress-holder">${progressBar}</div>' +
+                          '</div>' +
+                      '</li>',
+            item2: '<li class="fileuploader-item">' +
+                      '<div class="fileuploader-item-inner">' +
+                              '<div class="thumbnail-holder">${image}</div>' +
+                              '<div class="actions-holder">' +
+                                  '<a class="fileuploader-action fileuploader-action-remove" title="Remove"><i class="remove"></i></a>' +
+                              '</div>' +
+                          '</div>' +
+                      '</li>',
+            startImageRenderer: true,
+            canvasImage: false,
+            _selectors: {
+               list: '.fileuploader-items-list',
+               item: '.fileuploader-item',
+               start: '.fileuploader-action-start',
+               retry: '.fileuploader-action-retry',
+               remove: '.fileuploader-action-remove'
+            },
+            onItemShow: function(item, listEl) {
+               var plusInput = listEl.find('.fileuploader-thumbnails-input');
+               
+               plusInput.insertAfter(item.html);
+               
+               if(item.format == 'image') {
+                  item.html.find('.fileuploader-item-icon').hide();
+               }
+            }
+         },
+         afterRender: function(listEl, parentEl, newInputEl, inputEl) {
+            var plusInput = listEl.find('.fileuploader-thumbnails-input'),
+               api = $.fileuploader.getInstance(inputEl.get(0));
+         
+            plusInput.on('click', function() {
+               api.open();
+            });
+         },
+    });
+
 
 </script>
 
