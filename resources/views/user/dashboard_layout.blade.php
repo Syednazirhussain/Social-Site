@@ -18,9 +18,15 @@
     <link href="{{ asset('/theme/css/icomoon.css') }}" rel="stylesheet">
     <link href="{{ asset('/theme/css/main.css') }}" rel="stylesheet">
     <link href="{{ asset('/theme/css/responsive.css') }}" rel="stylesheet">
+    <link href="{{ asset('/theme/css/profile.css') }}" rel="stylesheet">
 
-
+    <link href="{{ asset('/skin-1/assets/css/pixeladmin.min.css') }}" rel="stylesheet">
+    <link href="{{ asset('/skin-1/assets/css/widgets.min.css') }}" rel="stylesheet">
     <link href="{{ asset('/skin-1/assets/plugins/jasny-bootstrap/css/jasny-bootstrap.min.css') }}" rel="stylesheet">
+
+    <link href="{{ asset('/skin-1/assets/css/themes/candy-orange.min.css') }}" rel="stylesheet">
+
+
 
     <link rel="shortcut icon" href="{{ asset('/theme/images/artist.png') }}">
     <link rel="apple-touch-icon-precomposed" sizes="144x144" href="{{ asset('/theme/images/ico/apple-touch-icon-144-precomposed.png') }}">
@@ -114,10 +120,15 @@
     <script src="{{ asset('/theme/js/owl.carousel.min.js') }}"></script>
     <script src="{{ asset('/theme/js/jquery.isotope.min.js') }}"></script>
     <script src="{{ asset('/theme/js/main.js') }}"></script>
-    <script src="{{ asset('/skin-1/assets/plugins/jasny-bootstrap/js/jasny-bootstrap.min.js') }}"></script>
-    <script src="{{ asset('/skin-1/assets/js/jquery.validate.min.js') }}"></script>
+
+    <script src="http://ajax.googleapis.com/ajax/libs/jquery/3.2.1/jquery.min.js"></script>
+    <script src="{{ asset('/skin-1/assets/js/bootstrap.min.js') }}"></script>
     <script src="{{ asset('/skin-1/assets/js/pixeladmin.min.js') }}"></script>
-   
+    <script src="{{ asset('/skin-1/assets/js/jquery.validate.min.js') }}"></script>
+    <script src="{{ asset('/skin-1/assets/js/custom.js') }}"></script>
+    <script src="{{ asset('/skin-1/assets/plugins/jasny-bootstrap/js/jasny-bootstrap.min.js') }}"></script>
+
+
     @yield('js')
 </body>
 </html>

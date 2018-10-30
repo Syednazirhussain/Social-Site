@@ -4,28 +4,49 @@ namespace App\Http\Controllers\User;
 
 use App\Http\Controllers\Controller;
 use Illuminate\Http\Request;
-use App\User;
+
 use Spatie\Permission\Models\Role;
 use Spatie\Permission\Models\Permission;
 use App\Models\Admin\Subscription;
-use App\Models\Admin\AdditionalInfo;
+
 use Auth;
 use Flash;
 use Session;
 
+use App\User;
+use App\Models\Admin\AdditionalInfo;
+use App\Models\Admin\PostCategory;
+use App\Models\Admin\Post;
+
 class UserController extends Controller
 {
-    public function index(){
+    public function index()
+    {
     	return view('user.site.index');
     }
 
-    public function viewLogin(){
+    public function viewLogin()
+    {
     	return view('user.auth.index');
     }
 
-    public function dashboard(){
+    public function dashboard()
+    {
+        $user = Auth::user();
 
-    	return view('user.dashboard.index');
+        $additional_info = AdditionalInfo::where('user_id',$user->id)->first();
+        $postCategories = PostCategory::all();
+
+        $posts = Post::all();
+
+        $data = [
+            'user'              => $user,
+            'additional_info'   => $additional_info,
+            'postCategories'    => $postCategories,
+            'posts'              => $posts
+        ];
+
+    	return view('user.dashboard.index',$data);
     }
 
     public function verifyEmail(Request $request)

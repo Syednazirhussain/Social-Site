@@ -20,7 +20,7 @@ class AccountSetting extends Controller
     		$user = Auth::user();
 	    	if($user->hasAnyRole(['Fans','Talents']))
 	    	{
-                $additional_info = AdditionalInfo::find($id);
+                $additional_info = AdditionalInfo::where('user_id',$id)->first();
                 $data = [
                     'additional_info'   => $additional_info,
                     'user'              => $user
@@ -44,7 +44,7 @@ class AccountSetting extends Controller
     public function update($id,Request $request)
     {
         $input = $request->all();
-
+        //dd($request->all());
     	$user = User::find($id);
     	if(!empty($user))
     	{

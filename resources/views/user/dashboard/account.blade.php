@@ -29,7 +29,7 @@
             <input type="hidden" id="token" name="_token" value="{{ csrf_token() }}">
             <input type="hidden" name="_method" value="PATCH">
             <div class="col-xs-12 col-sm-12 col-md-12 col-lg-12">
-
+              @include('flash::message')
               <div class="col-xs-12 col-sm-12 col-md-6 col-lg-6">
 
                 <div class="col-sm-12 col-xs-12">
@@ -49,14 +49,14 @@
                 <div class="col-xs-12 col-sm-12 m-t-1">
                   <div class="form-group">
                     <label class="control-label" for="linkdin">Linkdin</label>
-                    <input type="text" name="linkdin" id="linkdin" value="@if(isset($user)){{ $user->linkdin }}@endif" class="form-control">
+                    <input type="text" name="linkdin" id="linkdin" value="@if(isset($additional_info)){{ $additional_info->linkdin }}@endif" class="form-control">
                   </div>
                 </div>
 
                 <div class="col-xs-12 col-sm-12">
                   <div class="form-group">
                     <label class="control-label" for="instagram">Instagram</label>
-                    <input type="text" name="instagram" id="instagram" value="@if(isset($user)){{ $user->instagram }}@endif" class="form-control">
+                    <input type="text" name="instagram" id="instagram" value="@if(isset($additional_info)){{ $additional_info->instagram }}@endif" class="form-control">
                   </div>
                 </div>
 
@@ -100,14 +100,14 @@
                 <div class="col-xs-12 col-sm-12">
                   <div class="form-group">
                     <label class="control-label" for="facebook">Facebook</label>
-                    <input type="text" name="facebook" id="facebook" value="@if(isset($user)){{ $user->facebook }}@endif" class="form-control">
+                    <input type="text" name="facebook" id="facebook" value="@if(isset($additional_info)){{ $additional_info->facebook }}@endif" class="form-control">
                   </div>
                 </div>
 
                 <div class="col-xs-12 col-sm-12">
                   <div class="form-group">
                     <label class="control-label" for="twitter">Twitter</label>
-                    <input type="text" name="twitter" id="twitter" value="@if(isset($user)){{ $user->twitter }}@endif" class="form-control">
+                    <input type="text" name="twitter" id="twitter" value="@if(isset($additional_info)){{ $additional_info->twitter }}@endif" class="form-control">
                   </div>
                 </div> 
 
@@ -129,7 +129,7 @@
                   <div class="col-xs-12 col-sm-12 sty-summernote">
                     <div class="form-group">
                         <label for="description">About Us</label>
-                        <input type="hidden" id="editDesc" value="@if(isset($accomodation)){{ $accomodation->about_us }}@endif">
+                        <input type="hidden" id="editDesc" value="@if(isset($additional_info)){{ $additional_info->about_us }}@endif">
                         <textarea id="description" name="about_us" required="required"></textarea>
                     </div>
                   </div>
@@ -151,6 +151,10 @@
 
 <script type="text/javascript">
 	
+
+$(document).ready(function() {
+
+
 	   $.ajaxSetup({
         headers: {
             'X-CSRF-TOKEN': $('meta[name="_token"]').attr('content')
@@ -245,11 +249,13 @@
         return false;
     };
 
+
+
     // Initialize Summernote
     $(function() {
       $('#description').summernote({
         height:200,
-        placeholder: 'Type description here..',
+        placeholder: 'Write something about us',
         toolbar: [
           ['parastyle', ['style']],
           ['fontstyle', ['fontname', 'fontsize']],
@@ -266,6 +272,55 @@
         disableResizeEditor: true
       });
     });
+
+
+
+
+  });
+
+/*
+        callbacks: {
+          onImageUpload: function(image) {
+           var sizeKB = image[0]['size'] / 1000;
+           var tmp_pr = 0;
+           if(sizeKB > 200){
+              tmp_pr = 1;
+              alert("pls, select less then 200kb image.");
+           }
+           if(image[0]['type'] != 'image/jpeg' && image[0]['type'] != 'image/png'){
+              tmp_pr = 1;
+              alert("pls, select png or jpg image.");
+           }
+           if(tmp_pr == 1){
+              var file = image[0];
+              var reader = new FileReader();
+              reader.onloadend = function() {
+                var image = $('<img>').attr('src',  reader.result);
+                $(this).summernote("insertNode", image[0]);
+              }
+              reader.readAsDataURL(file);
+           }
+          }
+        }
+
+
+
+
+
+
+
+
+
+        callbacks: {
+          onImageUpload: function(files){ 
+            console.log(files);
+          },
+          onImageUploadError: function() { console.log("Error uploading image"); }
+        },
+*/
+
+
+
 
 
 

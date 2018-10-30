@@ -105,12 +105,14 @@ Route::post('user/signup',['as' => 'user.signup','uses' => 'User\UserController@
 Route::post('user/verify/email', ['as'=> 'user.email.verify', 'uses' => 'User\UserController@verifyEmail']);
 
 Route::group(['middleware' => ['user.auth']], function () {
-	
+
 	Route::get('user/dashboard',['as' => 'user.dashboard','uses' => 'User\UserController@dashboard']);
 	Route::get('user/account/{account}',['as' => 'user.account.setting','uses' => 'User\AccountSetting@edit']);
 	Route::patch('user/account/{account}',['as' => 'user.account.update','uses' => 'User\AccountSetting@update']);
 	Route::get('user/logout', ['as'=> 'user.logout', 'uses' => 'User\UserController@logout']);
 	Route::get('user/membership/pricing', ['as'=> 'user.membership.pricing', 'uses' => 'User\UserController@membership']);
 	Route::get('user/membership/payment', ['as'=> 'user.membership.payment', 'uses' => 'User\PayPalController@getAccessToken']);
+
+	Route::post('user/post/article',['as' => 'fan.post.article' , 'uses' => 'User\ProfileController@post_article']);
 
 });
