@@ -14,7 +14,8 @@
         "laravel/tinker": "~1.0",
         "laravelcollective/html": "^5.5.0",
         "paypal/rest-api-sdk-php": "^1.13",
-        "spatie/laravel-permission": "^2.21"
+        "spatie/laravel-permission": "^2.21",
+        "srmklive/paypal": "~1.0"
     },
     "require-dev": {
         "filp/whoops": "~2.0",

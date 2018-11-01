@@ -113,12 +113,11 @@ Route::group(['middleware' => ['user.auth']], function () {
 	Route::get('user/membership/pricing', ['as'=> 'user.membership.pricing', 'uses' => 'User\UserController@membership']);
 	Route::get('user/membership/payment', ['as'=> 'user.membership.payment', 'uses' => 'User\PayPalController@getAccessToken']);
 
+	Route::get('user/post/get-post-data',['as' => 'get.post.data','uses' => 'User\ProfileController@get_post_data']);
 	Route::post('user/post/article',['as' => 'fan.post.article' , 'uses' => 'User\ProfileController@post_article']);
 	Route::post('user/post/images',['as' => 'talent.post.images' , 'uses' => 'User\ProfileController@post_images']);
-	
 	Route::delete('user/post/images/{post_id}', ['as'=> 'talent.post.images.destroy', 'uses' => 'User\ProfileController@post_image_destroy']);
 	Route::post('user/post/image/remove', ['as'=> 'talent.post.image.remove', 'uses' => 'User\ProfileController@post_image_remove']);
-
 	Route::post('user/post/vedio',['as' => 'talent.post.vedio' , 'uses' => 'User\ProfileController@post_vedio']);
 
 });

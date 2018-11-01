@@ -252,54 +252,19 @@
                         <div class="tab-pane" id="photo">
                             <div class="m-a-2">
                                 <div class="row">
-                                    <form action="{{ route('talent.post.images') }}" method="POST" enctype="multipart/form-data" class="form-horizontal">
+                                    <form action="{{ route('talent.post.images') }}" method="POST" id="post-image-form" enctype="multipart/form-data" class="form-horizontal">
                                         <input type="hidden" name="_token" value="{{ csrf_token() }}">
                                         <div class="col-md-12">
                                           <div class="form-group">
                                               <label for="">Gallery</label>
-                                              <input type="file" name="images" class="form-control">
+                                              <input type="file" id="file" name="images" class="form-control">
                                           </div>
                                         </div>
                                         <button type="submit" class="btn btn-primary pull-right"><i class="fa fa-upload"></i>&nbsp;Upload</button>
                                     </form>
                                 </div>
                                 <div class="m-t-2"></div>
-                                <div class="row">
-                                    <div class="col-md-12">
-                                        @if(isset($images))
-                                            @foreach($images as $key => $post_images)
-                                                <?php if(!empty($post_images)){ ?>
-                                                    <?php $data = explode("_", $key); ?>
-                                                    <div class="list-group b-a-0">
-                                                        <div class="list-group-item">
-                                                            <div class="dropdown pull-xs-right m-l-1">
-                                                                <button type="button" class="btn btn-xs btn-outline btn-outline-colorless dropdown-toggle" data-toggle="dropdown" aria-expanded="false">
-                                                                    <i class="fa fa-reorder"></i>
-                                                                </button>
-                                                                <div class="dropdown-menu dropdown-menu-right">
-                                                                    <li>
-                                                                        <a href="javascript:void(0)" class="remove_post_images" data-id="{{ $data[1] }}">
-                                                                            <i class="dropdown-icon fa fa-times text-danger"></i>&nbsp;&nbsp;Remove
-                                                                        </a>
-                                                                    </li>
-                                                                </div>
-                                                            </div>
-                                                            <div class="widget blog_gallery" style="display: inline-flex;">
-                                                                @foreach($post_images as $post_image)
-                                                                    <?php $image = trim($post_image,'"'); ?>
-                                                                        <a href="javascript:void(0)" class="img-gallery" data-id="{{ $data[1] }}"  data-toggle="modal" data-target="#myModal">
-                                                                            <img src="{{ asset('storage/posts/'.$image) }}" class="img-thumbnail img-custom">
-                                                                        </a>
-                                                                @endforeach
-                                                            </div>
-                                                            <p class="list-group-item-text text-muted font-size-11">Posted on {{ \Carbon\Carbon::parse($data[0])->format('D F d, Y') }}</p>
-                                                        </div>
-                                                    </div>
-                                                <?php } ?>
-                                            @endforeach
-                                        @endif
-                                    </div>
-                                </div>   
+                                <div id="post-images"></div>  
                             </div>
                         </div>
                         <div class="tab-pane" id="video">
@@ -319,7 +284,7 @@
                                                     <select class="form-control form-control-sm" name="vedio_type" id="vedio_type">
                                                         <option value="youtube">Youtube</option>
                                                         <option value="dailymotion">Daily motion</option>
-                                                        <option value="viemo">Viemo</option>
+                                                        <option value="vimeo">Vimeo</option>
                                                     </select>
                                                 </div>
                                                 <div class="form-group">
@@ -331,65 +296,7 @@
                                         </fieldset>
                                     </div>
                                     <div class="col-sm-12 col-md-12 m-t-2">
-                                        @if(isset($vedios))
-                                        <ul class="row video-list-thumbs " style="margin: 0; padding: 0">
-                                            <!-- Loop start -->
-                                            @foreach($vedios as $key => $vedio)
-                                            <li class="col-sm-6 col-md-4" style="padding: 10px 10px;">
-                                                <!-- Open vedio link -->    
-                                                <a href="javascript:void(0)">
-
-                                                    <?php   if ($vedio['vedio_type'] == 'youtube')    {   
-
-                                                        $url = $vedio['vedio_url'];
-
-                                                        if (preg_match('%(?:youtube(?:-nocookie)?\.com/(?:[^/]+/.+/|(?:v|e(?:mbed)?)/|.*[?&]v=)|youtu\.be/)([^"&?/ ]{11})%i', $url, $match)) 
-                                                        {
-                                                            $video_id = $match[1];
-                                                        }
-                                                    ?>  
-                                                    <!-- utube video thumbnail -->
-                                                    <img src="https://img.youtube.com/vi/<?php echo $video_id; ?>/sddefault.jpg" class="img-responsive" style="height: 190px; width: 100%;">
-                                                        
-
-                                                        
-                                                    <?php   } elseif ($vedio['vedio_type']  == 'vimeo') { 
-
-                                                        $vimeo = $vedio['vedio_url']; 
-                                                        $vimeoGetID = (int) substr(parse_url($vimeo, PHP_URL_PATH), 1);
-                                                        $url = 'http://vimeo.com/api/v2/video/'.$vimeoGetID.'.php';
-                                                        $contents = @file_get_contents($url);
-                                                        $array = @unserialize(trim($contents));
-                                                    ?>
-
-                                                    <!-- vimeo video thumbnail -->
-                                                    <img src="<?php echo $array[0]['thumbnail_large']; ?>" class="img-responsive" style="height: 190px; width: 100%;">
-                                                        
-                                                    
-                                                    <?php   } elseif ($vedio['vedio_type'] == 'dailymotion') { 
-
-                                                        $url = $vedio['vedio_url'];
-                                                        $lastSegment = basename(parse_url($url, PHP_URL_PATH));
-                                                        $url = explode("_", $lastSegment); 
-                                                    ?>
-
-                                                    <!-- dailymotion video thumbnail -->
-
-                                                     <img src="http://www.dailymotion.com/thumbnail/video/<?php echo $url[0]; ?>" data-toggle="modal" data-target="#vedioModal"  class="vedio-modal" style="height: 190px; width: 100%;">
-
-                                                    <!--  <iframe frameborder="0" width="100%" height="190" src="//www.dailymotion.com/embed/video/<?php //echo strtok(basename($url[0]), '_'); ?>" allowfullscreen></iframe> -->
-
-
-                                                    <?php   } ?>
-                                                            
-                                                    <h5 class="business-listing" style="margin-bottom: 0;">{{ $vedio['title'] }}</h5>
-                                                    <span class="glyphicon glyphicon-play-circle"></span>
-                                                    <!-- <span class="duration">03:15</span> -->
-                                                </a>
-                                            </li>
-                                            @endforeach
-                                        </ul>
-                                        @endif
+                                        <div id="post-vedios"></div>
                                     </div>
                                 </div>
                             </div>
@@ -410,8 +317,7 @@
                         </div>
                         <div class="row m-t-2">
                             <div class="col-sm-12 col-md-12">
-                                <iframe frameborder="0" width="100%" id="vedio-panel" height="190" src="" allowfullscreen>
-                                </iframe>
+                                <iframe width="560" height="315" src="" id="vedio-panel" frameborder="0" allow="accelerometer; autoplay; encrypted-media; gyroscope; picture-in-picture" allowfullscreen></iframe>
                             </div>                            
                         </div>
                     </div>
@@ -429,7 +335,7 @@
                                 <a href="javascript:void(0)" id="remove_post_image" data-img="" data-id="" class="label label-danger">
                                     <i class="fa fa-trash"></i>
                                 </a> 
-                                <button type="button" class="close btn-rounded pull-right" data-dismiss="modal">&times;</button>
+                                <button type="button" class="close btn-rounded pull-right" data-backdrop="static" data-dismiss="modal">&times;</button>
                             </div>
                         </div>
                         <div class="row m-t-2">
@@ -567,7 +473,178 @@
       }
     });
 
-    $('.img-gallery').on('click', function() {
+    function page_refresh()
+    {
+        $.ajax({
+            url: "{{ route('get.post.data') }}",
+            type: "GET",
+            dataType: "json"
+        }).done(function(response){
+            var json =  response;
+
+            // console.log(json.images);
+            // console.log(Object.keys(json.images).length);
+
+            var imagesHtml = '';
+            var post_images_path = "{{ asset('storage/posts/') }}";
+
+            if(Object.keys(json.images).length > 0)
+            {
+                var images = json.images;
+                for (var key in images) 
+                {
+                    if (images.hasOwnProperty(key)) 
+                    {
+                        var keyArr = key.split('_');
+
+                        imagesHtml += '<div class="row">';
+                        imagesHtml += '<div class="col-md-12">';
+                        /* start loop */
+                        imagesHtml += '<div class="list-group b-a-0">';
+                        imagesHtml += '<div class="list-group-item">';
+                        imagesHtml += '<div class="dropdown pull-xs-right m-l-1">';
+                        imagesHtml += '<button type="button" class="btn btn-xs btn-outline btn-outline-colorless dropdown-toggle" data-toggle="dropdown" aria-expanded="false">';
+                        imagesHtml += '<i class="fa fa-reorder"></i>';
+                        imagesHtml += '</button>';
+                        imagesHtml += '<div class="dropdown-menu dropdown-menu-right">';
+                        imagesHtml += '<li>';
+                        imagesHtml += '<a href="javascript:void(0)" class="remove_post_images" data-id="'+keyArr[1]+'">';
+                        imagesHtml += '<i class="dropdown-icon fa fa-times text-danger"></i>&nbsp;&nbsp;Remove';
+                        imagesHtml += '</a>';
+                        imagesHtml += '</li>';
+                        imagesHtml += '</div>';
+                        imagesHtml += '</div>';
+                        imagesHtml += '<div class="widget blog_gallery" style="display: inline-flex;">';
+                        for(var i = 0 ; i < images[key].length ; i++)
+                        {
+                            var src = post_images_path+"/"+images[key][i].replace(/['"]+/g, '');
+                            imagesHtml += '<a href="javascript:void(0)" class="img-gallery" data-id="'+keyArr[1]+'"  data-toggle="modal"  data-target="#myModal">';
+                            imagesHtml += '<img src="'+src+'" class="img-thumbnail img-custom">';
+                            imagesHtml += '</a>';
+                        }
+                        imagesHtml += '</div>';
+                        imagesHtml += '<p class="list-group-item-text text-muted font-size-11">Posted on '+new Date(keyArr[0]).toDateString("yyyy-MM-dd")+'</p>';
+                        imagesHtml += '</div>';
+                        imagesHtml += '</div>';
+                        /* end loop */
+                        imagesHtml += '</div>';
+                        imagesHtml += '</div>'; 
+                    }
+                }
+            }
+            $('#post-images').html(imagesHtml);
+            // console.log(key+"  ->   "+images[key][0]);
+            // console.log("id "+ keyArr[1]);
+            // var date = new Date(keyArr[0]).toDateString("yyyy-MM-dd");
+            // console.log("Date "+date);
+
+            var vedioHtml = '';
+            var vedios = json.vedios;
+            if(Object.keys(vedios).length > 0)
+            {
+                for (var key in vedios) 
+                {
+                    vedioHtml += '<ul class="row video-list-thumbs " style="margin: 0; padding: 0">';
+                    if (vedios.hasOwnProperty(key)) 
+                    {
+                        vedioHtml += '<li class="col-sm-6 col-md-4" style="padding: 10px 10px;">';
+                        vedioHtml += '<a href="javascript:void(0)">';
+
+                        if(vedios[key].vedio_type == 'youtube')
+                        {
+                            vedioHtml += '<img src="'+vedios[key].image_url+'" data-toggle="modal" data-target="#vedioModal" data-url="'+vedios[key].vedio_url+'" class="vedio-modal" style="height: 190px; width: 100%;">';
+                        }
+                        else if(vedios[key].vedio_type == 'dailymotion')
+                        {
+                            vedioHtml += '<img src="'+vedios[key].image_url+'" data-toggle="modal" data-target="#vedioModal" data-url="'+vedios[key].vedio_url+'"  class="vedio-modal" style="height: 190px; width: 100%;">';
+                        }
+                        else if(vedios[key].vedio_type == 'vimeo')
+                        {
+                            vedioHtml += '<img src="'+vedios[key].image_url+'" data-toggle="modal" data-target="#vedioModal" data-url="'+vedios[key].vedio_url+'" class="vedio-modal" style="height: 190px; width: 100%;">';
+                        }                                                        
+                        vedioHtml += '<h5 class="business-listing" style="margin-bottom: 0;">'+vedios[key].title+'</h5>';                                 
+                        vedioHtml += '<p>'+vedios[key].vedio_type.charAt(0).toUpperCase()+vedios[key].vedio_type.slice(1)+'</p>';                                 
+                        vedioHtml += '</a>';
+                        vedioHtml += '<span class="glyphicon glyphicon-play-circle">&nbsp;</span>';
+                        vedioHtml += '</li>';
+                    }
+                    vedioHtml += '</ul>';
+                }               
+            }
+            $('#post-vedios').html(vedioHtml);
+            // console.log(json.vedios);
+            // for (var key in vedios) 
+            // {
+            //     if (vedios.hasOwnProperty(key)) 
+            //     {
+            //         console.log(key+"  ->   "+vedios[key].title);
+            //     }
+            // }
+        });
+    }
+
+    page_refresh();
+
+    $( "#post-image-form" ).submit(function( event ) {
+
+        var data = new FormData();
+        $.each($('#file')[0].files, function(i, file) {
+            data.append(i, file);
+        });
+
+        $.ajax({
+              url: "{{ route('talent.post.images') }}",
+              data: data,
+              cache: false,
+              contentType: false,
+              processData: false,
+              type: 'POST',
+              success: function(data){
+                if(data.status == 'success')
+                {
+                    $('.fileuploader-items-list').children(".file-type-image").remove();
+                    page_refresh();
+                    alert(data.message);
+                }
+                else
+                {
+                    alert(data.message);
+                }
+              },
+              error: function(xhr,status,error)  {
+                console.log("status "+status+" Error "+error);
+              }
+        });
+
+
+       event.preventDefault();
+    });
+
+    $('#post_vedio').submit(function(e){
+
+        var formData  = $(this).serializeArray();
+
+        $.ajax({
+            url: "{{ route('talent.post.vedio') }}",
+            type: "POST",
+            dataType: "json",
+            data : formData
+        }).done(function(response){
+            if(response.status == 'success')
+            {
+                alert(response.message);
+                page_refresh();
+            }
+            else
+            {
+                alert(response.message);
+            }
+        });
+
+        e.preventDefault();
+    });     
+
+    $('body').delegate('.img-gallery','click',function(){
 
         var postId = $(this).attr("data-id");
         $('#gallery-modal-img').attr('src', '');
@@ -575,21 +652,11 @@
         $('#gallery-modal-img').attr('src', getImgSrc);
 
         $('#remove_post_image').attr('data-img',getImgSrc);
-        $('#remove_post_image').attr('data-id',postId);
-
-    });
-
-    $('.vedio-modal').on('click', function() {
-
-        // $('#vedio-panel').attr('src', '');
-        var vedioSrc = $(this).attr('src');
-        alert(vedioSrc);
-        // $('#vedio-panel').attr('src', vedioSrc);
-
+        $('#remove_post_image').attr('data-id',postId);  
     });
 
 
-    $(".remove_post_images").click(function(event){
+    $('body').delegate('.remove_post_images','click',function(){
         var post_id = $(this).data("id");
         var result = confirm("Are you sure?");
         if (result) 
@@ -602,7 +669,7 @@
                     if(response.status == 'success')
                     {
                         alert(response.message);
-                        window.location.href = "{{ route('user.dashboard') }}";
+                        page_refresh();
                     }
                     else
                     {
@@ -616,6 +683,7 @@
         }
         event.preventDefault();
     });
+
 
     $("#remove_post_image").click(function(e){
 
@@ -639,8 +707,13 @@
                 success: function(response){
                     if(response.status == 'success')
                     {
-                        alert(response.message);
-                        window.location.href = "{{ route('user.dashboard') }}";
+                       // alert(response.message);
+                        $("#myModal").modal('hide');
+                        $(document.body).removeClass("modal-open");
+                        $(".modal-backdrop").remove();
+                        
+                        page_refresh();
+
                     }
                     else
                     {
@@ -656,7 +729,12 @@
         e.preventDefault();
     });
 
-    
+    $(document).on('click','.vedio-modal',function(){
+        $('#vedio-panel').attr('src', '');
+        var vedioSrc = $(this).attr('data-url');
+        console.log(vedioSrc);
+        $('#vedio-panel').attr('src', vedioSrc);
+    });
     
     // Initialize Summernote
     $(function() {
@@ -717,7 +795,7 @@
       });
     });
 
-    $('input[name="images"]').fileuploader({
+    $('#file').fileuploader({
          extensions: ['jpg', 'jpeg', 'png', 'gif', 'bmp'],
          changeInput: ' ',
          theme: 'thumbnails',
