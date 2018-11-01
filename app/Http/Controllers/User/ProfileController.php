@@ -49,7 +49,7 @@ class ProfileController extends Controller
     	}
     	else
     	{
-    	    Flash::success('Post were not publish');
+    	    Flash::error('Post were not publish');
     		return redirect()->back();	
     	}
     }
@@ -171,5 +171,109 @@ class ProfileController extends Controller
         	Flash::error('Vedio cannot saved');
         	return redirect()->back();
         }
+    }
+
+    public function post_image_destroy($post_id)
+    {
+    	if(isset($post_id))
+    	{
+    		if(!is_null($post_id))
+    		{
+
+    			$postMeta = PostMeta::where('post_id',$post_id)->first();
+    			if(!empty($postMeta))
+    			{
+    				$images = explode(",", str_replace([']','['],"", $postMeta->meta_value));
+    				foreach ($images as  $image) 
+    				{
+    					$file_path =  $_SERVER['SCRIPT_FILENAME'];
+            			$file = str_replace("/index.php", "", $file_path)."/storage/posts/".trim($image,'"');
+           
+            			if(is_file($file))
+			            {
+			                unlink($file);
+			            }
+    				}
+	    			if($postMeta->forceDelete())
+	    			{
+	    				Post::find($post_id)->forceDelete();
+	    				return response()->json(['status' => 'success','message' => 'Image post deleted successfully']);
+	    			}
+    			}
+    			else
+    			{
+    				return response()->json(['status' => 'fail','message' => 'There is some problem while deleting post images']);
+    			}
+
+    		}
+    	}
+    }
+
+
+
+    public function post_image_remove(Request $request)
+    {
+    	$input = $request->all();
+
+
+    	if(isset($input['image']))
+    	{
+    		$image_cluster = explode("/", $input['image']);
+    		$image_name = $image_cluster[count($image_cluster)-1];
+    		$post_id = $input['post_id'];
+    		$postMeta = PostMeta::where('post_id',$post_id)->first();
+    		
+    		$images = explode(",", str_replace([']','['],"", $postMeta->meta_value));
+
+
+    		$files = [];
+    		for($i = 0; $i < count($images) ; $i++) 
+    		{
+    			if(trim($images[$i],'"') == $image_name)
+    			{
+    				$file_path =  $_SERVER['SCRIPT_FILENAME'];
+        			$file = str_replace("/index.php", "", $file_path)."/storage/posts/".$image_name;
+        			if(is_file($file))
+		            {
+		                unlink($file);
+		            }
+    			}
+    			else
+    			{
+    				array_push($files, trim($images[$i],'"'));
+    			}
+    			$i++;
+    		}
+
+    		if(empty($files))
+    		{
+    			if($postMeta->forceDelete())
+    			{
+    				Post::find($post_id)->forceDelete();
+	    			return response()->json(['status' => 'success','message' => 'Image deleted successfully']);
+    			}
+    			else
+    			{
+	    			return response()->json(['status' => 'fail','message' => 'There is some problem while deleting image']);
+    			}
+    		}
+    		else
+    		{
+    			$postMeta->meta_value = json_encode($files);
+    		}
+
+    		if($postMeta->save())
+    		{
+	    		return response()->json(['status' => 'success','message' => 'Image deleted successfully']);
+    		}
+    		else
+    		{
+	    		return response()->json(['status' => 'fail','message' => 'There is some problem while deleting image']);
+    		}
+    	}
+    	else
+    	{
+    	    return response()->json(['status' => 'fail','message' => 'There is some problem while deleting post images']);	
+    	}
     }
 }

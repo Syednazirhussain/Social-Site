@@ -57,13 +57,17 @@ class UserController extends Controller
             }
             elseif($type == 'images')
             {
-                $images_info = explode(",", str_replace([']','['],"", $meta->meta_value));
-                $image_post_id = $meta_clusters[0];
-                $images[$image_post_id] = $images_info;
+                if(!is_null($meta->meta_value))
+                {
+                    $images_info = explode(",", str_replace([']','['],"", $meta->meta_value));
+                    $image_post_id = $meta_clusters[1]."_".$meta_clusters[0];
+                    $images[$image_post_id] = $images_info;
+                }
             }
         }
 
         $posts = Post::all();
+
 
         $data = [
             'user'              => $user,

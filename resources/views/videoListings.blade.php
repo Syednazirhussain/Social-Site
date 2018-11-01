@@ -43,7 +43,6 @@
 
             </ul>
         </div>
-
     </div>
 
     <input type="hidden" name="status" id="status" value="{{ $status }}">
@@ -126,7 +125,6 @@
 
         </li>
         @endforeach
-
     </ul>
 
 

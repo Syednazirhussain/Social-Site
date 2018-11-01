@@ -115,6 +115,10 @@ Route::group(['middleware' => ['user.auth']], function () {
 
 	Route::post('user/post/article',['as' => 'fan.post.article' , 'uses' => 'User\ProfileController@post_article']);
 	Route::post('user/post/images',['as' => 'talent.post.images' , 'uses' => 'User\ProfileController@post_images']);
+	
+	Route::delete('user/post/images/{post_id}', ['as'=> 'talent.post.images.destroy', 'uses' => 'User\ProfileController@post_image_destroy']);
+	Route::post('user/post/image/remove', ['as'=> 'talent.post.image.remove', 'uses' => 'User\ProfileController@post_image_remove']);
+
 	Route::post('user/post/vedio',['as' => 'talent.post.vedio' , 'uses' => 'User\ProfileController@post_vedio']);
 
 });
