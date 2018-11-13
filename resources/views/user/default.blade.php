@@ -8,6 +8,7 @@
     <meta name="author" content="">
     <title>Home | Creatifny</title>
 
+
     <link href="{{ asset('/theme/css/bootstrap.min.css') }}" rel="stylesheet">
     <link href="{{ asset('/theme/css/font-awesome.min.css') }}" rel="stylesheet">
     <link href="{{ asset('/theme/css/animate.min.css') }}" rel="stylesheet">
@@ -32,7 +33,7 @@
                 <div class="row">
                     <div class="col-sm-6 col-xs-12">
                         <div class="top-number">
-                            <p><i class="fa fa-phone-square"></i> +0123 456 70 90</p>
+<!--                             <p><i class="fa fa-phone-square"></i> +0123 456 70 90</p> -->
                         </div>
                     </div>
                     <div class="col-sm-6 col-xs-12">
@@ -57,7 +58,7 @@
 
         <nav class="navbar navbar-inverse" role="banner">
             <div class="container">
-                <div class="navbar-header">
+                <div class="navbar-header m-t-0">
                     <button type="button" class="navbar-toggle" data-toggle="collapse" data-target=".navbar-collapse">
                         <span class="sr-only">Toggle navigation</span>
                         <span class="icon-bar"></span>
@@ -65,7 +66,7 @@
                         <span class="icon-bar"></span>
                     </button>
                     <a class="navbar-brand" href="{{ route('site.dashboard') }}">
-                        <img src="{{ asset('/theme/images/creatifny.png') }}" style="max-width: 115px;max-height: 52px" alt="logo">
+                        <img src="{{ asset('/theme/images/logo1.png') }}" style="max-width: 115px;max-height: 52px" alt="logo">
                     </a>
                 </div>
 
@@ -86,21 +87,23 @@
         </nav>
         <!--/nav-->
     </header>
+
     @yield('content')
-    <footer id="footer" class="midnight-blue">
+    
+    <footer id="footer" class="midnight-blue bg_clr">
         <div class="container">
-            <div class="row">
-                <div class="col-sm-6">
-                    &copy; 2013 <a target="_blank" href="http://shapebootstrap.net/" title="Free Twitter Bootstrap WordPress Themes and HTML templates">ShapeBootstrap</a>. All Rights Reserved.
+            <div class="row text-center">
+                <div class="col-sm-12">
+                    &copy; 2018 <a target="_blank" href="http://shapebootstrap.net/" title="Free Twitter Bootstrap WordPress Themes and HTML templates">Creatifny</a>. All Rights Reserved.
                 </div>
-                <div class="col-sm-6">
+                <!-- <div class="col-sm-6">
                     <ul class="pull-right">
-                        <li><a href="javascript:void(0)">Home</a></li>
-                        <li><a href="javascript:void(0)">About Us</a></li>
-                        <li><a href="javascript:void(0)">Faq</a></li>
-                        <li><a href="javascript:void(0)">Contact Us</a></li>
+                        <li><a href="#">Home</a></li>
+                        <li><a href="#">About Us</a></li>
+                        <li><a href="#">Faq</a></li>
+                        <li><a href="#">Contact Us</a></li>
                     </ul>
-                </div>
+                </div> -->
             </div>
         </div>
     </footer>

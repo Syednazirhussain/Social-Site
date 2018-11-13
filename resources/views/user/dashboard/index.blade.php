@@ -185,63 +185,22 @@
                             <div class="m-a-2 p-a-3">
                                 <div class="row">
                                     <div class="col-sm-12 col-md-12">
-                                        <form action="{{ route('fan.post.article') }}" method="POST" class="form-horizontal">
-                                            <input type="hidden" name="_token" value="{{ csrf_token() }}" >
+                                        <form id="post-article" method="POST" class="form-horizontal">
                                             <div class="form-group">
                                                 <label for="post_category">Select Post Type</label>
                                                 <select type="text" name="post_category" id="post_category" class="form-control">
-                                                    @if(isset($postCategories))
-                                                        @foreach($postCategories as $postCategory)
-                                                            @if($postCategory->name == 'Un categorized')
-                                                                <option value="{{ $postCategory->id }}" selected="selected">{{ $postCategory->name }}</option>
-                                                            @else
-                                                                <option value="{{ $postCategory->id }}">{{ $postCategory->name }}</option>
-                                                            @endif
-                                                        @endforeach
-                                                    @endif
                                                 </select>
                                             </div>
                                             <div class="form-group">
-                                            <textarea  id="post_article" class="custom_summernote" name="article" ></textarea>
+                                                <textarea id="post_article" class="custom_summernote" name="article" ></textarea>
                                             </div>    
                                             <input type="submit" class="btn btn-primary pull-right" style="background-color: #f3565d;color: #fff" value="Post">
                                         </form>
                                     </div>
                                     <div class="col-sm-12 col-md-12">
-                                        @if(isset($posts))
-                                            @foreach($posts as $post)
-                                                @if($post->post_type == 'text')
-                                                    <div class="row">
-                                                        <div class="post-area">
-                                                            <div class="blog-content">
-                                                                <div class="post-meta">
-                                                                    <p>By <a href="javascript:void(0)">{{ $post->user->name }}</a></p>
-                                                                    <p><i class="fa fa-clock-o"></i> <a href="javascript:void(0)">{{ \Carbon\Carbon::parse($post->created_at)->format('F d, Y') }}</a></p>
-                                                                    <p>
-                                                                        share:
-                                                                        @if(isset($additional_info->facebook) && $additional_info->facebook != '')
-                                                                            <a href="{{ $additional_info->facebook }}" class="fa fa-facebook"></a>
-                                                                        @endif
-                                                                        @if(isset($additional_info->instagram) && $additional_info->instagram != '')
-                                                                            <a href="{{ $additional_info->instagram }}" class="fa fa-instagram"></a>
-                                                                        @endif
-                                                                        @if(isset($additional_info->linkdin) && $additional_info->linkdin != '')
-                                                                            <a href="{{ $additional_info->linkdin }}" class="fa fa-linkedin"></a>
-                                                                        @endif
-                                                                        @if(isset($additional_info->twitter) && $additional_info->twitter != '')
-                                                                            <a href="{{ $additional_info->twitter }}" class="fa fa-twitter"></a>
-                                                                        @endif
-                                                                    </p>
-                                                                </div>
-                                                                <p>
-                                                                    <?php echo htmlspecialchars_decode($post->description,ENT_NOQUOTES); ?>
-                                                                </p>
-                                                            </div>
-                                                        </div>
-                                                    </div>
-                                                @endif 
-                                            @endforeach
-                                        @endif
+                                        <div class="row m-t-2">
+                                            <div class="post-area" id="posts"></div>
+                                        </div>
                                     </div>
                                 </div>
                             </div>
@@ -473,14 +432,98 @@
       }
     });
 
+
+    var post_id=0;
+    $(document).on('click','.edit_post',function(){
+        post_id = $(this).data('post-id');
+        $.get("{{ route('edit.single.post',['']) }}/"+post_id,function(response){
+            var post = response.post;
+            $('#post_article').summernote('code', post.description);
+        });
+    });
+
+    $(document).on('click','.delete_post',function(){
+        post_id = $(this).data('post-id');
+        if (confirm("Are you sure..?")) 
+        {
+            
+        }
+
+    });
+
+
+    $('#post-article').pxValidate({
+        ignore: ":hidden:not(#post_article),.note-editable.panel-body",
+        focusInvalid: false,
+        rules: {
+          'article': {
+            required: true
+          }
+        },
+        messages: {
+          'article': {
+            required: "Please enter some content"
+          }
+        }
+    });
+
+    $('#post-article').on('submit', function(e) {
+
+        e.preventDefault();
+
+        if( $(this).validate().form() ) 
+        {
+            if(post_id == 0)
+            {
+                var data = $(this).serializeArray();
+                $.post("{{ route('fan.post.article') }}",data,function(response){
+                    alert(response.message);
+                    $('#post_article').summernote('reset');
+                    page_refresh();
+                });
+            }
+            else
+            {
+                var data = $(this).serializeArray();
+                $.ajax({
+                    url: "{{ route('update.single.post',['']) }}/"+post_id,
+                    type: "PUT",
+                    dataType: "json",
+                    data : data
+                }).done(function(response){
+                    if(response.hasOwnProperty('errors'))
+                    {
+                        alert('There is some problem while updating post');
+                        $('#post_article').summernote('reset');
+                        page_refresh();     
+                    }
+                    else
+                    {
+                        alert(response.message);
+                        $('#post_article').summernote('reset');
+                        page_refresh();     
+                    }
+                });
+            }
+
+        }
+
+    });
+
+
     function page_refresh()
     {
         $.ajax({
             url: "{{ route('get.post.data') }}",
             type: "GET",
-            dataType: "json"
+            dataType: "json",
         }).done(function(response){
             var json =  response;
+
+            // console.log(json.posts);
+            // console.log(json.postCategories);
+            // console.log(json.additional_info);
+            
 
             // console.log(json.images);
             // console.log(Object.keys(json.images).length);
@@ -580,7 +623,93 @@
             //         console.log(key+"  ->   "+vedios[key].title);
             //     }
             // }
+
+            var postHtml = '';
+            var posts = json.posts;
+            var additional_info = json.additional_info;
+            if(Object.keys(posts).length > 0)
+            {
+                for (var key in posts) 
+                {
+                    if(posts[key].post_type == 'text')
+                    {
+                        postHtml += '<div class="list-group-item">';
+                        postHtml += '<div class="dropdown pull-xs-right m-l-1">';
+                        postHtml += '<button type="button" class="btn btn-xs btn-outline btn-outline-colorless dropdown-toggle" data-toggle="dropdown" aria-expanded="false"><i class="fa fa-reorder"></i></button>';
+                        postHtml += '<div class="dropdown-menu dropdown-menu-right">';
+                        postHtml += '<li>';
+                        postHtml += '<a href="javascript:void(0)" class="edit_post" data-post-id="'+posts[key].id+'" >';
+                        postHtml += '<i class="dropdown-icon fa fa-pencil"></i>&nbsp;&nbsp;Edit';
+                        postHtml += '</a>';
+                        postHtml += '</li>';
+                        postHtml += '<li>';
+                        postHtml += '<a href="javascript:void(0)" class="delete_post" data-post-id="'+posts[key].id+'" >';
+                        postHtml += '<i class="dropdown-icon fa fa-times text-danger"></i>&nbsp;&nbsp;Remove';
+                        postHtml += '</a>';
+                        postHtml += '</li>';
+                        postHtml += '</div>';
+                        postHtml += '</div>';
+                        postHtml += '<div class="blog-content">';
+                        postHtml += '<div class="post-meta">';
+                        postHtml += '<p>By <a href="javascript:void(0)">'+posts[key].user_name+'</a></p>';
+                        postHtml += '<p><i class="fa fa-clock-o"></i> <a href="javascript:void(0)">'+new Date(posts[key].created_at).toDateString("yyyy-MM-dd")+'</a></p>';
+                        postHtml += '<p>share:';
+                        if(additional_info.hasOwnProperty('facebook'))
+                        {
+                            postHtml += '<a href="'+additional_info.facebook+'" class="fa fa-facebook"></a>';
+                        }
+                        if(additional_info.hasOwnProperty('instagram'))
+                        {
+                            postHtml += '<a href="'+additional_info.instagram+'" class="fa fa-instagram"></a>';
+                        }
+                        if(additional_info.hasOwnProperty('linkdin'))
+                        {
+                            postHtml += '<a href="'+additional_info.linkdin+'" class="fa fa-linkedin"></a>';
+                        }
+                        if(additional_info.hasOwnProperty('twitter'))
+                        {
+                            postHtml += '<a href="'+additional_info.twitter+'" class="fa fa-twitter"></a>';
+                        }
+                        postHtml += '</p>';
+                        postHtml += '<p>';
+                        postHtml += strip_html_tags(posts[key].description)
+                        postHtml += '</p>';
+                        postHtml += '</div>';
+                        postHtml += '</div>';
+                        postHtml += '</div>';
+                    }
+                }
+            }
+            $('#posts').html(postHtml);
+
+
+            var postCategoryHtml = '';
+            var postCategory = json.postCategories;
+            if(Object.keys(postCategory).length > 0)
+            {
+                for (var key in postCategory) 
+                {
+                    if(postCategory[key].name == 'Un categorized')
+                    {
+                        $('#post_category').append('<option value='+postCategory[key].id+' selected>' + postCategory[key].name + '</option>');
+                    }
+                    else
+                    {
+                        $('#post_category').append('<option value='+postCategory[key].id+'>' + postCategory[key].name + '</option>');
+                    }
+                }
+            }
+
         });
+    }
+
+    function strip_html_tags(str)
+    {
+       if ((str===null) || (str===''))
+           return false;
+      else
+       str = str.toString();
+      return str.replace(/<[^>]*>/g, '');
     }
 
     page_refresh();
@@ -642,7 +771,8 @@
         });
 
         e.preventDefault();
-    });     
+    }); 
+  
 
     $('body').delegate('.img-gallery','click',function(){
 
@@ -854,10 +984,6 @@
             });
          },
     });
-
-
-
-
 </script>
 
 @endsection

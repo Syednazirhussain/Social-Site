@@ -138,7 +138,7 @@ class UserController extends Controller
             if( $subcribe == true && $additional == true )
             {
                 Flash::success('User register successfully.');
-                return redirect()->route('user.login');                
+                return redirect()->route('user.dashboard');                
             }
             else
             {

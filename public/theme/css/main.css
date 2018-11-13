@@ -2319,7 +2319,7 @@ shortcodes page css
     padding-top: 30px;
     padding-bottom: 30px;
     color: #fff;
-    background: #2e2e2e;
+    background: #000000;
     font-weight: 300;
 }
 
@@ -2341,3 +2341,62 @@ shortcodes page css
     display: inline-block;
     margin-left: 15px;
 }
+
+
+/******************** Custom CSS*****************/
+
+
+.head_font{
+    font-size: 47px;
+}
+
+.btn_font{
+    font-size: 25px;
+}
+
+.bg_clr{
+    color: #fff;
+}
+
+.unfolow_btn{
+    background-color:#cccc;
+}
+
+.reset_password{
+    font-size: 36px;
+}
+
+.pass_margin{
+    margin-top: 0px;
+}
+
+.space-20{
+    height: 20px;
+}
+
+.logo_width{
+    width: 200px;
+}
+
+.more_fans_clr{
+color: #fff;
+}
+
+.margin_icons{
+margin: 8px;
+}
+
+.display_flex{
+    display: flex;
+}
+
+.bg_clr{
+    background-color:#151515 !important;
+}
+
+.heading_clr{
+    color: #fff !important;
+}
+
+
+/*****************************************************/

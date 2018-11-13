@@ -28,6 +28,8 @@ class ProfileController extends Controller
             'article' => 'required'
         ]);
 
+
+
     	$user_id = Auth::user()->id;
     	$post_category_id = $request->input('post_category');
 
@@ -44,14 +46,79 @@ class ProfileController extends Controller
     	$post->status = 'active';
     	if($post->save())
     	{
-    		Flash::success('Post publish successfully');
-    		return redirect()->back();
+    		//Flash::success('Post publish successfully');
+    		return response()->json([
+                'status'    => 'success',
+                'message'   => 'Post publish successfully'
+            ]);
     	}
     	else
     	{
-    	    Flash::error('Post were not publish');
-    		return redirect()->back();	
+    	    //Flash::error('Post were not publish');
+    		return response()->json([
+                'status'    => 'success',
+                'message'   => 'Post were not publish'
+            ]);	
     	}
+    }
+
+    public function edit_post($post_id)
+    {
+        if(!is_null($post_id))
+        {
+            $post = Post::find($post_id);
+            $data = [
+                'post'  => $post->toArray()
+            ];
+            return response()->json($data);
+        }
+    }
+
+    public function update_post($post_id,Request $request)
+    {
+        $validator = \Validator::make($request->all(), [
+            'post_category' => 'required',
+            'article' => 'required'
+        ]);
+
+        if ($validator->fails())
+        {
+            return response()->json(['errors'=>$validator->errors()->all()]);
+        }
+        else
+        {
+            if(!is_null($post_id))
+            {
+                $input = $request->all();
+                if(Post::find($post_id)->update(['post_category_id' => $input['post_category'],'description' => $input['article']]))
+                {
+                    return response()->json([
+                        'status'    => 'success',
+                        'message'   => 'Post updated successfully'
+                    ]);
+                }
+                else
+                {
+                    return response()->json([
+                        'status'    => 'fail',
+                        'message'   => 'Post cannot updated successfully'
+                    ]);
+                }
+            }
+            else
+            {
+                return response()->json([
+                    'errors'  => [
+                                    'Post Id cannot found'
+                                 ]
+                ]);
+            }
+        }
+    }
+
+    public function delete_post($post_id)
+    {
+        print_r($post_id);exit;
     }
 
     public function get_post_data()
@@ -118,11 +185,41 @@ class ProfileController extends Controller
             }
         }
 
+        $user_id = Auth::user()->id;
+        $additional_info = AdditionalInfo::where('user_id',$user_id)->first()->toArray();
+        $postCategories = PostCategory::all()->toArray();
+        $posts = Post::where('post_type','text')->orderBy('created_at', 'desc')->get();
+        
+        $post_data = [];
+        $index = 0;
+        foreach ($posts as $post) 
+        {
+            $post_data[$index] = [
+                                    'id' => $post->id,
+                                    'user_id' => $post->user_id,
+                                    'user_name' => $post->user->name,
+                                    'post_category_id' => $post->post_category_id,
+                                    'post_category_name' => $post->postCategory->name,
+                                    'post_type' => $post->post_type,
+                                    'title' => $post->title,
+                                    'description' => utf8_encode($post->description),
+                                    'image' => $post->image,
+                                    'status' => $post->status,
+                                    'created_at' => utf8_encode($post->created_at),
+                                ];
+            $index++; 
+        }
+
         $data = [
-            'images'    => $images,
-            'vedios'    => $vedios
+            'posts'             => $post_data,
+            'postCategories'    => $postCategories,
+            'additional_info'   => $additional_info,
+            'images'            => $images,
+            'vedios'            => $vedios
         ];
-        return response()->json($data);
+
+
+        return response()->json($data, 200, ['Content-type'=> 'application/json; charset=utf-8'], JSON_UNESCAPED_UNICODE);
     }
 
     public function post_images(Request $request)
