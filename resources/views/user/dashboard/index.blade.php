@@ -180,7 +180,7 @@
                         </li>
                     </ul>
                     <div class="tab-content"> 
-                        @include('flash::message')    
+                        <div id="msg"></div>    
                         <div class="tab-pane active" id="article">
                             <div class="m-a-2 p-a-3">
                                 <div class="row">
@@ -206,7 +206,7 @@
                             </div>
                         </div>
                         <div class="tab-pane" id="overview">
-                            <?php echo htmlspecialchars_decode($additional_info->about_us,ENT_NOQUOTES); ?>
+                            <?php //echo htmlspecialchars_decode($additional_info->about_us,ENT_NOQUOTES); ?>
                         </div>
                         <div class="tab-pane" id="photo">
                             <div class="m-a-2">
@@ -446,7 +446,40 @@
         post_id = $(this).data('post-id');
         if (confirm("Are you sure..?")) 
         {
-            
+            $.ajax({
+                url: "{{ route('delete.single.post',['']) }}/"+post_id,
+                type: "DELETE"
+            }).done(function(response){
+                if(response.hasOwnProperty('errors'))
+                {
+                    var html = errorMessage('There is some problem while deleting post');
+                    $('#msg').html(html);
+                        setTimeout(function(){
+                            $('#msg').html('');                          
+                    }, 3000);
+                }
+                else
+                {
+                    if(response.status == 'success')
+                    {
+                        var html = errorMessage(response.message);
+                        $('#msg').html(html);
+                            setTimeout(function(){
+                                $('#msg').html('');                          
+                        }, 3000);
+                        page_refresh();
+                    }
+                    else
+                    {
+                        var html = errorMessage(response.message);
+                        $('#msg').html(html);
+                            setTimeout(function(){
+                                $('#msg').html('');                          
+                        }, 3000);
+                        page_refresh();
+                    }
+                }
+            });
         }
 
     });
@@ -477,7 +510,22 @@
             {
                 var data = $(this).serializeArray();
                 $.post("{{ route('fan.post.article') }}",data,function(response){
-                    alert(response.message);
+                    if(response.status == 'success')
+                    {
+                        var html = successMessage(response.message);
+                        $('#msg').html(html);
+                        setTimeout(function(){
+                            $('#msg').html('');                          
+                        }, 3000);
+                    }
+                    else
+                    {
+                        var html = errorMessage(response.message);
+                        $('#msg').html(html);
+                        setTimeout(function(){
+                            $('#msg').html('');                          
+                        }, 3000);
+                    }
                     $('#post_article').summernote('reset');
                     page_refresh();
                 });
@@ -493,13 +541,21 @@
                 }).done(function(response){
                     if(response.hasOwnProperty('errors'))
                     {
-                        alert('There is some problem while updating post');
+                        var html = errorMessage('There is some problem while updating post');
+                        $('#msg').html(html);
+                        setTimeout(function(){
+                            $('#msg').html('');                          
+                        }, 3000);
                         $('#post_article').summernote('reset');
                         page_refresh();     
                     }
                     else
                     {
-                        alert(response.message);
+                        var html = successMessage(response.message);
+                        $('#msg').html(html);
+                        setTimeout(function(){
+                            $('#msg').html('');                          
+                        }, 3000);
                         $('#post_article').summernote('reset');
                         page_refresh();     
                     }
@@ -681,6 +737,11 @@
                 }
             }
             $('#posts').html(postHtml);
+
+            if(additional_info.hasOwnProperty('about_us'))
+            {
+                $('#overview').text(strip_html_tags(additional_info.about_us));
+            }
 
 
             var postCategoryHtml = '';
@@ -865,7 +926,25 @@
         console.log(vedioSrc);
         $('#vedio-panel').attr('src', vedioSrc);
     });
+
+    function errorMessage(message)
+    {
+        var html = '<div class="alert alert-success alert-dismissable" style="text-align: center;">';
+        html += '<a href="#" class="close" data-dismiss="alert" aria-label="close">&times;</a>';
+        html += '<h4 class="m-t-0 m-b-0"><strong><i class="fa fa-trash fa-lg"></i>&nbsp;&nbsp;'+message+'</strong></h4>';
+        html += '</div>';
+        return html;
+    }
     
+    function successMessage(message)
+    {
+        var html = '<div class="alert alert-success alert-dismissable" style="text-align: center;">';
+        html += '<a href="#" class="close" data-dismiss="alert" aria-label="close">&times;</a>';
+        html += '<h4 class="m-t-0 m-b-0"><strong><i class="fa fa-check-circle fa-lg"></i>&nbsp;&nbsp;'+message+'</strong></h4>';
+        html += '</div>';
+        return html;
+    }
+
     // Initialize Summernote
     $(function() {
       $('#post_article').summernote({

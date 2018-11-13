@@ -118,7 +118,31 @@ class ProfileController extends Controller
 
     public function delete_post($post_id)
     {
-        print_r($post_id);exit;
+        if(!is_null($post_id))
+        {
+            if(Post::find($post_id)->delete())
+            {
+                return response()->json([
+                    'status'    => 'success',
+                    'message'   => 'Post were removed successfully'
+                ]);
+            }
+            else
+            {
+                return response()->json([
+                    'status'    => 'fail',
+                    'message'   => 'Post were not be removed'
+                ]);
+            }
+        }
+        else
+        {
+            return response()->json([
+                'errors'  => [
+                                'Post Id cannot found'
+                             ]
+            ]);
+        }
     }
 
     public function get_post_data()
