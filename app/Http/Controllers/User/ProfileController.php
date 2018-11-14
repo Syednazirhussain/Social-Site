@@ -18,6 +18,7 @@ use App\Models\Admin\AdditionalInfo;
 use App\Models\Admin\Post;
 use App\Models\Admin\PostCategory;
 use App\Models\Admin\PostMeta;
+use App\Models\Admin\Follow;
 
 class ProfileController extends Controller
 {
@@ -222,6 +223,7 @@ class ProfileController extends Controller
                                     'id' => $post->id,
                                     'user_id' => $post->user_id,
                                     'user_name' => $post->user->name,
+                                    'user_plan_code' => $post->user->plan_code,
                                     'post_category_id' => $post->post_category_id,
                                     'post_category_name' => $post->postCategory->name,
                                     'post_type' => $post->post_type,
@@ -399,8 +401,6 @@ class ProfileController extends Controller
     	}
     }
 
-
-
     public function post_image_remove(Request $request)
     {
     	$input = $request->all();
@@ -484,6 +484,44 @@ class ProfileController extends Controller
             ];
     	    return response()->json($response);	
     	}
+    }
+
+    public function talent_listing()
+    {
+
+        $users = User::all();
+        $follows = Follow::all();
+
+        $data = [
+            'users'     => $users,
+            'follows'    => $follows
+        ];
+
+        return view('user.dashboard.talent_listing',$data);
+    }
+
+    public function follow(Request $request)
+    {
+        $input = $request->all();
+        
+        if(Auth::user()->id == $input['follower_id'])
+        {
+            $follow = new Follow;
+            $follow->follower_id = $input['follower_id'];
+            $follow->followed_id = $input['followed_id'];
+            $follow->save();
+        }
+
+        return redirect()->back();
+    }
+
+    public function unfollow(Request $request)
+    {
+        if(Auth::user()->id == $input['follower_id'])
+        {
+            
+        }
+        dd( $request->all() );
     }
 
 

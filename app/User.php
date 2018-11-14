@@ -49,7 +49,7 @@ class User extends Authenticatable
      **/
     public function additional_info()
     {
-        return $this->belongsTo(\App\Models\Admin\AdditionalInfo::class);
+        return $this->belongsTo(\App\Models\Admin\AdditionalInfo::class,'id','user_id');
     }
 
     /**
@@ -59,4 +59,14 @@ class User extends Authenticatable
     {
         return $this->belongsTo(\App\Models\Admin\MemberShipPlan::class,'plan_code','id');
     }
+
+    /**
+     * @return \Illuminate\Database\Eloquent\Relations\BelongsTo
+    **/
+    public function follow()
+    {
+        return $this->belongsTo(\App\Models\Admin\MemberShipPlan::class,'id','follower_id','followed_id');
+    }
+
+
 }

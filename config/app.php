@@ -181,7 +181,8 @@ return [
         Laracasts\Flash\FlashServiceProvider::class,
         Prettus\Repository\Providers\RepositoryServiceProvider::class,
         \InfyOm\Generator\InfyOmGeneratorServiceProvider::class,
-        \InfyOm\AdminLTETemplates\AdminLTETemplatesServiceProvider::class, 
+        \InfyOm\AdminLTETemplates\AdminLTETemplatesServiceProvider::class,
+        Srmklive\PayPal\Providers\PayPalServiceProvider::class 
 
     ],
 
@@ -234,6 +235,7 @@ return [
         'Form'      => Collective\Html\FormFacade::class,
         'Html'      => Collective\Html\HtmlFacade::class,
         'Flash'     => Laracasts\Flash\Flash::class,
+        'PayPal' => Srmklive\PayPal\Facades\PayPal::class
     ],
 
 ];

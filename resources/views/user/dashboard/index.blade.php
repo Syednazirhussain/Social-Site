@@ -94,6 +94,58 @@
     }
 </style>
 
+<style>
+        
+    #wrap {
+        width: 1100px;
+        margin: 0 auto;
+        }
+        
+    #external-events {
+        float: left;
+        width: 150px;
+        padding: 0 10px;
+        text-align: left;
+        }
+        
+    #external-events h4 {
+        font-size: 16px;
+        margin-top: 0;
+        padding-top: 1em;
+        }
+        
+    .external-event { /* try to mimick the look of a real event */
+        margin: 10px 0;
+        padding: 2px 4px;
+        background: #3366CC;
+        color: #fff;
+        font-size: .85em;
+        cursor: pointer;
+        }
+        
+    #external-events p {
+        margin: 1.5em 0;
+        font-size: 11px;
+        color: #666;
+        }
+        
+    #external-events p input {
+        margin: 0;
+        vertical-align: middle;
+        }
+
+    #calendar {/*      float: right; */
+        margin: 0 auto;
+        width: 100%;
+        background-color: #FFFFFF;
+          border-radius: 6px;
+        box-shadow: 0 1px 2px #C3C3C3;
+        -webkit-box-shadow: 0px 0px 21px 2px rgba(0,0,0,0.18);
+        -moz-box-shadow: 0px 0px 21px 2px rgba(0,0,0,0.18);
+        box-shadow: 0px 0px 21px 2px rgba(0,0,0,0.18);
+        }
+</style>
+
 @endsection
 
 
@@ -133,11 +185,10 @@
                     </div>
                 </div>
 
-                <div class="pad_left">
-                    
+<!--                 <div class="pad_left">
                     <button class="btn btn-default btn_clr"><i class="fa fa-share"></i>&nbsp;Share</button>
-                    <button class="btn btn-default btn_clr">Become A Fan</button>
-                </div>
+                    <a href="javascript:void(0)" class="btn btn-default btn_clr">Become An Artist</a>
+                </div> -->
 
                 <div class="about_margin pad_left">
                     <div class="card" style="width: 30rem;">
@@ -168,22 +219,30 @@
                                 Overview
                             </a>
                         </li>
-                        <li>
-                            <a href="#photo" data-toggle="tab">
-                                Photos
-                            </a>
-                        </li>
-                        <li>
-                            <a href="#video" data-toggle="tab">
-                                Videos
-                            </a>
-                        </li>
+                        @hasanyrole('Talents|Web Master|Admin')
+                            <li>
+                                <a href="#photo" data-toggle="tab">
+                                    Photos
+                                </a>
+                            </li>
+                            <li>
+                                <a href="#video" data-toggle="tab">
+                                    Videos
+                                </a>
+                            </li>
+                            <li>
+                                <a href="#event" data-toggle="tab">
+                                    Events
+                                </a>
+                            </li>
+                        @endhasanyrole
                     </ul>
                     <div class="tab-content"> 
                         <div id="msg"></div>    
                         <div class="tab-pane active" id="article">
                             <div class="m-a-2 p-a-3">
                                 <div class="row">
+                                    @hasanyrole('Talents|Web Master|Admin')
                                     <div class="col-sm-12 col-md-12">
                                         <form id="post-article" method="POST" class="form-horizontal">
                                             <div class="form-group">
@@ -197,6 +256,7 @@
                                             <input type="submit" class="btn btn-primary pull-right" style="background-color: #f3565d;color: #fff" value="Post">
                                         </form>
                                     </div>
+                                    @endhasanyrole
                                     <div class="col-sm-12 col-md-12">
                                         <div class="row m-t-2">
                                             <div class="post-area" id="posts"></div>
@@ -206,7 +266,7 @@
                             </div>
                         </div>
                         <div class="tab-pane" id="overview">
-                            <?php //echo htmlspecialchars_decode($additional_info->about_us,ENT_NOQUOTES); ?>
+
                         </div>
                         <div class="tab-pane" id="photo">
                             <div class="m-a-2">
@@ -260,6 +320,11 @@
                                 </div>
                             </div>
                         </div>
+                        <div class="tab-pane" id="event">
+
+                            <div id='calendar'></div>                                
+
+                        </div>
                     </div>
                 </div>
             </div>
@@ -310,20 +375,7 @@
         <div class="col-md-3">
             <div class="col-md-12">
                 <h5>Social Links</h5>
-                <div class="widget social_icon">
-                    @if(isset($additional_info->facebook) && $additional_info->facebook != '')
-                        <a href="{{ $additional_info->facebook }}" class="fa fa-facebook"></a>
-                    @endif
-                    @if(isset($additional_info->instagram) && $additional_info->instagram != '')
-                        <a href="{{ $additional_info->instagram }}" class="fa fa-instagram"></a>
-                    @endif
-                    @if(isset($additional_info->linkdin) && $additional_info->linkdin != '')
-                        <a href="{{ $additional_info->linkdin }}" class="fa fa-linkedin"></a>
-                    @endif
-                    @if(isset($additional_info->twitter) && $additional_info->twitter != '')
-                        <a href="{{ $additional_info->twitter }}" class="fa fa-twitter"></a>
-                    @endif
-                </div>
+                <div class="widget social_icon" id="social_links"></div>
             </div>
 
             <div class="col-md-12">
@@ -417,21 +469,32 @@
 </div>
 
 
-
+<!--       <span id="loader">
+        <i class="fa fa-spinner fa-3x fa-spin"></i>
+      </span> -->
 
 @endsection
 
 
 @section('js')
 
+<!-- Go to www.addthis.com/dashboard to customize your tools -->
+<script type="text/javascript" src="//s7.addthis.com/js/300/addthis_widget.js#pubid=ra-5bebbdba767f5386"></script>
+
+
+
 <script type="text/javascript">
+
+    //$('.loader').css("visibility", "hidden");
+
+    var user_plan_code = "@if(isset(Auth::user()->plan_code)){{ Auth::user()->plan_code }}@endif";
+
 
     $.ajaxSetup({
       headers: {
         'X-CSRF-TOKEN': $('meta[name="csrf-token"]').attr('content')
       }
     });
-
 
     var post_id=0;
     $(document).on('click','.edit_post',function(){
@@ -481,7 +544,6 @@
                 }
             });
         }
-
     });
 
 
@@ -563,206 +625,7 @@
             }
 
         }
-
     });
-
-
-    function page_refresh()
-    {
-        $.ajax({
-            url: "{{ route('get.post.data') }}",
-            type: "GET",
-            dataType: "json",
-        }).done(function(response){
-            var json =  response;
-
-            // console.log(json.posts);
-            // console.log(json.postCategories);
-            // console.log(json.additional_info);
-            
-
-            // console.log(json.images);
-            // console.log(Object.keys(json.images).length);
-
-            var imagesHtml = '';
-            var post_images_path = "{{ asset('storage/posts/') }}";
-
-            if(Object.keys(json.images).length > 0)
-            {
-                var images = json.images;
-                for (var key in images) 
-                {
-                    if (images.hasOwnProperty(key)) 
-                    {
-                        var keyArr = key.split('_');
-
-                        imagesHtml += '<div class="row">';
-                        imagesHtml += '<div class="col-md-12">';
-                        /* start loop */
-                        imagesHtml += '<div class="list-group b-a-0">';
-                        imagesHtml += '<div class="list-group-item">';
-                        imagesHtml += '<div class="dropdown pull-xs-right m-l-1">';
-                        imagesHtml += '<button type="button" class="btn btn-xs btn-outline btn-outline-colorless dropdown-toggle" data-toggle="dropdown" aria-expanded="false">';
-                        imagesHtml += '<i class="fa fa-reorder"></i>';
-                        imagesHtml += '</button>';
-                        imagesHtml += '<div class="dropdown-menu dropdown-menu-right">';
-                        imagesHtml += '<li>';
-                        imagesHtml += '<a href="javascript:void(0)" class="remove_post_images" data-id="'+keyArr[1]+'">';
-                        imagesHtml += '<i class="dropdown-icon fa fa-times text-danger"></i>&nbsp;&nbsp;Remove';
-                        imagesHtml += '</a>';
-                        imagesHtml += '</li>';
-                        imagesHtml += '</div>';
-                        imagesHtml += '</div>';
-                        imagesHtml += '<div class="widget blog_gallery" style="display: inline-flex;">';
-                        for(var i = 0 ; i < images[key].length ; i++)
-                        {
-                            var src = post_images_path+"/"+images[key][i].replace(/['"]+/g, '');
-                            imagesHtml += '<a href="javascript:void(0)" class="img-gallery" data-id="'+keyArr[1]+'"  data-toggle="modal"  data-target="#myModal">';
-                            imagesHtml += '<img src="'+src+'" class="img-thumbnail img-custom">';
-                            imagesHtml += '</a>';
-                        }
-                        imagesHtml += '</div>';
-                        imagesHtml += '<p class="list-group-item-text text-muted font-size-11">Posted on '+new Date(keyArr[0]).toDateString("yyyy-MM-dd")+'</p>';
-                        imagesHtml += '</div>';
-                        imagesHtml += '</div>';
-                        /* end loop */
-                        imagesHtml += '</div>';
-                        imagesHtml += '</div>'; 
-                    }
-                }
-            }
-            $('#post-images').html(imagesHtml);
-            // console.log(key+"  ->   "+images[key][0]);
-            // console.log("id "+ keyArr[1]);
-            // var date = new Date(keyArr[0]).toDateString("yyyy-MM-dd");
-            // console.log("Date "+date);
-
-            var vedioHtml = '';
-            var vedios = json.vedios;
-            if(Object.keys(vedios).length > 0)
-            {
-                for (var key in vedios) 
-                {
-                    vedioHtml += '<ul class="row video-list-thumbs " style="margin: 0; padding: 0">';
-                    if (vedios.hasOwnProperty(key)) 
-                    {
-                        vedioHtml += '<li class="col-sm-6 col-md-4" style="padding: 10px 10px;">';
-                        vedioHtml += '<a href="javascript:void(0)">';
-
-                        if(vedios[key].vedio_type == 'youtube')
-                        {
-                            vedioHtml += '<img src="'+vedios[key].image_url+'" data-toggle="modal" data-target="#vedioModal" data-url="'+vedios[key].vedio_url+'" class="vedio-modal" style="height: 190px; width: 100%;">';
-                        }
-                        else if(vedios[key].vedio_type == 'dailymotion')
-                        {
-                            vedioHtml += '<img src="'+vedios[key].image_url+'" data-toggle="modal" data-target="#vedioModal" data-url="'+vedios[key].vedio_url+'"  class="vedio-modal" style="height: 190px; width: 100%;">';
-                        }
-                        else if(vedios[key].vedio_type == 'vimeo')
-                        {
-                            vedioHtml += '<img src="'+vedios[key].image_url+'" data-toggle="modal" data-target="#vedioModal" data-url="'+vedios[key].vedio_url+'" class="vedio-modal" style="height: 190px; width: 100%;">';
-                        }                                                        
-                        vedioHtml += '<h5 class="business-listing" style="margin-bottom: 0;">'+vedios[key].title+'</h5>';                                 
-                        vedioHtml += '<p>'+vedios[key].vedio_type.charAt(0).toUpperCase()+vedios[key].vedio_type.slice(1)+'</p>';                                 
-                        vedioHtml += '</a>';
-                        vedioHtml += '<span class="glyphicon glyphicon-play-circle">&nbsp;</span>';
-                        vedioHtml += '</li>';
-                    }
-                    vedioHtml += '</ul>';
-                }               
-            }
-            $('#post-vedios').html(vedioHtml);
-            // console.log(json.vedios);
-            // for (var key in vedios) 
-            // {
-            //     if (vedios.hasOwnProperty(key)) 
-            //     {
-            //         console.log(key+"  ->   "+vedios[key].title);
-            //     }
-            // }
-
-            var postHtml = '';
-            var posts = json.posts;
-            var additional_info = json.additional_info;
-            if(Object.keys(posts).length > 0)
-            {
-                for (var key in posts) 
-                {
-                    if(posts[key].post_type == 'text')
-                    {
-                        postHtml += '<div class="list-group-item">';
-                        postHtml += '<div class="dropdown pull-xs-right m-l-1">';
-                        postHtml += '<button type="button" class="btn btn-xs btn-outline btn-outline-colorless dropdown-toggle" data-toggle="dropdown" aria-expanded="false"><i class="fa fa-reorder"></i></button>';
-                        postHtml += '<div class="dropdown-menu dropdown-menu-right">';
-                        postHtml += '<li>';
-                        postHtml += '<a href="javascript:void(0)" class="edit_post" data-post-id="'+posts[key].id+'" >';
-                        postHtml += '<i class="dropdown-icon fa fa-pencil"></i>&nbsp;&nbsp;Edit';
-                        postHtml += '</a>';
-                        postHtml += '</li>';
-                        postHtml += '<li>';
-                        postHtml += '<a href="javascript:void(0)" class="delete_post" data-post-id="'+posts[key].id+'" >';
-                        postHtml += '<i class="dropdown-icon fa fa-times text-danger"></i>&nbsp;&nbsp;Remove';
-                        postHtml += '</a>';
-                        postHtml += '</li>';
-                        postHtml += '</div>';
-                        postHtml += '</div>';
-                        postHtml += '<div class="blog-content">';
-                        postHtml += '<div class="post-meta">';
-                        postHtml += '<p>By <a href="javascript:void(0)">'+posts[key].user_name+'</a></p>';
-                        postHtml += '<p><i class="fa fa-clock-o"></i> <a href="javascript:void(0)">'+new Date(posts[key].created_at).toDateString("yyyy-MM-dd")+'</a></p>';
-                        postHtml += '<p>share:';
-                        if(additional_info.hasOwnProperty('facebook'))
-                        {
-                            postHtml += '<a href="'+additional_info.facebook+'" class="fa fa-facebook"></a>';
-                        }
-                        if(additional_info.hasOwnProperty('instagram'))
-                        {
-                            postHtml += '<a href="'+additional_info.instagram+'" class="fa fa-instagram"></a>';
-                        }
-                        if(additional_info.hasOwnProperty('linkdin'))
-                        {
-                            postHtml += '<a href="'+additional_info.linkdin+'" class="fa fa-linkedin"></a>';
-                        }
-                        if(additional_info.hasOwnProperty('twitter'))
-                        {
-                            postHtml += '<a href="'+additional_info.twitter+'" class="fa fa-twitter"></a>';
-                        }
-                        postHtml += '</p>';
-                        postHtml += '<p>';
-                        postHtml += strip_html_tags(posts[key].description)
-                        postHtml += '</p>';
-                        postHtml += '</div>';
-                        postHtml += '</div>';
-                        postHtml += '</div>';
-                    }
-                }
-            }
-            $('#posts').html(postHtml);
-
-            if(additional_info.hasOwnProperty('about_us'))
-            {
-                $('#overview').text(strip_html_tags(additional_info.about_us));
-            }
-
-
-            var postCategoryHtml = '';
-            var postCategory = json.postCategories;
-            if(Object.keys(postCategory).length > 0)
-            {
-                for (var key in postCategory) 
-                {
-                    if(postCategory[key].name == 'Un categorized')
-                    {
-                        $('#post_category').append('<option value='+postCategory[key].id+' selected>' + postCategory[key].name + '</option>');
-                    }
-                    else
-                    {
-                        $('#post_category').append('<option value='+postCategory[key].id+'>' + postCategory[key].name + '</option>');
-                    }
-                }
-            }
-
-        });
-    }
 
     function strip_html_tags(str)
     {
@@ -856,19 +719,20 @@
                 url: "{{ route('talent.post.images.destroy',['']) }}/"+post_id,
                 type: "DELETE",
                 dataType: "json",
-                success: function(response){
-                    if(response.status == 'success')
-                    {
-                        alert(response.message);
-                        page_refresh();
-                    }
-                    else
-                    {
-                        alert(response.message);
-                    }
-                },
-                error: function(error){
-                    console.log(error);
+                beforeSend: function(){
+                    $(this).prop('disabled', true);
+                }
+            }).done(function(response){
+
+                $('.loader').css("visibility", "hidden");
+                if(response.status == 'success')
+                {
+                    alert(response.message);
+                    page_refresh();
+                }
+                else
+                {
+                    alert(response.message);
                 }
             });
         }
@@ -927,6 +791,247 @@
         $('#vedio-panel').attr('src', vedioSrc);
     });
 
+    function page_refresh()
+    {
+        $.ajax({
+            url: "{{ route('get.post.data') }}",
+            type: "GET",
+            dataType: "json",
+        }).done(function(response){
+            var json =  response;
+
+            //console.log(json.posts);
+            // console.log(json.postCategories);
+            //console.log(json.additional_info);
+            
+
+            // console.log(json.images);
+            // console.log(Object.keys(json.images).length);
+
+            var imagesHtml = '';
+            var post_images_path = "{{ asset('storage/posts/') }}";
+
+            if(Object.keys(json.images).length > 0)
+            {
+                var images = json.images;
+                for (var key in images) 
+                {
+                    if (images.hasOwnProperty(key)) 
+                    {
+                        var keyArr = key.split('_');
+
+                        imagesHtml += '<div class="row">';
+                        imagesHtml += '<div class="col-md-12">';
+                        /* start loop */
+                        imagesHtml += '<div class="list-group b-a-0">';
+                        imagesHtml += '<div class="list-group-item">';
+                        imagesHtml += '<div class="dropdown pull-xs-right m-l-1">';
+                        imagesHtml += '<button type="button" class="btn btn-xs btn-outline btn-outline-colorless dropdown-toggle" data-toggle="dropdown" aria-expanded="false">';
+                        imagesHtml += '<i class="fa fa-reorder"></i>';
+                        imagesHtml += '</button>';
+                        //
+                        imagesHtml += '<div class="dropdown-menu dropdown-menu-right">';
+                        imagesHtml += '<li>';
+                        imagesHtml += '<a href="javascript:void(0)" class="remove_post_images" data-id="'+keyArr[1]+'">';
+                        imagesHtml += '<i class="dropdown-icon fa fa-times text-danger"></i>&nbsp;&nbsp;Remove';
+                        imagesHtml += '</a>';
+                        imagesHtml += '</li>';
+                        imagesHtml += '</div>';
+
+                        // imagesHtml += '<span class="loader">';
+                        // imagesHtml += '<i class="fa fa-spinner fa-1x fa-spin"></i>';
+                        // imagesHtml += '</span>';
+
+
+                        //
+                        imagesHtml += '</div>';
+                        imagesHtml += '<div class="widget blog_gallery" style="display: inline-flex;">';
+                        for(var i = 0 ; i < images[key].length ; i++)
+                        {
+                            var src = post_images_path+"/"+images[key][i].replace(/['"]+/g, '');
+                            imagesHtml += '<a href="javascript:void(0)" class="img-gallery" data-id="'+keyArr[1]+'"  data-toggle="modal"  data-target="#myModal">';
+                            imagesHtml += '<img src="'+src+'" class="img-thumbnail img-custom">';
+                            imagesHtml += '</a>';
+                        }
+                        imagesHtml += '</div>';
+                        imagesHtml += '<p class="list-group-item-text text-muted font-size-11">Posted on '+new Date(keyArr[0]).toDateString("yyyy-MM-dd")+'</p>';
+                        imagesHtml += '</div>';
+                        imagesHtml += '</div>';
+                        /* end loop */
+                        imagesHtml += '</div>';
+                        imagesHtml += '</div>'; 
+                    }
+                }
+            }
+            $('#post-images').html(imagesHtml);
+            // console.log(key+"  ->   "+images[key][0]);
+            // console.log("id "+ keyArr[1]);
+            // var date = new Date(keyArr[0]).toDateString("yyyy-MM-dd");
+            // console.log("Date "+date);
+
+            var vedioHtml = '';
+            var vedios = json.vedios;
+            if(Object.keys(vedios).length > 0)
+            {
+                for (var key in vedios) 
+                {
+                    vedioHtml += '<ul class="row video-list-thumbs " style="margin: 0; padding: 0">';
+                    if (vedios.hasOwnProperty(key)) 
+                    {
+                        vedioHtml += '<li class="col-sm-6 col-md-4" style="padding: 10px 10px;">';
+                        vedioHtml += '<a href="javascript:void(0)">';
+
+                        if(vedios[key].vedio_type == 'youtube')
+                        {
+                            vedioHtml += '<img src="'+vedios[key].image_url+'" data-toggle="modal" data-target="#vedioModal" data-url="'+vedios[key].vedio_url+'" class="vedio-modal" style="height: 190px; width: 100%;">';
+                        }
+                        else if(vedios[key].vedio_type == 'dailymotion')
+                        {
+                            vedioHtml += '<img src="'+vedios[key].image_url+'" data-toggle="modal" data-target="#vedioModal" data-url="'+vedios[key].vedio_url+'"  class="vedio-modal" style="height: 190px; width: 100%;">';
+                        }
+                        else if(vedios[key].vedio_type == 'vimeo')
+                        {
+                            vedioHtml += '<img src="'+vedios[key].image_url+'" data-toggle="modal" data-target="#vedioModal" data-url="'+vedios[key].vedio_url+'" class="vedio-modal" style="height: 190px; width: 100%;">';
+                        }                                                        
+                        vedioHtml += '<h5 class="business-listing" style="margin-bottom: 0;">'+vedios[key].title+'</h5>';                                 
+                        vedioHtml += '<p>'+vedios[key].vedio_type.charAt(0).toUpperCase()+vedios[key].vedio_type.slice(1)+'</p>';                                 
+                        vedioHtml += '</a>';
+                        vedioHtml += '<span class="glyphicon glyphicon-play-circle">&nbsp;</span>';
+                        vedioHtml += '</li>';
+                    }
+                    vedioHtml += '</ul>';
+                }               
+            }
+            $('#post-vedios').html(vedioHtml);
+            // console.log(json.vedios);
+            // for (var key in vedios) 
+            // {
+            //     if (vedios.hasOwnProperty(key)) 
+            //     {
+            //         console.log(key+"  ->   "+vedios[key].title);
+            //     }
+            // }
+
+
+            var postHtml = '';
+            var posts = json.posts;
+            var additional_info = json.additional_info;
+            if(Object.keys(posts).length > 0)
+            {
+                for (var key in posts) 
+                {
+                    if(posts[key].post_type == 'text')
+                    {
+                        postHtml += '<div class="list-group-item">';
+                        if(user_plan_code != 'free')
+                        {
+                            postHtml += '<div class="dropdown pull-xs-right m-l-1">';
+                            postHtml += '<button type="button" class="btn btn-xs btn-outline btn-outline-colorless dropdown-toggle" data-toggle="dropdown" aria-expanded="false"><i class="fa fa-reorder"></i></button>';
+                            postHtml += '<div class="dropdown-menu dropdown-menu-right">';
+                            postHtml += '<li>';
+                            postHtml += '<a href="javascript:void(0)" class="edit_post" data-post-id="'+posts[key].id+'" >';
+                            postHtml += '<i class="dropdown-icon fa fa-pencil"></i>&nbsp;&nbsp;Edit';
+                            postHtml += '</a>';
+                            postHtml += '</li>';
+                            postHtml += '<li>';
+                            postHtml += '<a href="javascript:void(0)" class="delete_post" data-post-id="'+posts[key].id+'" >';
+                            postHtml += '<i class="dropdown-icon fa fa-times text-danger"></i>&nbsp;&nbsp;Remove';
+                            postHtml += '</a>';
+                            postHtml += '</li>';
+                            postHtml += '</div>';
+                            postHtml += '</div>';
+                        }
+                        postHtml += '<div class="blog-content">';
+                        postHtml += '<div class="post-meta">';
+                        postHtml += '<p>By <a href="javascript:void(0)">'+posts[key].user_name+'</a></p>';
+                        postHtml += '<p><i class="fa fa-clock-o"></i> <a href="javascript:void(0)">'+new Date(posts[key].created_at).toDateString("yyyy-MM-dd")+'</a></p>';
+                        postHtml += '<p>share:';
+                        postHtml += '<p class="addthis_inline_share_toolbox"></p>';
+                        // if(additional_info.hasOwnProperty('facebook'))
+                        // {
+                        //     postHtml += '<a href="'+additional_info.facebook+'" class="fa fa-facebook"></a>';
+                        // }
+                        // if(additional_info.hasOwnProperty('instagram'))
+                        // {
+                        //     postHtml += '<a href="'+additional_info.instagram+'" class="fa fa-instagram"></a>';
+                        // }
+                        // if(additional_info.hasOwnProperty('linkdin'))
+                        // {
+                        //     postHtml += '<a href="'+additional_info.linkdin+'" class="fa fa-linkedin"></a>';
+                        // }
+                        // if(additional_info.hasOwnProperty('twitter'))
+                        // {
+                        //     postHtml += '<a href="'+additional_info.twitter+'" class="fa fa-twitter"></a>';
+                        // }
+                        postHtml += '</p>';
+                        postHtml += '<p>';
+                        postHtml += strip_html_tags(posts[key].description)
+                        postHtml += '</p>';
+                        postHtml += '</div>';
+                        postHtml += '</div>';
+                        postHtml += '</div>';
+                    }
+                }
+            }
+            $('#posts').html(postHtml);
+
+
+
+            if(additional_info.hasOwnProperty('about_us'))
+            {
+                $('#overview').text(strip_html_tags(additional_info.about_us));
+            }
+
+            $('#social_links').html('');
+            if(additional_info.hasOwnProperty('facebook'))
+            {
+                $('#social_links').append('<a href="'+additional_info.facebook+'" class="fa fa-facebook" target="_blank"></a>');
+            }
+
+            if(additional_info.hasOwnProperty('instagram'))
+            {
+                $('#social_links').append('<a href="'+additional_info.instagram+'" class="fa fa-instagram" target="_blank"></a>');
+            }
+
+            if(additional_info.hasOwnProperty('linkdin'))
+            {
+                $('#social_links').append('<a href="'+additional_info.linkdin+'" class="fa fa-linkedin" target="_blank"></a>');
+            }
+
+            if(additional_info.hasOwnProperty('twitter'))
+            {
+                $('#social_links').append('<a href="'+additional_info.twitter+'" class="fa fa-twitter" target="_blank"></a>');
+            }
+
+            if(additional_info.hasOwnProperty('about_us'))
+            {
+                var html = '<p>'+ strip_html_tags(additional_info.about_us) +'</p>';
+                $('#overview').html('');
+                $('#overview').html(html);
+            }
+
+
+
+            var postCategoryHtml = '';
+            var postCategory = json.postCategories;
+            if(Object.keys(postCategory).length > 0)
+            {
+                for (var key in postCategory) 
+                {
+                    if(postCategory[key].name == 'Un categorized')
+                    {
+                        $('#post_category').append('<option value='+postCategory[key].id+' selected>' + postCategory[key].name + '</option>');
+                    }
+                    else
+                    {
+                        $('#post_category').append('<option value='+postCategory[key].id+'>' + postCategory[key].name + '</option>');
+                    }
+                }
+            }
+
+        });
+    }
+
     function errorMessage(message)
     {
         var html = '<div class="alert alert-success alert-dismissable" style="text-align: center;">';
@@ -958,7 +1063,7 @@
           ['color', ['color']],
           ['para', ['ul', 'ol', 'paragraph']],
           ['height', ['height']],
-          ['insert', ['picture', 'link', 'video', 'table', 'hr']],
+          ['insert', ['link', 'video', 'table', 'hr']],
           ['history', ['undo', 'redo']],
           ['misc', ['codeview', 'fullscreen']],
           ['help', ['help']]
@@ -1063,6 +1168,170 @@
             });
          },
     });
+
+
 </script>
+
+
+<script>
+
+    $(document).ready(function() {
+        var date = new Date();
+        var d = date.getDate();
+        var m = date.getMonth();
+        var y = date.getFullYear();
+        
+        /*  className colors
+        
+        className: default(transparent), important(red), chill(pink), success(green), info(blue)
+        
+        */      
+        
+          
+        /* initialize the external events
+        -----------------------------------------------------------------*/
+    
+        $('#external-events div.external-event').each(function() {
+        
+            // create an Event Object (http://arshaw.com/fullcalendar/docs/event_data/Event_Object/)
+            // it doesn't need to have a start or end
+            var eventObject = {
+                title: $.trim($(this).text()) // use the element's text as the event title
+            };
+            
+            // store the Event Object in the DOM element so we can get to it later
+            $(this).data('eventObject', eventObject);
+            
+            // make the event draggable using jQuery UI
+            $(this).draggable({
+                zIndex: 999,
+                revert: true,      // will cause the event to go back to its
+                revertDuration: 0  //  original position after the drag
+            });
+            
+        });
+    
+    
+        /* initialize the calendar
+        -----------------------------------------------------------------*/
+        
+        var calendar =  $('#calendar').fullCalendar({
+            header: {
+                left: 'title',
+                center: 'agendaDay,agendaWeek,month',
+                right: 'prev,next today'
+            },
+            editable: true,
+            firstDay: 1, //  1(Monday) this can be changed to 0(Sunday) for the USA system
+            selectable: true,
+            defaultView: 'month',
+            
+            axisFormat: 'h:mm',
+            columnFormat: {
+                month: 'ddd',    // Mon
+                week: 'ddd d', // Mon 7
+                day: 'dddd M/d',  // Monday 9/7
+                agendaDay: 'dddd d'
+            },
+            titleFormat: {
+                month: 'MMMM yyyy', // September 2009
+                week: "MMMM yyyy", // September 2009
+                day: 'MMMM yyyy'                  // Tuesday, Sep 8, 2009
+            },
+            allDaySlot: false,
+            selectHelper: true,
+            select: function(start, end, allDay) {
+                var title = prompt('Event Title:');
+                if (title) {
+                    calendar.fullCalendar('renderEvent',
+                        {
+                            title: title,
+                            start: start,
+                            end: end,
+                            allDay: allDay
+                        },
+                        true // make the event "stick"
+                    );
+                }
+                calendar.fullCalendar('unselect');
+            },
+            droppable: true, // this allows things to be dropped onto the calendar !!!
+            drop: function(date, allDay) { // this function is called when something is dropped
+            
+                // retrieve the dropped element's stored Event Object
+                var originalEventObject = $(this).data('eventObject');
+                
+                // we need to copy it, so that multiple events don't have a reference to the same object
+                var copiedEventObject = $.extend({}, originalEventObject);
+                
+                // assign it the date that was reported
+                copiedEventObject.start = date;
+                copiedEventObject.allDay = allDay;
+                
+                // render the event on the calendar
+                // the last `true` argument determines if the event "sticks" (http://arshaw.com/fullcalendar/docs/event_rendering/renderEvent/)
+                $('#calendar').fullCalendar('renderEvent', copiedEventObject, true);
+                
+                // is the "remove after drop" checkbox checked?
+                if ($('#drop-remove').is(':checked')) {
+                    // if so, remove the element from the "Draggable Events" list
+                    $(this).remove();
+                }
+                
+            },
+            
+            events: [
+                {
+                    title: 'All Day Event',
+                    start: new Date(y, m, 1)
+                },
+                {
+                    id: 999,
+                    title: 'Repeating Event',
+                    start: new Date(y, m, d-3, 16, 0),
+                    allDay: false,
+                    className: 'info'
+                },
+                {
+                    id: 999,
+                    title: 'Repeating Event',
+                    start: new Date(y, m, d+4, 16, 0),
+                    allDay: false,
+                    className: 'info'
+                },
+                {
+                    title: 'Meeting',
+                    start: new Date(y, m, d, 10, 30),
+                    allDay: false,
+                    className: 'important'
+                },
+                {
+                    title: 'Lunch',
+                    start: new Date(y, m, d, 12, 0),
+                    end: new Date(y, m, d, 14, 0),
+                    allDay: false,
+                    className: 'important'
+                },
+                {
+                    title: 'Birthday Party',
+                    start: new Date(y, m, d+1, 19, 0),
+                    end: new Date(y, m, d+1, 22, 30),
+                    allDay: false,
+                },
+                {
+                    title: 'Click for Google',
+                    start: new Date(y, m, 28),
+                    end: new Date(y, m, 29),
+                    url: 'https://ccp.cloudaccess.net/aff.php?aff=5188',
+                    className: 'success'
+                }
+            ],          
+        });
+        
+        
+    });
+</script>
+
+
 
 @endsection

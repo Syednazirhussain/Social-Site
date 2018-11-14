@@ -111,17 +111,25 @@ Route::group(['middleware' => ['user.auth']], function () {
 	Route::patch('user/account/{account}',['as' => 'user.account.update','uses' => 'User\AccountSetting@update']);
 	Route::get('user/logout', ['as'=> 'user.logout', 'uses' => 'User\UserController@logout']);
 	Route::get('user/membership/pricing', ['as'=> 'user.membership.pricing', 'uses' => 'User\UserController@membership']);
-	Route::get('user/membership/payment', ['as'=> 'user.membership.payment', 'uses' => 'User\PayPalController@getAccessToken']);
+	Route::get('user/membership/payment', ['as'=> 'user.membership.payment', 'uses' => 'User\PayPalController@subcribe']);
 
+	Route::get('user/posts',['as' => 'get.post.data','uses' => 'User\ProfileController@get_post_data']);
 	Route::get('user/post/edit/{post_id}',['as' => 'edit.single.post','uses' => 'User\ProfileController@edit_post']);
 	Route::put('user/post/update/{post_id}', ['as'=> 'update.single.post', 'uses' => 'User\ProfileController@update_post']);
 	Route::delete('user/post/delete/{post_id}', ['as'=> 'delete.single.post', 'uses' => 'User\ProfileController@delete_post']);
 
-	Route::get('user/post/get-post-data',['as' => 'get.post.data','uses' => 'User\ProfileController@get_post_data']);
+
 	Route::post('user/post/article',['as' => 'fan.post.article' , 'uses' => 'User\ProfileController@post_article']);
 	Route::post('user/post/images',['as' => 'talent.post.images' , 'uses' => 'User\ProfileController@post_images']);
 	Route::delete('user/post/images/{post_id}', ['as'=> 'talent.post.images.destroy', 'uses' => 'User\ProfileController@post_image_destroy']);
 	Route::post('user/post/image/remove', ['as'=> 'talent.post.image.remove', 'uses' => 'User\ProfileController@post_image_remove']);
 	Route::post('user/post/vedio',['as' => 'talent.post.vedio' , 'uses' => 'User\ProfileController@post_vedio']);
+
+
+	Route::get('user/talent/lists',['as' => 'talent.list','uses' => 'User\ProfileController@talent_listing']);
+	Route::post('user/follow/talent',['as' => 'user.follow.talent','uses' => 'User\ProfileController@follow']);
+	Route::post('user/unfollow/talent',['as' => 'user.unfollow.talent','uses' => 'User\ProfileController@unfollow']);
+
+
 
 });

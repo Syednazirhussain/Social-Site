@@ -25,68 +25,77 @@
     <link rel="apple-touch-icon-precomposed" sizes="72x72" href="{{ asset('/theme/images/ico/apple-touch-icon-72-precomposed.png') }}">
     <link rel="apple-touch-icon-precomposed" href="{{ asset('/theme/images/ico/apple-touch-icon-57-precomposed.png') }}">
     @yield('css')
+
+    <style type="text/css">
+        .navbar {
+            padding: unset !important;
+        }
+
+        .navbar-nav>li {
+            margin-left: 25px !important;
+            padding-bottom: 5px !important;
+        }
+
+        .navbar-nav {
+             margin-top: unset !important; 
+        }
+
+        .navbar-inverse .navbar-nav>li>a {
+            color: #ddd !important;
+            padding: 10px 5px !important;
+            font-weight: 600 !important;
+        }
+
+        .navbar-inverse .navbar-nav>li>a:hover {
+            background-color: unset !important;
+            color: #fff !important;
+        }
+    </style>
+
+
 </head>
 <body>
-    <header id="header">
-        <div class="top-bar">
-            <div class="container">
-                <div class="row">
-                    <div class="col-sm-6 col-xs-12">
-                        <div class="top-number">
-<!--                             <p><i class="fa fa-phone-square"></i> +0123 456 70 90</p> -->
-                        </div>
-                    </div>
-                    <div class="col-sm-6 col-xs-12">
-                        <div class="social">
-                            <ul class="social-share">
-                                <li><a href="{{ route('user.login') }}" title="Login"><i class="fa fa-user"></i></a></li>
-                                <li><a href="{{ route('user.login') }}" title="Register"><i class="fa fa-user-plus"></i></a></li>
-                            </ul>
-                            <div class="search">
-                                <form role="form">
-                                    <input type="text" class="search-form" autocomplete="off" placeholder="Search">
-                                    <i class="fa fa-search"></i>
-                                </form>
-                            </div>
-                        </div>
-                    </div>
-                </div>
-            </div>
-            <!--/.container-->
+
+    <nav class="navbar navbar-inverse">
+      <div class="container">
+        <div class="navbar-header">
+            <a class="navbar-brand" href="{{ route('site.dashboard') }}">
+                <img src="{{ asset('/theme/images/logo1.png') }}" style="max-width: 115px;max-height: 52px" alt="logo">
+            </a>
         </div>
-        <!--/.top-bar-->
-
-        <nav class="navbar navbar-inverse" role="banner">
-            <div class="container">
-                <div class="navbar-header m-t-0">
-                    <button type="button" class="navbar-toggle" data-toggle="collapse" data-target=".navbar-collapse">
-                        <span class="sr-only">Toggle navigation</span>
-                        <span class="icon-bar"></span>
-                        <span class="icon-bar"></span>
-                        <span class="icon-bar"></span>
-                    </button>
-                    <a class="navbar-brand" href="{{ route('site.dashboard') }}">
-                        <img src="{{ asset('/theme/images/logo1.png') }}" style="max-width: 115px;max-height: 52px" alt="logo">
-                    </a>
-                </div>
-
-                <div class="collapse navbar-collapse navbar-right">
-                    <ul class="nav navbar-nav">
-                        <li class="active"><a href="javascript:void(0)">Home</a></li>
-                        <li><a href="javascript:void(0)">Features</a></li>
-                        <li><a href="javascript:void(0)">Discover</a></li>
-                        <li><a href="javascript:void(0)">Crowd Picks</a></li>
-                        <li><a href="javascript:void(0)">Shows</a></li>
-                        <li><a href="javascript:void(0)">Charts</a></li>
-                        <li><a href="javascript:void(0)">Opportunities</a></li>
-                        <li><a href="javascript:void(0)">Pricing</a></li>
-                    </ul>
-                </div>
-            </div>
-            <!--/.container-->
-        </nav>
-        <!--/nav-->
-    </header>
+        <ul class="nav navbar-nav">
+            <li>
+                <a href="javascript:void(0)">Feature</a>
+            </li>
+            <li>
+                <a href="javascript:void(0)">Discover</a>
+            </li>
+            <li>
+                <a href="javascript:void(0)">Crowd Picks</a>
+            </li>
+            <li>
+                <a href="javascript:void(0)">Shows</a>
+            </li>
+            <li>
+                <a href="javascript:void(0)">Charts</a>
+            </li>
+            <li>
+                <a href="javascript:void(0)">Opportunities</a>
+            </li>
+            <li>
+                <a href="javascript:void(0)">Pricing</a>
+            </li>
+        </ul>
+        <ul class="nav navbar-nav navbar-right">
+            <li>
+                <a href="{{ route('user.login') }}">Login</a>
+            </li>
+            <li>
+                <a href="{{ route('user.login') }}" class="btn btn-primary">Join For Free</a>
+            </li>
+        </ul>
+      </div>
+    </nav>
 
     @yield('content')
     
@@ -98,10 +107,10 @@
                 </div>
                 <!-- <div class="col-sm-6">
                     <ul class="pull-right">
-                        <li><a href="#">Home</a></li>
-                        <li><a href="#">About Us</a></li>
-                        <li><a href="#">Faq</a></li>
-                        <li><a href="#">Contact Us</a></li>
+                        <li><a href="javascript:void(0)">Home</a></li>
+                        <li><a href="javascript:void(0)">About Us</a></li>
+                        <li><a href="javascript:void(0)">Faq</a></li>
+                        <li><a href="javascript:void(0)">Contact Us</a></li>
                     </ul>
                 </div> -->
             </div>

@@ -56,7 +56,8 @@ class UserController extends Controller
         return response()->json(['success'=> $success, 'code'=>$response]);
     }
 
-    public function membership(){
+    public function membership()
+    {
         return view('user.membership.pricing');
     }
 
@@ -71,17 +72,20 @@ class UserController extends Controller
 
         $input = $request->all();
 
+
     	$user = new User;
     	$user->name = $input['name'];
         $user->email = $input['remail'];
         $user->password = bcrypt($input['password']);
         $user->phone = $input['phone'];
         $user->status = 'active';
-        $user->plan_code = 'free';
+        //$user->plan_code = 'free';
+        $user->plan_code = 'premium';
         $user->image = 'default.png';
         if($user->save())
         {
-        	$user->assignRole('Fans');
+        	//$user->assignRole('Fans');
+            $user->assignRole('Talents');
         	Auth::login($user, true);
     
             $subscription = new Subscription;

@@ -28,6 +28,8 @@
 
     <link href="{{ asset('/skin-1/assets/fileuploader/src/jquery.fileuploader.css') }}" media="all" rel="stylesheet">
     <link href="{{ asset('/skin-1/assets/fileuploader/css/jquery.fileuploader-theme-thumbnails.css') }}" media="all" rel="stylesheet">
+    
+    <link href="{{ asset('/skin-1/assets/calender/calender-css.css') }}" media="all" rel="stylesheet">
 
 
 
@@ -38,67 +40,89 @@
     <link rel="apple-touch-icon-precomposed" href="{{ asset('/theme/images/ico/apple-touch-icon-57-precomposed.png') }}">
 
     @yield('css')
+
+    <style type="text/css">
+        .navbar {
+            padding: unset !important;
+        }
+
+        .navbar-nav>li {
+            margin-left: 0px !important;
+            padding-bottom: 5px !important;
+        }
+
+        .navbar-nav {
+             margin-top: unset !important; 
+        }
+
+        .navbar-inverse .navbar-nav>li>a {
+            color: #ddd !important;
+            padding: 10px 5px !important;
+            font-weight: 600 !important;
+        }
+
+        .navbar-inverse .navbar-nav>li>a:hover {
+            background-color: unset !important;
+            color: #fff !important;
+        }
+
+    </style>
+
+
 </head>
 <body>
-    <header id="header">
-        <div class="top-bar">
-            <div class="container">
-                <div class="row">
-                    <div class="col-sm-6 col-xs-12">
-                        <div class="top-number">
-<!--                             <p><i class="fa fa-phone-square"></i> +0123 456 70 90</p> -->
-                        </div>
-                    </div>
-                    <div class="col-sm-6 col-xs-12">
-                        <div class="social">
-                            <ul class="social-share">
-                                <li>
-                                    <a href="{{ route('user.account.setting',auth::user()->id) }}" title="Account Setting"><i class="fa fa-cog"></i></a>
-                                    <a href="{{ route('user.logout') }}" title="Log Out"><i class="fa fa-power-off"></i></a>
-                                </li>
-                            </ul>
-                        </div>
-                    </div>
-                </div>
-            </div>
-            <!--/.container-->
+
+    <nav class="navbar navbar-inverse">
+      <div class="container">
+        <div class="navbar-header">
+            <a class="navbar-brand" href="{{ route('user.dashboard') }}">
+                <img src="{{ asset('/theme/images/logo1.png') }}" style="max-width: 115px;max-height: 52px" alt="logo">
+            </a>
         </div>
-        <!--/.top-bar-->
+        <ul class="nav navbar-nav">
+            <li>
+                <a href="javascript:void(0)">Feature</a>
+            </li>
+            <li>
+                <a href="javascript:void(0)">Discover</a>
+            </li>
+            <li>
+                <a href="javascript:void(0)">Crowd Picks</a>
+            </li>
+            <li>
+                <a href="javascript:void(0)">Shows</a>
+            </li>
+            <li>
+                <a href="{{ route('talent.list') }}">Charts</a>
+            </li>
+            <li>
+                <a href="javascript:void(0)">Opportunities</a>
+            </li>
+            <li>
+                <a href="javascript:void(0)">Pricing</a>
+            </li>
+        </ul>
+        <ul class="nav navbar-nav navbar-right">
+            <li class="dropdown">
+                <a href="javascript:void(0)" class="dropdown-toggle" data-toggle="dropdown">
+                    @if(isset( Auth::user()->name  )){{ Auth::user()->name }}@endif
+                </a>
+                <ul class="dropdown-menu">
+                    <li><a href="{{ route('user.dashboard') }}">Profile</a></li>
+                    @role('Talents')
+                        <li><a href="javascript:void(0)">Cancel Subcription</a></li>
+                    @else
+                        <li><a href="{{ route('user.membership.pricing') }}">Subscription</a></li>
+                    @endrole
 
-        <nav class="navbar navbar-inverse" role="banner">
-            <div class="container">
-                <div class="navbar-header m-t-0">
-                    <button type="button" class="navbar-toggle" data-toggle="collapse" data-target=".navbar-collapse">
-                        <span class="sr-only">Toggle navigation</span>
-                        <span class="icon-bar"></span>
-                        <span class="icon-bar"></span>
-                        <span class="icon-bar"></span>
-                    </button>
-                    <a class="navbar-brand" href="{{ route('user.dashboard') }}">
-                        <img src="{{ asset('/theme/images/logo1.png') }}" style="max-width: 115px;max-height: 52px;" alt="logo">
-                    </a>
-                </div>
+                    <li><a href="{{ route('user.account.setting',['']) }}/@if(isset( Auth::user()->id )){{ Auth::user()->id }}@endif">Setting</a></li>
+                    <li><a href="{{ route('user.logout') }}">Log Out</a></li>
+                </ul>
+            </li>
+        </ul>
+      </div>
+    </nav>
 
-<!--                 <div class="collapse navbar-collapse navbar-right">
-                    <ul class="nav navbar-nav">
-                        <li class="active"><a href="javascript:void(0)">Famous Post</a></li>
-                        <li class="dropdown">
-                            <a href="javascript:void(0)" class="dropdown-toggle" data-toggle="dropdown">Artist&nbsp;<i class="fa fa-angle-down"></i></a>
-                            <ul class="dropdown-menu">
-                                <li><a href="javascript:void(0)">Musician</a></li>
-                                <li><a href="javascript:void(0)">Singers</a></li>
-                                <li><a href="javascript:void(0)">Painters</a></li>
-                            </ul>
-                        </li>
-                        <li><a href="javascript:void(0)">Subcription</a></li>
-                    </ul>
-                </div> -->
-
-            </div>
-            <!--/.container-->
-        </nav>
-        <!--/nav-->
-    </header>
     @yield('content')
     <footer id="footer" class="midnight-blue">
         <div class="container">
@@ -134,6 +158,8 @@
 
     <script src="{{ asset('/skin-1/assets/fileuploader/src/jquery.fileuploader.min.js') }}" type="text/javascript"></script>
     <script src="{{ asset('/skin-1/assets/fileuploader/js/custom.js') }}" type="text/javascript"></script>
+    
+    <script src="{{ asset('/skin-1/assets/calender/calender-js.js') }}" type="text/javascript"></script>
 
     @yield('js')
 </body>

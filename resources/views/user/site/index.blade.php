@@ -20,7 +20,7 @@
                                     <div class="animation animated-item-2">
                                         Build your career with Creatifny easy-to-use services and exclusive industry access.
                                     </div>
-                                    <a class="btn-slide animation animated-item-3" href="javascript:void(0)">Join For Free</a>
+                                    <a class="btn-slide animation animated-item-3" href="{{ route('user.login') }}">Join For Free</a>
                                     <!-- <a class="btn-slide white animation animated-item-3" href="javascript:void(0)">Get Started</a> -->
                                 </div>
                             </div>
@@ -518,13 +518,9 @@
                             <div class="widget">
                                 <h3 class="heading_clr">Artist Chart</h3>
                                 <ul>
-                                    <li><a href="javascript:void(0)">Web Development</a></li>
-                                    <li><a href="javascript:void(0)">SEO Marketing</a></li>
-                                    <li><a href="javascript:void(0)">Theme</a></li>
-                                    <li><a href="javascript:void(0)">Development</a></li>
-                                    <li><a href="javascript:void(0)">Email Marketing</a></li>
-                                    <li><a href="javascript:void(0)">Plugin Development</a></li>
-                                    <li><a href="javascript:void(0)">Article Writing</a></li>
+                                    <li><a href="javascript:void(0)">John Doe</a></li>
+                                    <li><a href="javascript:void(0)">Henry Robert</a></li>
+                                    <li><a href="javascript:void(0)">Peter</a></li>
                                 </ul>
                             </div>
                         </div>
