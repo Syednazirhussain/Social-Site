@@ -3,6 +3,58 @@
 
 @section('css')
 
+<style>
+        
+    #wrap {
+        width: 1100px;
+        margin: 0 auto;
+        }
+        
+    #external-events {
+        float: left;
+        width: 150px;
+        padding: 0 10px;
+        text-align: left;
+        }
+        
+    #external-events h4 {
+        font-size: 16px;
+        margin-top: 0;
+        padding-top: 1em;
+        }
+        
+    .external-event { /* try to mimick the look of a real event */
+        margin: 10px 0;
+        padding: 2px 4px;
+        background: #3366CC;
+        color: #fff;
+        font-size: .85em;
+        cursor: pointer;
+        }
+        
+    #external-events p {
+        margin: 1.5em 0;
+        font-size: 11px;
+        color: #666;
+        }
+        
+    #external-events p input {
+        margin: 0;
+        vertical-align: middle;
+        }
+
+    #calendar {/*      float: right; */
+        margin: 0 auto;
+        width: 100%;
+        background-color: #FFFFFF;
+          border-radius: 6px;
+        box-shadow: 0 1px 2px #C3C3C3;
+        -webkit-box-shadow: 0px 0px 21px 2px rgba(0,0,0,0.18);
+        -moz-box-shadow: 0px 0px 21px 2px rgba(0,0,0,0.18);
+        box-shadow: 0px 0px 21px 2px rgba(0,0,0,0.18);
+        }
+</style>
+
 <style type="text/css">
 
     .blog_archieve li a {
@@ -92,58 +144,48 @@
         color: #dc3545 !important;
         font-weight: unset !important;
     }
-</style>
 
-<style>
-        
-    #wrap {
-        width: 1100px;
-        margin: 0 auto;
-        }
-        
-    #external-events {
-        float: left;
-        width: 150px;
-        padding: 0 10px;
-        text-align: left;
-        }
-        
-    #external-events h4 {
-        font-size: 16px;
-        margin-top: 0;
-        padding-top: 1em;
-        }
-        
-    .external-event { /* try to mimick the look of a real event */
-        margin: 10px 0;
-        padding: 2px 4px;
-        background: #3366CC;
-        color: #fff;
-        font-size: .85em;
-        cursor: pointer;
-        }
-        
-    #external-events p {
-        margin: 1.5em 0;
-        font-size: 11px;
-        color: #666;
-        }
-        
-    #external-events p input {
-        margin: 0;
-        vertical-align: middle;
-        }
+    .tabbable-line > .nav-tabs > li.active > a {
+        color: #fff !important;
+    }
 
-    #calendar {/*      float: right; */
-        margin: 0 auto;
-        width: 100%;
-        background-color: #FFFFFF;
-          border-radius: 6px;
-        box-shadow: 0 1px 2px #C3C3C3;
-        -webkit-box-shadow: 0px 0px 21px 2px rgba(0,0,0,0.18);
-        -moz-box-shadow: 0px 0px 21px 2px rgba(0,0,0,0.18);
-        box-shadow: 0px 0px 21px 2px rgba(0,0,0,0.18);
-        }
+    .tabbable-line > .nav-tabs > li.active {
+        background: #eb613e !important;
+    }
+    .widget-activity-item {
+        padding: 12px 5px 10px 45px !important;
+    }
+
+    .panel{
+        background-color: #fff !important;
+    }
+    .panel-footer {
+        border-top-color: rgb(255, 255, 255) !important;
+        background-color: #fff !important;
+    }
+
+    .videos-list-item {
+        width: 32.33%;
+        display: inline-block;
+        margin: 0px 5px 15px 0px;
+        position: relative;
+    }
+
+    .video_date{
+        position: absolute;
+        z-index: 9;
+        background: #eb613e;
+        color: white;
+        font-size: 9px;
+        right: 0px;
+        top: 0px;
+        padding: 0px 10px;
+    }
+
+    .post_vedio_author{
+        font-size: 17px;
+        color: #eb613e;
+    }
 </style>
 
 @endsection
@@ -208,7 +250,6 @@
             <div class="tabbable-panel">
                 <div class="tabbable-line">
                     <ul class="nav nav-tabs">
-                        
                         <li class="active">
                             <a href="#article" data-toggle="tab">
                                 Article
@@ -219,111 +260,142 @@
                                 Overview
                             </a>
                         </li>
-                        @hasanyrole('Talents|Web Master|Admin')
-                            <li>
-                                <a href="#photo" data-toggle="tab">
-                                    Photos
-                                </a>
-                            </li>
-                            <li>
-                                <a href="#video" data-toggle="tab">
-                                    Videos
-                                </a>
-                            </li>
-                            <li>
-                                <a href="#event" data-toggle="tab">
-                                    Events
-                                </a>
-                            </li>
-                        @endhasanyrole
+                        <li>
+                            <a href="#photo" data-toggle="tab">
+                                Photos
+                            </a>
+                        </li>
+                        <li>
+                            <a href="#video" data-toggle="tab">
+                                Videos
+                            </a>
+                        </li>
+                        <li>
+                            <a href="#event" data-toggle="tab">
+                                Events
+                            </a>
+                        </li>
                     </ul>
                     <div class="tab-content"> 
                         <div id="msg"></div>    
                         <div class="tab-pane active" id="article">
-                            <div class="m-a-2 p-a-3">
-                                <div class="row">
+                            <div class="row">
                                     @hasanyrole('Talents|Web Master|Admin')
                                     <div class="col-sm-12 col-md-12">
-                                        <form id="post-article" method="POST" class="form-horizontal">
-                                            <div class="form-group">
-                                                <label for="post_category">Select Post Type</label>
-                                                <select type="text" name="post_category" id="post_category" class="form-control">
-                                                </select>
+                                        <div class="panel">
+                                            <div class="panel-heading">
+                                                <div class="panel-title">Post an article</div>
                                             </div>
-                                            <div class="form-group">
-                                                <textarea id="post_article" class="custom_summernote" name="article" ></textarea>
-                                            </div>    
-                                            <input type="submit" class="btn btn-primary pull-right" style="background-color: #f3565d;color: #fff" value="Post">
-                                        </form>
+                                            <form id="post-article" method="POST">
+                                                <div class="panel-body">
+                                                    <div class="row">
+                                                        <div class="form-group col-sm-12">
+                                                            <label for="post_category" class="control-label">Select Post Type</label>
+                                                            <select type="text" name="post_category" id="post_category" class="form-control">
+                                                            </select>
+                                                        </div>
+                                                    </div>
+                                                    <div class="row">
+                                                        <div class="form-group col-sm-12">
+                                                            <label class="control-label">Message</label>
+                                                            <textarea id="post_article" name="article" style="display: none;"></textarea>
+                                                        </div>
+                                                    </div>
+                                                </div>
+                                                <div class="panel-footer text-right">
+                                                    <button type="submit" id="articleSubmit" class="btn btn-primary">Post</button>
+                                                </div>
+                                            </form>
+                                        </div>
                                     </div>
                                     @endhasanyrole
                                     <div class="col-sm-12 col-md-12">
-                                        <div class="row m-t-2">
-                                            <div class="post-area" id="posts"></div>
+                                        <div class="panel">
+                                            <div id="posts"></div>
                                         </div>
                                     </div>
-                                </div>
                             </div>
                         </div>
-                        <div class="tab-pane" id="overview">
-
-                        </div>
+                        <div class="tab-pane" id="overview"></div>
                         <div class="tab-pane" id="photo">
-                            <div class="m-a-2">
-                                <div class="row">
-                                    <form action="{{ route('talent.post.images') }}" method="POST" id="post-image-form" enctype="multipart/form-data" class="form-horizontal">
-                                        <input type="hidden" name="_token" value="{{ csrf_token() }}">
-                                        <div class="col-md-12">
-                                          <div class="form-group">
-                                              <label for="">Gallery</label>
-                                              <input type="file" id="file" name="images" class="form-control">
-                                          </div>
+                            <div class="row">
+                                @hasanyrole('Talents|Web Master|Admin')
+                                <div class="col-sm-12 col-md-12">
+                                    <div class="panel">
+                                        <div class="panel-heading">
+                                            <div class="panel-title">Post Albums</div>
                                         </div>
-                                        <button type="submit" class="btn btn-primary pull-right"><i class="fa fa-upload"></i>&nbsp;Upload</button>
-                                    </form>
+                                        <form action="{{ route('talent.post.images') }}" method="POST" id="post-image-form" enctype="multipart/form-data">
+                                            <div class="panel-body">
+                                                <div class="row">
+                                                    <div class="form-group col-sm-12">
+                                                        <label for="">Gallery</label>
+                                                        <input type="file" id="file" name="images" class="form-control">
+                                                    </div>
+                                                </div>
+                                            </div>
+                                            <div class="panel-footer text-right">
+                                                <button type="submit" id="imagesSubmit" class="btn btn-primary">Submit</button>
+                                            </div>
+                                        </form>
+                                    </div>
                                 </div>
-                                <div class="m-t-2"></div>
-                                <div id="post-images"></div>  
+                                @endhasanyrole
+                                <div class="col-sm-12 col-md-12">
+                                    <div id="post-images"></div>  
+                                </div>
                             </div>
                         </div>
                         <div class="tab-pane" id="video">
                             <div class="m-a-2 p-a-3">
                                 <div class="row">
+                                    @hasanyrole('Talents|Web Master|Admin')
                                     <div class="col-sm-12 col-md-12">
-                                        <fieldset>
-                                            <legend><i class="fa fa-upload"></i>&nbsp;Upload vedio</legend>
-                                            <form action="{{ route('talent.post.vedio') }}" method="POST" id="post_vedio" class="form-horizontal">
+                                        <div class="panel">
+                                            <div class="panel-heading">
+                                                <div class="panel-title">Upload Vedio</div>
+                                            </div>
+                                            <form action="{{ route('talent.post.vedio') }}" method="POST" id="post_vedio">
                                                 <input type="hidden" name="_token" value="{{ csrf_token() }}">
-                                                <div class="form-group">
-                                                    <label class="control-label">Title</label>
-                                                    <input type="text" class="form-control form-control-sm" name="title" placeholder="ex Picnic">
+                                                <div class="panel-body">
+                                                    <div class="row">
+                                                        <div class="form-group col-sm-6">
+                                                            <label class="control-label">Title</label>
+                                                            <input type="text" class="form-control" style="height: 30px !important" name="title" placeholder="ex Picnic">
+                                                        </div>
+                                                        <div class="form-group col-sm-6">
+                                                            <label class="control-label">Type</label>
+                                                            <select class="form-control" name="vedio_type" id="vedio_type">
+                                                                <option value="youtube">Youtube</option>
+                                                                <option value="dailymotion">Daily motion</option>
+                                                                <option value="vimeo">Vimeo</option>
+                                                            </select>
+                                                        </div>
+                                                    </div>
+                                                    <div class="row">
+                                                        <div class="form-group col-sm-12">
+                                                            <label class="control-label">URL</label>
+                                                            <input type="text" class="form-control" style="height: 30px !important" name="vedio_url" placeholder="ex https://youtu.be/cH6kxtzovew">
+                                                        </div>
+                                                    </div>
                                                 </div>
-                                                <div class="form-group">
-                                                    <label class="control-label">Type</label>
-                                                    <select class="form-control form-control-sm" name="vedio_type" id="vedio_type">
-                                                        <option value="youtube">Youtube</option>
-                                                        <option value="dailymotion">Daily motion</option>
-                                                        <option value="vimeo">Vimeo</option>
-                                                    </select>
+                                                <div class="panel-footer text-right">
+                                                    <button type="submit" id="videoSubmit" class="btn btn-primary">Add</button>
                                                 </div>
-                                                <div class="form-group">
-                                                    <label class="control-label">Url</label>
-                                                    <input type="text" class="form-control form-control-sm" name="vedio_url" placeholder="ex https://youtu.be/cH6kxtzovew">
-                                                </div>
-                                                <input class="btn btn-primary pull-right" type="submit" value="Add">
                                             </form>
-                                        </fieldset>
+                                        </div>
                                     </div>
-                                    <div class="col-sm-12 col-md-12 m-t-2">
-                                        <div id="post-vedios"></div>
+                                    @endhasanyrole
+                                    <div class="col-sm-12 col-md-12">
+                                        <div id="post-video"></div>
                                     </div>
                                 </div>
                             </div>
                         </div>
                         <div class="tab-pane" id="event">
-
-                            <div id='calendar'></div>                                
-
+                            @hasanyrole('Talents|Web Master|Admin')
+                            <div id='calendar'></div>
+                            @endhasanyrole
                         </div>
                     </div>
                 </div>
@@ -356,9 +428,11 @@
                     <div class="modal-body">
                         <div class="row">
                             <div class="col-sm-12 col-md-12">
+                                @hasanyrole('Talents|Web Master|Admin')
                                 <a href="javascript:void(0)" id="remove_post_image" data-img="" data-id="" class="label label-danger">
                                     <i class="fa fa-trash"></i>
                                 </a> 
+                                @endhasanyrole
                                 <button type="button" class="close btn-rounded pull-right" data-backdrop="static" data-dismiss="modal">&times;</button>
                             </div>
                         </div>
@@ -378,92 +452,107 @@
                 <div class="widget social_icon" id="social_links"></div>
             </div>
 
+            @hasrole('Talents')
             <div class="col-md-12">
                 <div class="box-cell col-md-4 valign-top">
                     <h5>Counter</h5>
                   <ul class="list-group m-x-0 m-t-3 m-b-0">
                     <li class="list-group-item  b-x-0 b-t-0">
-                      <span class="label label-primary pull-right">34</span>
+                      <span class="label label-primary pull-right" id="article_count"></span>
                       Articles
                     </li>
                     <li class="list-group-item  b-x-0">
-                      <span class="label label-danger pull-right">128</span>
+                      <span class="label label-danger pull-right" id="photos_count"></span>
                       Photos
                     </li>
                     <li class="list-group-item  b-x-0 b-b-0">
-                      <span class="label label-info pull-right">12</span>
+                      <span class="label label-info pull-right" id="video_count"></span>
                       Videos
                     </li>
                   </ul>
                 </div>
             </div>
+            @endhasrole
 
-            <div class="col-sm-12">
-                <h5>Talents</h5>
-                <div class="widget-activity-item">
-                    <div class="widget-activity-avatar">
-                        <img src="../../public/theme/images/team-member.jpg">
-                    </div>
-                    <div class="widget-activity-header">
-                      <a href="javascript:void(0)">&nbsp;Cairo</a>
-                      <button class="btn btn-default talent_btn">Unfollow</button>
-                      
-                    </div>
+            @hasrole('Fans')
+                @if(isset($users))
+                <div class="col-sm-12">
+                    <h5>Talents</h5>
+                    @foreach($users as $user)
+                        @if( $user->hasRole('Talents') && Auth::user()->id != $user->id )
+                        <div class="widget-activity-item">
+                            <div class="widget-activity-avatar">
+                                @if($user->image != null)
+                                    <img src="{{ asset('storage/users/'.$user->image) }}" title="{{ $user->name }}" alt=""> 
+                                @else
+                                    <img src="{{ asset('storage/users/default.png') }}" alt=""> 
+                                @endif
+                            </div>
+                            <div class="widget-activity-header">
+                                <a href="javascript:void(0)">&nbsp;{{ $user->name }}</a>
+                                @if($user->plan_code == 'premium' && $user->hasRole('Talents'))
+                                    @if(isset($follows))
+                                        @if(in_array($user->id,$follows))
+                                            <form action="{{ route('user.unfollow.talent') }}" method="POST" style="margin-top: -24px">
+                                                <input type="hidden" name="_token" value="{{ csrf_token() }}">
+                                                <input type="hidden" name="follower_id" value="{{ Auth::user()->id }}">
+                                                <input type="hidden" name="followed_id" value="{{ $user->id }}">
+                                                <div class="text-center">
+                                                    <button type="submit" class="btn btn-default talent_btn">Unfollow</button>
+                                                </div>
+                                            </form>
+                                        @else
+                                            <form action="{{ route('user.follow.talent') }}" method="POST" style="margin-top: -24px">
+                                                <input type="hidden" name="_token" value="{{ csrf_token() }}">
+                                                <input type="hidden" name="follower_id" value="{{ Auth::user()->id }}">
+                                                <input type="hidden" name="followed_id" value="{{ $user->id }}">
+                                                <div class="text-center">
+                                                    <button type="submit" class="btn btn-primary talent_btn">Follow</button>
+                                                </div>
+                                            </form>
+                                        @endif
+                                    @endif
+                                @endif
+                            </div>
+                        </div>
+                        @endif
+                    @endforeach
                 </div>
-                <div class="widget-activity-item">
-                    <div class="widget-activity-avatar">
-                        <img src="../../public/theme/images/team-member.jpg">
-                    </div>
-                    <div class="widget-activity-header">
-                      <a href="javascript:void(0)">&nbsp;Cairo</a>
-                      <button class="btn btn-default btn_clr talent_btn">Follow</button>
-                      
-                    </div>
-                </div>
-                <div class="widget-activity-item">
-                    <div class="widget-activity-avatar">
-                        <img src="../../public/theme/images/team-member.jpg">
-                    </div>
-                    <div class="widget-activity-header">
-                      <a href="javascript:void(0)">&nbsp;Cairo</a>
-                      <button class="btn btn-default btn_clr talent_btn">Follow</button>
-                      
-                    </div>
-                </div>
-            </div>
+                @endif
+            @endhasrole
 
-            <div class="col-sm-12">
-                <div class="space-10"></div>
-                <h5 class="m-t-2">Followers</h5>
-                <div class="widget-activity-item">
-                    <div class="widget-activity-avatar">
-                        <img src="../../public/theme/images/team-member.jpg">
-                    </div>
-                    <div class="widget-activity-header">
-                      <a href="javascript:void(0)">&nbsp;Cairo</a>
-                      <button class="btn btn-default btn_clr talent_btn">Block</button>
-                    </div>
+            @hasrole('Talents')
+                @if(isset($users))
+                <div class="col-sm-12">
+                    <div class="space-10"></div>
+                    <h5 class="m-t-2">Followers</h5>
+                    @foreach($users as $user)
+                        @if( $user->hasRole('Fans') && Auth::user()->id != $user->id )
+                            @if(isset($follows))
+                                @if(in_array($user->id,$follows))
+                                    <div class="widget-activity-item">
+                                        <div class="widget-activity-avatar">
+                                            @if($user->image != null)
+                                                <img src="{{ asset('storage/users/'.$user->image) }}" title="{{ $user->name }}" alt=""> 
+                                            @else
+                                                <img src="{{ asset('storage/users/default.png') }}" alt=""> 
+                                            @endif
+                                        </div>
+                                        <div class="widget-activity-header">
+                                            <a href="javascript:void(0)">&nbsp;{{ $user->name }}</a>
+                                            <button class="btn btn-default btn_clr talent_btn">Block</button>
+                                        </div>
+                                    </div>
+                                @endif
+                            @endif
+                        @endif
+                    @endforeach
                 </div>
-                <div class="widget-activity-item">
-                    <div class="widget-activity-avatar">
-                        <img src="../../public/theme/images/team-member.jpg">
-                    </div>
-                    <div class="widget-activity-header">
-                      <a href="javascript:void(0)">&nbsp;Cairo</a>
-                      <button class="btn btn-default btn_clr talent_btn">Block</button>
-                    </div>
-                </div>
-                <div class="widget-activity-item">
-                    <div class="widget-activity-avatar">
-                        <img src="../../public/theme/images/team-member.jpg">
-                    </div>
-                    <div class="widget-activity-header">
-                      <a href="javascript:void(0)">&nbsp;Cairo</a>
-                      <button class="btn btn-default btn_clr talent_btn">Block</button>
-                    </div>
-                </div>
-            </div>
+                @endif
+            @endhasrole
+
         </div>
+
     </div>
     <div class="space-30"></div>
 </div>
@@ -562,9 +651,12 @@
         }
     });
 
+    $('#articleSubmit').prop('disabled',false);
     $('#post-article').on('submit', function(e) {
 
         e.preventDefault();
+
+        $('#articleSubmit').prop('disabled',true);
 
         if( $(this).validate().form() ) 
         {
@@ -638,7 +730,10 @@
 
     page_refresh();
 
+    $('#imagesSubmit').prop('disabled',false);
     $( "#post-image-form" ).submit(function( event ) {
+
+        $('#imagesSubmit').prop('disabled',true);
 
         var data = new FormData();
         $.each($('#file')[0].files, function(i, file) {
@@ -673,9 +768,13 @@
        event.preventDefault();
     });
 
+
+    $('#videoSubmit').prop('disabled', false);
     $('#post_vedio').submit(function(e){
 
         var formData  = $(this).serializeArray();
+
+        $('#videoSubmit').prop('disabled', true);
 
         $.ajax({
             url: "{{ route('talent.post.vedio') }}",
@@ -805,112 +904,132 @@
             //console.log(json.additional_info);
             
 
-            // console.log(json.images);
-            // console.log(Object.keys(json.images).length);
-
             var imagesHtml = '';
             var post_images_path = "{{ asset('storage/posts/') }}";
 
-            if(Object.keys(json.images).length > 0)
-            {
-                var images = json.images;
-                for (var key in images) 
-                {
-                    if (images.hasOwnProperty(key)) 
-                    {
-                        var keyArr = key.split('_');
+            // here is an array console.log(Object.values(json.images));
+            var images = Object.values(json.images);
 
+            var total_images = 0;
+            for(var i = 0 ; i < images.length ; i++)
+            {
+                for(var talent_image in images[i])
+                {
+                    var keyArr = talent_image.split('_');
+                    var talent_name = keyArr[0];
+                    var talent_id = keyArr[1];
+
+
+                    for(var dates in images[i][talent_image])
+                    {
+                        var keyArr1 = dates.split('_');                        
+                        var post_date = keyArr1[0]; // posted date
+                        var post_id = keyArr1[1];   // post_id
+                        
                         imagesHtml += '<div class="row">';
                         imagesHtml += '<div class="col-md-12">';
-                        /* start loop */
                         imagesHtml += '<div class="list-group b-a-0">';
                         imagesHtml += '<div class="list-group-item">';
-                        imagesHtml += '<div class="dropdown pull-xs-right m-l-1">';
-                        imagesHtml += '<button type="button" class="btn btn-xs btn-outline btn-outline-colorless dropdown-toggle" data-toggle="dropdown" aria-expanded="false">';
-                        imagesHtml += '<i class="fa fa-reorder"></i>';
-                        imagesHtml += '</button>';
-                        //
-                        imagesHtml += '<div class="dropdown-menu dropdown-menu-right">';
-                        imagesHtml += '<li>';
-                        imagesHtml += '<a href="javascript:void(0)" class="remove_post_images" data-id="'+keyArr[1]+'">';
-                        imagesHtml += '<i class="dropdown-icon fa fa-times text-danger"></i>&nbsp;&nbsp;Remove';
-                        imagesHtml += '</a>';
-                        imagesHtml += '</li>';
-                        imagesHtml += '</div>';
-
-                        // imagesHtml += '<span class="loader">';
-                        // imagesHtml += '<i class="fa fa-spinner fa-1x fa-spin"></i>';
-                        // imagesHtml += '</span>';
-
-
-                        //
-                        imagesHtml += '</div>';
-                        imagesHtml += '<div class="widget blog_gallery" style="display: inline-flex;">';
-                        for(var i = 0 ; i < images[key].length ; i++)
+                        if(user_plan_code != 'free')
                         {
-                            var src = post_images_path+"/"+images[key][i].replace(/['"]+/g, '');
-                            imagesHtml += '<a href="javascript:void(0)" class="img-gallery" data-id="'+keyArr[1]+'"  data-toggle="modal"  data-target="#myModal">';
+                            imagesHtml += '<div class="dropdown pull-xs-right m-l-1">';
+                            imagesHtml += '<button type="button" class="btn btn-xs btn-outline btn-outline-colorless dropdown-toggle" data-toggle="dropdown" aria-expanded="false">';
+                            imagesHtml += '<i class="fa fa-reorder"></i>';
+                            imagesHtml += '</button>';
+                            imagesHtml += '<div class="dropdown-menu dropdown-menu-right">';
+                            imagesHtml += '<li>';
+                            imagesHtml += '<a href="javascript:void(0)" class="remove_post_images" data-id="'+post_id+'">';
+                            imagesHtml += '<i class="dropdown-icon fa fa-times text-danger"></i>&nbsp;&nbsp;Remove';
+                            imagesHtml += '</a>';
+                            imagesHtml += '</li>';
+                            imagesHtml += '</div>';
+                            // imagesHtml += '<span class="loader">';
+                            // imagesHtml += '<i class="fa fa-spinner fa-1x fa-spin"></i>';
+                            // imagesHtml += '</span>';
+                            imagesHtml += '</div>';
+                        }   
+                        imagesHtml += '<div class="widget blog_gallery" style="display: inline-flex;">';
+                        var imagesArr = images[i][talent_image][dates].images; // images array
+                        total_images += imagesArr.length;
+                        for(var j = 0 ; j < imagesArr.length ; j++)
+                        {
+                            var src = post_images_path+"/"+imagesArr[j].replace(/['"]+/g, '');
+                            imagesHtml += '<a href="javascript:void(0)" class="img-gallery" data-id="'+post_id+'"  data-toggle="modal"  data-target="#myModal">';
                             imagesHtml += '<img src="'+src+'" class="img-thumbnail img-custom">';
                             imagesHtml += '</a>';
                         }
+
                         imagesHtml += '</div>';
-                        imagesHtml += '<p class="list-group-item-text text-muted font-size-11">Posted on '+new Date(keyArr[0]).toDateString("yyyy-MM-dd")+'</p>';
+                        imagesHtml += '<p class="list-group-item-text text-muted font-size-11">Post by <b>'+talent_name+'</b> on '+new Date(post_date).toDateString("yyyy-MM-dd")+'</p>';
                         imagesHtml += '</div>';
                         imagesHtml += '</div>';
-                        /* end loop */
+                        //
                         imagesHtml += '</div>';
                         imagesHtml += '</div>'; 
-                    }
+                    }                
                 }
             }
+            $('#photos_count').text(total_images);
             $('#post-images').html(imagesHtml);
-            // console.log(key+"  ->   "+images[key][0]);
-            // console.log("id "+ keyArr[1]);
-            // var date = new Date(keyArr[0]).toDateString("yyyy-MM-dd");
-            // console.log("Date "+date);
 
+            // here is an array console.log(Object.values(json.images));
             var vedioHtml = '';
-            var vedios = json.vedios;
-            if(Object.keys(vedios).length > 0)
+            var vedios = Object.values(json.vedios);
+            var total_videos = 0;
+            for(var i = 0 ; i < vedios.length ; i++)
             {
-                for (var key in vedios) 
+                for(var talent_video in vedios[i])
                 {
-                    vedioHtml += '<ul class="row video-list-thumbs " style="margin: 0; padding: 0">';
-                    if (vedios.hasOwnProperty(key)) 
-                    {
-                        vedioHtml += '<li class="col-sm-6 col-md-4" style="padding: 10px 10px;">';
-                        vedioHtml += '<a href="javascript:void(0)">';
+                    var keyArr = talent_video.split('_');
+                    var talent_name = keyArr[0];
+                    var talent_id = keyArr[1];
 
-                        if(vedios[key].vedio_type == 'youtube')
+                    total_videos += Object.keys(vedios[i][talent_video]).length;
+
+                    vedioHtml += '<div class="ps-block videos-list p-b-2">';
+                    for(var dates in vedios[i][talent_video])
+                    {
+                        var keyArr1 = dates.split('_');                        
+                        var post_date = keyArr1[0]; // posted date
+                        var post_id = keyArr1[1];   // post_id
+                        var video_info = vedios[i][talent_video][dates].videos;
+
+                        vedioHtml += '<div class="videos-list-item">';
+                        vedioHtml += '<a href="javascript:void(0)">';
+                        vedioHtml += '<div class="video_date">';
+                        vedioHtml += '<i class="fa fa-calendar"></i>&nbsp;'+new Date(post_date).toDateString("yyyy-MM-dd");
+                        vedioHtml += '</div>';
+
+                        if(video_info.vedio_type == 'youtube')
                         {
-                            vedioHtml += '<img src="'+vedios[key].image_url+'" data-toggle="modal" data-target="#vedioModal" data-url="'+vedios[key].vedio_url+'" class="vedio-modal" style="height: 190px; width: 100%;">';
+                            vedioHtml += '<img src="'+video_info.image_url+'" data-toggle="modal" data-target="#vedioModal" data-url="'+video_info.vedio_url+'" class="border-rounded vedio-modal">';
                         }
-                        else if(vedios[key].vedio_type == 'dailymotion')
+                        else if(video_info.vedio_type == 'dailymotion')
                         {
-                            vedioHtml += '<img src="'+vedios[key].image_url+'" data-toggle="modal" data-target="#vedioModal" data-url="'+vedios[key].vedio_url+'"  class="vedio-modal" style="height: 190px; width: 100%;">';
+                            vedioHtml += '<img src="'+video_info.image_url+'" data-toggle="modal" data-target="#vedioModal" data-url="'+video_info.vedio_url+'"  class="border-rounded vedio-modal">';
                         }
-                        else if(vedios[key].vedio_type == 'vimeo')
+                        else if(video_info.vedio_type == 'vimeo')
                         {
-                            vedioHtml += '<img src="'+vedios[key].image_url+'" data-toggle="modal" data-target="#vedioModal" data-url="'+vedios[key].vedio_url+'" class="vedio-modal" style="height: 190px; width: 100%;">';
-                        }                                                        
-                        vedioHtml += '<h5 class="business-listing" style="margin-bottom: 0;">'+vedios[key].title+'</h5>';                                 
-                        vedioHtml += '<p>'+vedios[key].vedio_type.charAt(0).toUpperCase()+vedios[key].vedio_type.slice(1)+'</p>';                                 
+                            vedioHtml += '<img src="'+video_info.image_url+'" data-toggle="modal" data-target="#vedioModal" data-url="'+video_info.vedio_url+'" class="border-rounded vedio-modal">';
+                        }
+
                         vedioHtml += '</a>';
-                        vedioHtml += '<span class="glyphicon glyphicon-play-circle">&nbsp;</span>';
-                        vedioHtml += '</li>';
-                    }
-                    vedioHtml += '</ul>';
-                }               
+                        vedioHtml += '<div class="font-size-11 text-muted" style="margin-top: 5px;">';
+                        vedioHtml += '<div class="post_vedio_author">';
+                        vedioHtml += '<i class="fa fa-user"></i>&nbsp;'+talent_name;
+                        vedioHtml += '</div>';
+                        vedioHtml += '<div>';
+                        vedioHtml += '<i class="fa fa-video-camera"></i>&nbsp;'+video_info.vedio_type.charAt(0).toUpperCase()+video_info.vedio_type.slice(1);
+                        vedioHtml += '</div>';
+                        vedioHtml += '</div>';
+                        vedioHtml += '</div>';
+                    } 
+                    vedioHtml += '</div>';
+                }        
             }
-            $('#post-vedios').html(vedioHtml);
-            // console.log(json.vedios);
-            // for (var key in vedios) 
-            // {
-            //     if (vedios.hasOwnProperty(key)) 
-            //     {
-            //         console.log(key+"  ->   "+vedios[key].title);
-            //     }
-            // }
+            $('#video_count').text(total_videos);
+            $('#post-video').html(vedioHtml);
+
 
 
             var postHtml = '';
@@ -918,10 +1037,12 @@
             var additional_info = json.additional_info;
             if(Object.keys(posts).length > 0)
             {
+                $('#article_count').text(Object.keys(posts).length);
                 for (var key in posts) 
                 {
                     if(posts[key].post_type == 'text')
                     {
+                        postHtml += '<div class="panel-body">';
                         postHtml += '<div class="list-group-item">';
                         if(user_plan_code != 'free')
                         {
@@ -970,6 +1091,7 @@
                         postHtml += '</div>';
                         postHtml += '</div>';
                         postHtml += '</div>';
+                        postHtml += '</div>';
                     }
                 }
             }
@@ -985,22 +1107,50 @@
             $('#social_links').html('');
             if(additional_info.hasOwnProperty('facebook'))
             {
-                $('#social_links').append('<a href="'+additional_info.facebook+'" class="fa fa-facebook" target="_blank"></a>');
+                if(additional_info.facebook == null)
+                {
+                    $('#social_links').append('<a href="javascript:void(0)" class="fa fa-facebook" target="_blank"></a>');
+                }
+                else
+                {
+                    $('#social_links').append('<a href="'+additional_info.facebook+'" class="fa fa-facebook" target="_blank"></a>');
+                }
             }
 
             if(additional_info.hasOwnProperty('instagram'))
             {
-                $('#social_links').append('<a href="'+additional_info.instagram+'" class="fa fa-instagram" target="_blank"></a>');
+                if(additional_info.instagram == null)
+                {
+                    $('#social_links').append('<a href="javascript:void(0)" class="fa fa-instagram" target="_blank"></a>');
+                }
+                else
+                {
+                    $('#social_links').append('<a href="'+additional_info.instagram+'" class="fa fa-instagram" target="_blank"></a>');
+                }
             }
 
             if(additional_info.hasOwnProperty('linkdin'))
             {
-                $('#social_links').append('<a href="'+additional_info.linkdin+'" class="fa fa-linkedin" target="_blank"></a>');
+                if(additional_info.linkdin == null)
+                {
+                    $('#social_links').append('<a href="javascript:void(0)" class="fa fa-linkedin" target="_blank"></a>');
+                }
+                else
+                {
+                    $('#social_links').append('<a href="'+additional_info.linkdin+'" class="fa fa-linkedin" target="_blank"></a>');
+                }
             }
 
             if(additional_info.hasOwnProperty('twitter'))
             {
-                $('#social_links').append('<a href="'+additional_info.twitter+'" class="fa fa-twitter" target="_blank"></a>');
+                if(additional_info.twitter == null)
+                {
+                    $('#social_links').append('<a href="javascript:void(0)" class="fa fa-twitter" target="_blank"></a>');
+                }
+                else
+                {
+                    $('#social_links').append('<a href="'+additional_info.twitter+'" class="fa fa-twitter" target="_blank"></a>');
+                }
             }
 
             if(additional_info.hasOwnProperty('about_us'))
@@ -1010,12 +1160,11 @@
                 $('#overview').html(html);
             }
 
-
-
             var postCategoryHtml = '';
             var postCategory = json.postCategories;
             if(Object.keys(postCategory).length > 0)
             {
+                $('#post_category').html('');
                 for (var key in postCategory) 
                 {
                     if(postCategory[key].name == 'Un categorized')
@@ -1053,8 +1202,7 @@
     // Initialize Summernote
     $(function() {
       $('#post_article').summernote({
-        height:200,
-        placeholder: 'Write something here',
+        height: 200,
         toolbar: [
           ['parastyle', ['style']],
           ['fontstyle', ['fontname', 'fontsize']],
@@ -1063,7 +1211,7 @@
           ['color', ['color']],
           ['para', ['ul', 'ol', 'paragraph']],
           ['height', ['height']],
-          ['insert', ['link', 'video', 'table', 'hr']],
+          ['insert', ['picture', 'link', 'video', 'table', 'hr']],
           ['history', ['undo', 'redo']],
           ['misc', ['codeview', 'fullscreen']],
           ['help', ['help']]

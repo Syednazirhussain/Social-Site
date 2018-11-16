@@ -59,6 +59,6 @@ class PostMeta extends Model
      **/
     public function posts()
     {
-        return $this->hasMany(\App\Models\Admin\Post::class);
+        return $this->hasMany(\App\Models\Admin\Post::class,'id','post_id');
     }
 }

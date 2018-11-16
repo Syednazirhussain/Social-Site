@@ -68,5 +68,13 @@ class User extends Authenticatable
         return $this->belongsTo(\App\Models\Admin\MemberShipPlan::class,'id','follower_id','followed_id');
     }
 
+    /**
+     * @return \Illuminate\Database\Eloquent\Relations\BelongsToMany
+    **/
+    public function posts()
+    {
+        return $this->hasMany(\App\Models\Admin\Post::class,'id','user_id');
+    }
+
 
 }

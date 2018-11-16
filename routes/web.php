@@ -98,6 +98,8 @@ Route::get('/', function () {
     return redirect()->route('site.dashboard');
 });
 
+
+
 Route::get('creatifny', ['as'=> 'site.dashboard', 'uses' => 'User\UserController@index']);
 Route::get('user/login',['as' => 'user.login','uses' => 'User\UserController@viewLogin']);
 Route::post('user/login',['as' => 'user.authenticate','uses' => 'User\UserController@authenticate']);

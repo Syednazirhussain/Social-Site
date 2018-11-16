@@ -18,6 +18,7 @@ use App\Models\Admin\AdditionalInfo;
 use App\Models\Admin\PostCategory;
 use App\Models\Admin\Post;
 use App\Models\Admin\PostMeta;
+use App\Models\Admin\Follow;
 
 class UserController extends Controller
 {
@@ -33,10 +34,54 @@ class UserController extends Controller
 
     public function dashboard()
     {
+        $users = User::all();
+        $follows = Follow::all();
+
+        $followers = [];
+        if(Auth::user()->plan_code == 'premium')
+        {
+            foreach ($users as  $user) 
+            {
+                foreach ($follows as $follow) 
+                {
+                    if($follow->followed_id == Auth::user()->id)
+                    {
+                        if(!in_array($follow->follower_id, $followers))
+                        {
+                            array_push($followers, $follow->follower_id);
+                        }
+                    }
+                }
+            }
+        }
+        else
+        {
+            foreach ($users as $user) 
+            {
+                if(Auth::user()->id != $user->id)
+                {
+                    foreach ($follows as $follow) 
+                    {
+                        if($follow->follower_id == Auth::user()->id)
+                        {
+                            if(!in_array($follow->followed_id, $followers))
+                            {
+                                array_push($followers, $follow->followed_id);
+                            }
+                        }
+                    }
+                }
+            }
+        }
+
         $user = Auth::user();
+
         $data = [
-            'user'              => $user,
+            'user'      => $user,
+            'users'     => $users,
+            'follows'   => $followers
         ];
+
     	return view('user.dashboard.index',$data);
     }
 
@@ -79,13 +124,13 @@ class UserController extends Controller
         $user->password = bcrypt($input['password']);
         $user->phone = $input['phone'];
         $user->status = 'active';
-        //$user->plan_code = 'free';
-        $user->plan_code = 'premium';
+        $user->plan_code = 'free';
+        //$user->plan_code = 'premium';
         $user->image = 'default.png';
         if($user->save())
         {
-        	//$user->assignRole('Fans');
-            $user->assignRole('Talents');
+        	$user->assignRole('Fans');
+            //$user->assignRole('Talents');
         	Auth::login($user, true);
     
             $subscription = new Subscription;

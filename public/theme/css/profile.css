@@ -153,8 +153,9 @@
   margin-top: 0px;
 }
 .tabbable-line > .nav-tabs > li.active {
-  border-bottom: 4px solid #f3565d;
+  border-bottom: 2px solid #f3565d;
   position: relative;
+  background: #f3565d !important;
 }
 .tabbable-line > .nav-tabs > li.active > a {
   border: 0;

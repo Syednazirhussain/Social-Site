@@ -1,0 +1,19 @@
+Array
+(
+    [Peterson_9] => Array
+        (
+            [2018-11-15_6] => Array
+                (
+                    [videos] => Array
+                        (
+                            [title] => Union election
+                            [vedio_type] => youtube
+                            [vedio_url] => https://www.youtube.com/embed/L1KYCM0uanY
+                            [image_url] => https://img.youtube.com/vi/L1KYCM0uanY/sddefault.jpg
+                        )
+
+                )
+
+        )
+
+)

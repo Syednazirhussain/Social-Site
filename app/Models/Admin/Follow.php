@@ -29,8 +29,8 @@ class Follow extends Model
 
 
     public $fillable = [
-        'name',
-        'description'
+        'follower_id',
+        'followed_id'
     ];
 
     /**

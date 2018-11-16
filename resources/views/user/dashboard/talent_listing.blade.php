@@ -125,7 +125,7 @@
                 @if(isset($users))
                     @foreach($users as $user)
                         @if( $user->hasRole('Talents') && Auth::user()->id != $user->id )
-                            <div class="col-md-4 col-sm-6 single-team">
+                            <div class="col-md-3 col-sm-6 single-team">
                                 <div class="inner">
                                     <div class="team-img">
                                         @if($user->image != null)
@@ -136,38 +136,27 @@
                                     </div>
                                     <div class="team-content">
                                         <h4>{{ $user->name }}</h4>
-<!--                                         <span class="desg">UI/UX Designer</span> -->
                                         @if($user->plan_code == 'premium' && $user->hasRole('Talents'))
-
                                             @if(isset($follows))
-
-                                                @foreach($follows as $follow)
-
-                                                    @if($follow->follower_id == Auth::user()->id && $follow->followed_id == $user->id)
-
-                                                        <form action="{{ route('user.unfollow.talent') }}" method="POST">
-                                                            <input type="hidden" name="_token" value="{{ csrf_token() }}">
-                                                            <input type="hidden" name="follower_id" value="{{ Auth::user()->id }}">
-                                                            <input type="hidden" name="followed_id" value="{{ $user->id }}">
-                                                            <div class="text-center">
-                                                                <button type="submit" class="btn btn-default bt-sm">Un Follow</button>
-                                                            </div>
-                                                        </form>                                                    
-
-                                                    @else
-                                                        <form action="{{ route('user.follow.talent') }}" method="POST">
-                                                            <input type="hidden" name="_token" value="{{ csrf_token() }}">
-                                                            <input type="hidden" name="follower_id" value="{{ Auth::user()->id }}">
-                                                            <input type="hidden" name="followed_id" value="{{ $user->id }}">
-                                                            <div class="text-center">
-                                                                <button type="submit" class="btn btn-primary bt-sm">Follow</button>
-                                                            </div>
-                                                        </form>
-                                                    @endif
-
-                                                @endforeach
-
-
+                                                @if(in_array($user->id,$follows))
+                                                    <form action="{{ route('user.unfollow.talent') }}" method="POST">
+                                                        <input type="hidden" name="_token" value="{{ csrf_token() }}">
+                                                        <input type="hidden" name="follower_id" value="{{ Auth::user()->id }}">
+                                                        <input type="hidden" name="followed_id" value="{{ $user->id }}">
+                                                        <div class="text-center">
+                                                            <button type="submit" class="btn btn-default bt-sm">Unfollow</button>
+                                                        </div>
+                                                    </form>
+                                                @else
+                                                    <form action="{{ route('user.follow.talent') }}" method="POST">
+                                                        <input type="hidden" name="_token" value="{{ csrf_token() }}">
+                                                        <input type="hidden" name="follower_id" value="{{ Auth::user()->id }}">
+                                                        <input type="hidden" name="followed_id" value="{{ $user->id }}">
+                                                        <div class="text-center">
+                                                            <button type="submit" class="btn btn-primary bt-sm">Follow</button>
+                                                        </div>
+                                                    </form>
+                                                @endif
                                             @endif
                                         @endif
                                         <div class="team-social">

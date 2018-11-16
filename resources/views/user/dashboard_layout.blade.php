@@ -23,12 +23,9 @@
     <link href="{{ asset('/skin-1/assets/css/pixeladmin.min.css') }}" rel="stylesheet">
     <link href="{{ asset('/skin-1/assets/css/widgets.min.css') }}" rel="stylesheet">
     <link href="{{ asset('/skin-1/assets/plugins/jasny-bootstrap/css/jasny-bootstrap.min.css') }}" rel="stylesheet">
-
     <link href="{{ asset('/skin-1/assets/css/themes/candy-orange.min.css') }}" rel="stylesheet">
-
     <link href="{{ asset('/skin-1/assets/fileuploader/src/jquery.fileuploader.css') }}" media="all" rel="stylesheet">
     <link href="{{ asset('/skin-1/assets/fileuploader/css/jquery.fileuploader-theme-thumbnails.css') }}" media="all" rel="stylesheet">
-    
     <link href="{{ asset('/skin-1/assets/calender/calender-css.css') }}" media="all" rel="stylesheet">
 
 
@@ -154,11 +151,10 @@
     <script src="{{ asset('/skin-1/assets/js/pixeladmin.min.js') }}"></script>
     <script src="{{ asset('/skin-1/assets/js/jquery.validate.min.js') }}"></script>
     <script src="{{ asset('/skin-1/assets/js/custom.js') }}"></script>
-    <script src="{{ asset('/skin-1/assets/plugins/jasny-bootstrap/js/jasny-bootstrap.min.js') }}"></script>
 
+    <script src="{{ asset('/skin-1/assets/plugins/jasny-bootstrap/js/jasny-bootstrap.min.js') }}"></script>
     <script src="{{ asset('/skin-1/assets/fileuploader/src/jquery.fileuploader.min.js') }}" type="text/javascript"></script>
     <script src="{{ asset('/skin-1/assets/fileuploader/js/custom.js') }}" type="text/javascript"></script>
-    
     <script src="{{ asset('/skin-1/assets/calender/calender-js.js') }}" type="text/javascript"></script>
 
     @yield('js')
