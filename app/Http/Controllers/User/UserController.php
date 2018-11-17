@@ -24,65 +24,12 @@ class UserController extends Controller
 {
     public function index()
     {
-    	return view('user.site.index');
+    	return view('local.site.index');
     }
 
     public function viewLogin()
     {
-    	return view('user.auth.index');
-    }
-
-    public function dashboard()
-    {
-        $users = User::all();
-        $follows = Follow::all();
-
-        $followers = [];
-        if(Auth::user()->plan_code == 'premium')
-        {
-            foreach ($users as  $user) 
-            {
-                foreach ($follows as $follow) 
-                {
-                    if($follow->followed_id == Auth::user()->id)
-                    {
-                        if(!in_array($follow->follower_id, $followers))
-                        {
-                            array_push($followers, $follow->follower_id);
-                        }
-                    }
-                }
-            }
-        }
-        else
-        {
-            foreach ($users as $user) 
-            {
-                if(Auth::user()->id != $user->id)
-                {
-                    foreach ($follows as $follow) 
-                    {
-                        if($follow->follower_id == Auth::user()->id)
-                        {
-                            if(!in_array($follow->followed_id, $followers))
-                            {
-                                array_push($followers, $follow->followed_id);
-                            }
-                        }
-                    }
-                }
-            }
-        }
-
-        $user = Auth::user();
-
-        $data = [
-            'user'      => $user,
-            'users'     => $users,
-            'follows'   => $followers
-        ];
-
-    	return view('user.dashboard.index',$data);
+    	return view('local.auth.index');
     }
 
     public function verifyEmail(Request $request)
@@ -178,7 +125,16 @@ class UserController extends Controller
 
         if (Auth::attempt(['email' => $email, 'password' => $password])) 
         {
-            return redirect()->route('user.dashboard');
+            $user = Auth::user();
+            if($user->hasRole('Talents'))
+            {
+                return redirect()->route('talent.user.dashboard');
+            }
+            else
+            {
+                return redirect()->route('fan.user.dashboard');
+            }
+
         } 
         else
         {

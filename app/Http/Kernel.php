@@ -59,6 +59,8 @@ class Kernel extends HttpKernel
         'throttle' => \Illuminate\Routing\Middleware\ThrottleRequests::class,
         'admin.auth'  => \App\Http\Middleware\AdminAuth::class,
         'user.auth' => \App\Http\Middleware\UserAuth::class,
+        'talent.route' => \App\Http\Middleware\TalentMiddleware::class,
+        'fan.route' => \App\Http\Middleware\FanMiddleware::class,
         'role' => \Spatie\Permission\Middlewares\RoleMiddleware::class,
         'permission' => \Spatie\Permission\Middlewares\PermissionMiddleware::class,
         'role_or_permission' => \Spatie\Permission\Middlewares\RoleOrPermissionMiddleware::class,

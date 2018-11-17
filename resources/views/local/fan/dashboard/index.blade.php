@@ -280,35 +280,6 @@
                         <div id="msg"></div>    
                         <div class="tab-pane active" id="article">
                             <div class="row">
-                                    @hasanyrole('Talents|Web Master|Admin')
-                                    <div class="col-sm-12 col-md-12">
-                                        <div class="panel">
-                                            <div class="panel-heading">
-                                                <div class="panel-title">Post an article</div>
-                                            </div>
-                                            <form id="post-article" method="POST">
-                                                <div class="panel-body">
-                                                    <div class="row">
-                                                        <div class="form-group col-sm-12">
-                                                            <label for="post_category" class="control-label">Select Post Type</label>
-                                                            <select type="text" name="post_category" id="post_category" class="form-control">
-                                                            </select>
-                                                        </div>
-                                                    </div>
-                                                    <div class="row">
-                                                        <div class="form-group col-sm-12">
-                                                            <label class="control-label">Message</label>
-                                                            <textarea id="post_article" name="article" style="display: none;"></textarea>
-                                                        </div>
-                                                    </div>
-                                                </div>
-                                                <div class="panel-footer text-right">
-                                                    <button type="submit" id="articleSubmit" class="btn btn-primary">Post</button>
-                                                </div>
-                                            </form>
-                                        </div>
-                                    </div>
-                                    @endhasanyrole
                                     <div class="col-sm-12 col-md-12">
                                         <div class="panel">
                                             <div id="posts"></div>
@@ -319,28 +290,6 @@
                         <div class="tab-pane" id="overview"></div>
                         <div class="tab-pane" id="photo">
                             <div class="row">
-                                @hasanyrole('Talents|Web Master|Admin')
-                                <div class="col-sm-12 col-md-12">
-                                    <div class="panel">
-                                        <div class="panel-heading">
-                                            <div class="panel-title">Post Albums</div>
-                                        </div>
-                                        <form action="{{ route('talent.post.images') }}" method="POST" id="post-image-form" enctype="multipart/form-data">
-                                            <div class="panel-body">
-                                                <div class="row">
-                                                    <div class="form-group col-sm-12">
-                                                        <label for="">Gallery</label>
-                                                        <input type="file" id="file" name="images" class="form-control">
-                                                    </div>
-                                                </div>
-                                            </div>
-                                            <div class="panel-footer text-right">
-                                                <button type="submit" id="imagesSubmit" class="btn btn-primary">Submit</button>
-                                            </div>
-                                        </form>
-                                    </div>
-                                </div>
-                                @endhasanyrole
                                 <div class="col-sm-12 col-md-12">
                                     <div id="post-images"></div>  
                                 </div>
@@ -349,43 +298,6 @@
                         <div class="tab-pane" id="video">
                             <div class="m-a-2 p-a-3">
                                 <div class="row">
-                                    @hasanyrole('Talents|Web Master|Admin')
-                                    <div class="col-sm-12 col-md-12">
-                                        <div class="panel">
-                                            <div class="panel-heading">
-                                                <div class="panel-title">Upload Vedio</div>
-                                            </div>
-                                            <form action="{{ route('talent.post.vedio') }}" method="POST" id="post_vedio">
-                                                <input type="hidden" name="_token" value="{{ csrf_token() }}">
-                                                <div class="panel-body">
-                                                    <div class="row">
-                                                        <div class="form-group col-sm-6">
-                                                            <label class="control-label">Title</label>
-                                                            <input type="text" class="form-control" style="height: 30px !important" name="title" placeholder="ex Picnic">
-                                                        </div>
-                                                        <div class="form-group col-sm-6">
-                                                            <label class="control-label">Type</label>
-                                                            <select class="form-control" name="vedio_type" id="vedio_type">
-                                                                <option value="youtube">Youtube</option>
-                                                                <option value="dailymotion">Daily motion</option>
-                                                                <option value="vimeo">Vimeo</option>
-                                                            </select>
-                                                        </div>
-                                                    </div>
-                                                    <div class="row">
-                                                        <div class="form-group col-sm-12">
-                                                            <label class="control-label">URL</label>
-                                                            <input type="text" class="form-control" style="height: 30px !important" name="vedio_url" placeholder="ex https://youtu.be/cH6kxtzovew">
-                                                        </div>
-                                                    </div>
-                                                </div>
-                                                <div class="panel-footer text-right">
-                                                    <button type="submit" id="videoSubmit" class="btn btn-primary">Add</button>
-                                                </div>
-                                            </form>
-                                        </div>
-                                    </div>
-                                    @endhasanyrole
                                     <div class="col-sm-12 col-md-12">
                                         <div id="post-video"></div>
                                     </div>
@@ -393,9 +305,7 @@
                             </div>
                         </div>
                         <div class="tab-pane" id="event">
-                            @hasanyrole('Talents|Web Master|Admin')
                             <div id='calendar'></div>
-                            @endhasanyrole
                         </div>
                     </div>
                 </div>
@@ -428,11 +338,6 @@
                     <div class="modal-body">
                         <div class="row">
                             <div class="col-sm-12 col-md-12">
-                                @hasanyrole('Talents|Web Master|Admin')
-                                <a href="javascript:void(0)" id="remove_post_image" data-img="" data-id="" class="label label-danger">
-                                    <i class="fa fa-trash"></i>
-                                </a> 
-                                @endhasanyrole
                                 <button type="button" class="close btn-rounded pull-right" data-backdrop="static" data-dismiss="modal">&times;</button>
                             </div>
                         </div>
@@ -452,27 +357,6 @@
                 <div class="widget social_icon" id="social_links"></div>
             </div>
 
-            @hasrole('Talents')
-            <div class="col-md-12">
-                <div class="box-cell col-md-4 valign-top">
-                    <h5>Counter</h5>
-                  <ul class="list-group m-x-0 m-t-3 m-b-0">
-                    <li class="list-group-item  b-x-0 b-t-0">
-                      <span class="label label-primary pull-right" id="article_count"></span>
-                      Articles
-                    </li>
-                    <li class="list-group-item  b-x-0">
-                      <span class="label label-danger pull-right" id="photos_count"></span>
-                      Photos
-                    </li>
-                    <li class="list-group-item  b-x-0 b-b-0">
-                      <span class="label label-info pull-right" id="video_count"></span>
-                      Videos
-                    </li>
-                  </ul>
-                </div>
-            </div>
-            @endhasrole
 
             @hasrole('Fans')
                 @if(isset($users))
@@ -521,36 +405,6 @@
                 @endif
             @endhasrole
 
-            @hasrole('Talents')
-                @if(isset($users))
-                <div class="col-sm-12">
-                    <div class="space-10"></div>
-                    <h5 class="m-t-2">Followers</h5>
-                    @foreach($users as $user)
-                        @if( $user->hasRole('Fans') && Auth::user()->id != $user->id )
-                            @if(isset($follows))
-                                @if(in_array($user->id,$follows))
-                                    <div class="widget-activity-item">
-                                        <div class="widget-activity-avatar">
-                                            @if($user->image != null)
-                                                <img src="{{ asset('storage/users/'.$user->image) }}" title="{{ $user->name }}" alt=""> 
-                                            @else
-                                                <img src="{{ asset('storage/users/default.png') }}" alt=""> 
-                                            @endif
-                                        </div>
-                                        <div class="widget-activity-header">
-                                            <a href="javascript:void(0)">&nbsp;{{ $user->name }}</a>
-                                            <button class="btn btn-default btn_clr talent_btn">Block</button>
-                                        </div>
-                                    </div>
-                                @endif
-                            @endif
-                        @endif
-                    @endforeach
-                </div>
-                @endif
-            @endhasrole
-
         </div>
 
     </div>
@@ -585,139 +439,6 @@
       }
     });
 
-    var post_id=0;
-    $(document).on('click','.edit_post',function(){
-        post_id = $(this).data('post-id');
-        $.get("{{ route('edit.single.post',['']) }}/"+post_id,function(response){
-            var post = response.post;
-            $('#post_article').summernote('code', post.description);
-        });
-    });
-
-    $(document).on('click','.delete_post',function(){
-        post_id = $(this).data('post-id');
-        if (confirm("Are you sure..?")) 
-        {
-            $.ajax({
-                url: "{{ route('delete.single.post',['']) }}/"+post_id,
-                type: "DELETE"
-            }).done(function(response){
-                if(response.hasOwnProperty('errors'))
-                {
-                    var html = errorMessage('There is some problem while deleting post');
-                    $('#msg').html(html);
-                        setTimeout(function(){
-                            $('#msg').html('');                          
-                    }, 3000);
-                }
-                else
-                {
-                    if(response.status == 'success')
-                    {
-                        var html = errorMessage(response.message);
-                        $('#msg').html(html);
-                            setTimeout(function(){
-                                $('#msg').html('');                          
-                        }, 3000);
-                        page_refresh();
-                    }
-                    else
-                    {
-                        var html = errorMessage(response.message);
-                        $('#msg').html(html);
-                            setTimeout(function(){
-                                $('#msg').html('');                          
-                        }, 3000);
-                        page_refresh();
-                    }
-                }
-            });
-        }
-    });
-
-
-    $('#post-article').pxValidate({
-        ignore: ":hidden:not(#post_article),.note-editable.panel-body",
-        focusInvalid: false,
-        rules: {
-          'article': {
-            required: true
-          }
-        },
-        messages: {
-          'article': {
-            required: "Please enter some content"
-          }
-        }
-    });
-
-    $('#articleSubmit').prop('disabled',false);
-    $('#post-article').on('submit', function(e) {
-
-        e.preventDefault();
-
-        $('#articleSubmit').prop('disabled',true);
-
-        if( $(this).validate().form() ) 
-        {
-            if(post_id == 0)
-            {
-                var data = $(this).serializeArray();
-                $.post("{{ route('fan.post.article') }}",data,function(response){
-                    if(response.status == 'success')
-                    {
-                        var html = successMessage(response.message);
-                        $('#msg').html(html);
-                        setTimeout(function(){
-                            $('#msg').html('');                          
-                        }, 3000);
-                    }
-                    else
-                    {
-                        var html = errorMessage(response.message);
-                        $('#msg').html(html);
-                        setTimeout(function(){
-                            $('#msg').html('');                          
-                        }, 3000);
-                    }
-                    $('#post_article').summernote('reset');
-                    page_refresh();
-                });
-            }
-            else
-            {
-                var data = $(this).serializeArray();
-                $.ajax({
-                    url: "{{ route('update.single.post',['']) }}/"+post_id,
-                    type: "PUT",
-                    dataType: "json",
-                    data : data
-                }).done(function(response){
-                    if(response.hasOwnProperty('errors'))
-                    {
-                        var html = errorMessage('There is some problem while updating post');
-                        $('#msg').html(html);
-                        setTimeout(function(){
-                            $('#msg').html('');                          
-                        }, 3000);
-                        $('#post_article').summernote('reset');
-                        page_refresh();     
-                    }
-                    else
-                    {
-                        var html = successMessage(response.message);
-                        $('#msg').html(html);
-                        setTimeout(function(){
-                            $('#msg').html('');                          
-                        }, 3000);
-                        $('#post_article').summernote('reset');
-                        page_refresh();     
-                    }
-                });
-            }
-
-        }
-    });
 
     function strip_html_tags(str)
     {
@@ -730,72 +451,7 @@
 
     page_refresh();
 
-    $('#imagesSubmit').prop('disabled',false);
-    $( "#post-image-form" ).submit(function( event ) {
-
-        $('#imagesSubmit').prop('disabled',true);
-
-        var data = new FormData();
-        $.each($('#file')[0].files, function(i, file) {
-            data.append(i, file);
-        });
-
-        $.ajax({
-              url: "{{ route('talent.post.images') }}",
-              data: data,
-              cache: false,
-              contentType: false,
-              processData: false,
-              type: 'POST',
-              success: function(data){
-                if(data.status == 'success')
-                {
-                    $('.fileuploader-items-list').children(".file-type-image").remove();
-                    page_refresh();
-                    alert(data.message);
-                }
-                else
-                {
-                    alert(data.message);
-                }
-              },
-              error: function(xhr,status,error)  {
-                console.log("status "+status+" Error "+error);
-              }
-        });
-
-
-       event.preventDefault();
-    });
-
-
-    $('#videoSubmit').prop('disabled', false);
-    $('#post_vedio').submit(function(e){
-
-        var formData  = $(this).serializeArray();
-
-        $('#videoSubmit').prop('disabled', true);
-
-        $.ajax({
-            url: "{{ route('talent.post.vedio') }}",
-            type: "POST",
-            dataType: "json",
-            data : formData
-        }).done(function(response){
-            if(response.status == 'success')
-            {
-                alert(response.message);
-                page_refresh();
-            }
-            else
-            {
-                alert(response.message);
-            }
-        });
-
-        e.preventDefault();
-    }); 
-  
+ 
 
     $('body').delegate('.img-gallery','click',function(){
 
@@ -809,80 +465,6 @@
     });
 
 
-    $('body').delegate('.remove_post_images','click',function(){
-        var post_id = $(this).data("id");
-        var result = confirm("Are you sure?");
-        if (result) 
-        {
-            $.ajax({
-                url: "{{ route('talent.post.images.destroy',['']) }}/"+post_id,
-                type: "DELETE",
-                dataType: "json",
-                beforeSend: function(){
-                    $(this).prop('disabled', true);
-                }
-            }).done(function(response){
-
-                $('.loader').css("visibility", "hidden");
-                if(response.status == 'success')
-                {
-                    alert(response.message);
-                    page_refresh();
-                }
-                else
-                {
-                    alert(response.message);
-                }
-            });
-        }
-        event.preventDefault();
-    });
-
-
-    $("#remove_post_image").click(function(e){
-
-        var result = confirm("Are you sure?");
-        if (result) 
-        {
-            var image_url  =  $(this).data('img');
-            var post_id = $(this).data('id');
-            var Obj = {
-                'image': image_url,
-                'post_id': post_id
-            };
-
-            console.log(Obj);
-
-            $.ajax({
-                url: "{{ route('talent.post.image.remove') }}",
-                type: "POST",
-                dataType: "json",
-                data: Obj,
-                success: function(response){
-                    if(response.status == 'success')
-                    {
-                       // alert(response.message);
-                        $("#myModal").modal('hide');
-                        $(document.body).removeClass("modal-open");
-                        $(".modal-backdrop").remove();
-                        
-                        page_refresh();
-
-                    }
-                    else
-                    {
-                        alert(response.message);
-                    }
-                },
-                error: function(error){
-                    console.log(error);
-                }
-            });
-        }
-
-        e.preventDefault();
-    });
-
     $(document).on('click','.vedio-modal',function(){
         $('#vedio-panel').attr('src', '');
         var vedioSrc = $(this).attr('data-url');
@@ -893,7 +475,7 @@
     function page_refresh()
     {
         $.ajax({
-            url: "{{ route('get.post.data') }}",
+            url: "{{ route('talent.profile') }}",
             type: "GET",
             dataType: "json",
         }).done(function(response){
@@ -1180,143 +762,6 @@
 
         });
     }
-
-    function errorMessage(message)
-    {
-        var html = '<div class="alert alert-success alert-dismissable" style="text-align: center;">';
-        html += '<a href="#" class="close" data-dismiss="alert" aria-label="close">&times;</a>';
-        html += '<h4 class="m-t-0 m-b-0"><strong><i class="fa fa-trash fa-lg"></i>&nbsp;&nbsp;'+message+'</strong></h4>';
-        html += '</div>';
-        return html;
-    }
-    
-    function successMessage(message)
-    {
-        var html = '<div class="alert alert-success alert-dismissable" style="text-align: center;">';
-        html += '<a href="#" class="close" data-dismiss="alert" aria-label="close">&times;</a>';
-        html += '<h4 class="m-t-0 m-b-0"><strong><i class="fa fa-check-circle fa-lg"></i>&nbsp;&nbsp;'+message+'</strong></h4>';
-        html += '</div>';
-        return html;
-    }
-
-    // Initialize Summernote
-    $(function() {
-      $('#post_article').summernote({
-        height: 200,
-        toolbar: [
-          ['parastyle', ['style']],
-          ['fontstyle', ['fontname', 'fontsize']],
-          ['style', ['bold', 'italic', 'underline', 'clear']],
-          ['font', ['strikethrough', 'superscript', 'subscript']],
-          ['color', ['color']],
-          ['para', ['ul', 'ol', 'paragraph']],
-          ['height', ['height']],
-          ['insert', ['picture', 'link', 'video', 'table', 'hr']],
-          ['history', ['undo', 'redo']],
-          ['misc', ['codeview', 'fullscreen']],
-          ['help', ['help']]
-        ],
-        disableResizeEditor: true
-      });
-    });
-
-    $('#post_vedio').validate({
-        focusInvalid: false,
-        rules: {
-          'title': {
-            required: true,
-            minlength: 3,
-            maxlength: 40,
-          },
-          'vedio_url': {
-            required: true,
-            url: true
-          }
-        },
-        messages: {
-          'title': {
-            required: "Please enter title",
-          },
-          'vedio_url': {
-            required: "Please provide vedio url",
-          }
-        }
-    });
-
-    // Initialize Select2
-    $(function() {
-      $('#vedio_type').select2({
-        placeholder: 'Select value',
-      });
-    });
-
-    // Initialize Select2
-    $(function() {
-      $('#post_category').select2({
-        placeholder: 'Select value',
-      });
-    });
-
-    $('#file').fileuploader({
-         extensions: ['jpg', 'jpeg', 'png', 'gif', 'bmp'],
-         changeInput: ' ',
-         theme: 'thumbnails',
-         enableApi: true,
-         addMore: true,
-         limit: 4,
-         fileMaxSize: 2,
-         thumbnails: {
-            box: '<div class="fileuploader-items">' +
-                         '<ul class="fileuploader-items-list">' +
-                        '<li class="fileuploader-thumbnails-input"><div class="fileuploader-thumbnails-input-inner">+</div></li>' +
-                         '</ul>' +
-                     '</div>',
-            item: '<li class="fileuploader-item">' +
-                      '<div class="fileuploader-item-inner">' +
-                              '<div class="thumbnail-holder">${image}</div>' +
-                              '<div class="actions-holder">' +
-                                  '<a class="fileuploader-action fileuploader-action-remove" title="Remove"><i class="remove"></i></a>' +
-                              '</div>' +
-                              '<div class="progress-holder">${progressBar}</div>' +
-                          '</div>' +
-                      '</li>',
-            item2: '<li class="fileuploader-item">' +
-                      '<div class="fileuploader-item-inner">' +
-                              '<div class="thumbnail-holder">${image}</div>' +
-                              '<div class="actions-holder">' +
-                                  '<a class="fileuploader-action fileuploader-action-remove" title="Remove"><i class="remove"></i></a>' +
-                              '</div>' +
-                          '</div>' +
-                      '</li>',
-            startImageRenderer: true,
-            canvasImage: false,
-            _selectors: {
-               list: '.fileuploader-items-list',
-               item: '.fileuploader-item',
-               start: '.fileuploader-action-start',
-               retry: '.fileuploader-action-retry',
-               remove: '.fileuploader-action-remove'
-            },
-            onItemShow: function(item, listEl) {
-               var plusInput = listEl.find('.fileuploader-thumbnails-input');
-               
-               plusInput.insertAfter(item.html);
-               
-               if(item.format == 'image') {
-                  item.html.find('.fileuploader-item-icon').hide();
-               }
-            }
-         },
-         afterRender: function(listEl, parentEl, newInputEl, inputEl) {
-            var plusInput = listEl.find('.fileuploader-thumbnails-input'),
-               api = $.fileuploader.getInstance(inputEl.get(0));
-         
-            plusInput.on('click', function() {
-               api.open();
-            });
-         },
-    });
-
 
 </script>
 

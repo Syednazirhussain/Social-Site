@@ -1,4 +1,4 @@
-@extends('user.default')
+@extends('local.default')
 
 @section('content')
 

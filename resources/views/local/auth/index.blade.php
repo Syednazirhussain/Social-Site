@@ -1,4 +1,4 @@
-@extends('user.default')
+@extends('local.default')
 
 @section('css')
 <style type="text/css">
@@ -31,10 +31,10 @@
             @endif
             <div class="col-lg-12 col-md-12">
                 <div class="col-lg-6 col-md-6 col-sm-12 col-xs-12">
-                    @include('user.auth.login')
+                    @include('local.auth.login')
                 </div>
                 <div class="col-lg-6 col-md-6 col-sm-12 col-xs-12">
-                    @include('user.auth.register')
+                    @include('local.auth.register')
                 </div>
             </div>
 

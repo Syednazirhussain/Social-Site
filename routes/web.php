@@ -108,25 +108,39 @@ Route::post('user/verify/email', ['as'=> 'user.email.verify', 'uses' => 'User\Us
 
 Route::group(['middleware' => ['user.auth']], function () {
 
-	Route::get('user/dashboard',['as' => 'user.dashboard','uses' => 'User\UserController@dashboard']);
+
 	Route::get('user/account/{account}',['as' => 'user.account.setting','uses' => 'User\AccountSetting@edit']);
 	Route::patch('user/account/{account}',['as' => 'user.account.update','uses' => 'User\AccountSetting@update']);
 	Route::get('user/logout', ['as'=> 'user.logout', 'uses' => 'User\UserController@logout']);
 	Route::get('user/membership/pricing', ['as'=> 'user.membership.pricing', 'uses' => 'User\UserController@membership']);
 	Route::get('user/membership/payment', ['as'=> 'user.membership.payment', 'uses' => 'User\PayPalController@subcribe']);
 
-	Route::get('user/posts',['as' => 'get.post.data','uses' => 'User\ProfileController@get_post_data']);
-	Route::get('user/post/edit/{post_id}',['as' => 'edit.single.post','uses' => 'User\ProfileController@edit_post']);
-	Route::put('user/post/update/{post_id}', ['as'=> 'update.single.post', 'uses' => 'User\ProfileController@update_post']);
-	Route::delete('user/post/delete/{post_id}', ['as'=> 'delete.single.post', 'uses' => 'User\ProfileController@delete_post']);
+	Route::group(['middleware' => ['talent.route']], function () {
+
+		Route::get('talent/user/profile',['as' => 'talent.user.dashboard','uses' => 'User\TalentController@dashboard']);
+
+		Route::get('talent/user/profile/retrive',['as' => 'talent.profile','uses' => 'User\TalentController@retrive_profile_info']);
+
+		Route::post('talent/user/post/add',['as' => 'add.single.post' , 'uses' => 'User\TalentController@post_article']);
+		Route::get('talent/user/post/edit/{post_id}',['as' => 'edit.single.post','uses' => 'User\TalentController@edit_post']);
+		Route::put('talent/user/post/update/{post_id}', ['as'=> 'update.single.post', 'uses' => 'User\TalentController@update_post']);
+		Route::delete('talent/user/post/delete/{post_id}', ['as'=> 'delete.single.post', 'uses' => 'User\TalentController@delete_post']);
+		
+		Route::post('talent/user/post/images',['as' => 'add.multiple.images' , 'uses' => 'User\TalentController@post_images']);
+		Route::delete('talent/user/post/images/{post_id}', ['as'=> 'delete.multiple.images', 'uses' => 'User\TalentController@post_image_destroy']);
+		Route::post('talent/user/post/image/remove', ['as'=> 'delete.single.image', 'uses' => 'User\TalentController@post_image_remove']);
+		
+		Route::post('talent/user/post/vedio',['as' => 'add.single.vedio' , 'uses' => 'User\TalentController@post_vedio']);
+
+	});
+
+	Route::group(['middleware' => ['fan.route']], function () {
+
+		Route::get('fan/user/profile',['as' => 'fan.user.dashboard','uses' => 'User\FanController@dashboard']);		
 
 
-	Route::post('user/post/article',['as' => 'fan.post.article' , 'uses' => 'User\ProfileController@post_article']);
-	Route::post('user/post/images',['as' => 'talent.post.images' , 'uses' => 'User\ProfileController@post_images']);
-	Route::delete('user/post/images/{post_id}', ['as'=> 'talent.post.images.destroy', 'uses' => 'User\ProfileController@post_image_destroy']);
-	Route::post('user/post/image/remove', ['as'=> 'talent.post.image.remove', 'uses' => 'User\ProfileController@post_image_remove']);
-	Route::post('user/post/vedio',['as' => 'talent.post.vedio' , 'uses' => 'User\ProfileController@post_vedio']);
-
+	});
+	
 
 	Route::get('user/talent/lists',['as' => 'talent.list','uses' => 'User\ProfileController@talent_listing']);
 	Route::post('user/follow/talent',['as' => 'user.follow.talent','uses' => 'User\ProfileController@follow']);
