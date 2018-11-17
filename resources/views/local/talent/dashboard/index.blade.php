@@ -316,7 +316,15 @@
                                     </div>
                             </div>
                         </div>
-                        <div class="tab-pane" id="overview"></div>
+                        <div class="tab-pane" id="overview">
+                            @if(isset($additional_info))
+                                @if($additional_info->about_us != null)
+                                    {{ $additional_info->about_us }}
+                                @else
+                                    <p class="lead"><em>Write some thing about us</em></p>
+                                @endif
+                            @endif
+                        </div>
                         <div class="tab-pane" id="photo">
                             <div class="row">
                                 @hasanyrole('Talents|Web Master|Admin')

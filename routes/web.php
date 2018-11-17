@@ -25,7 +25,7 @@ Route::group(['middleware' => ['admin.auth']], function () {
 	Route::get('admin/logout', ['as'=> 'admin.logout', 'uses' => 'Admin\UserController@logout']);
 	Route::get('admin/users', ['as'=> 'admin.users.index', 'uses' => 'Admin\UserController@index']);
 
-	Route::group(['middleware' => ['role:Admin|Web Master|Talents']], function () {
+	Route::group(['middleware' => ['role:Admin|Web Master']], function () {
 
 		Route::post('admin/users/email', ['as'=> 'admin.user.email', 'uses' => 'Admin\UserController@verifyEmail']);
 		Route::post('admin/users', ['as'=> 'admin.users.store', 'uses' => 'Admin\UserController@store']);
@@ -142,7 +142,9 @@ Route::group(['middleware' => ['user.auth']], function () {
 		Route::get('fan/user/profile',['as' => 'fan.user.dashboard','uses' => 'User\FanController@dashboard']);		
 
 		Route::get('fan/user/profile/retrive',['as' => 'fan.profile','uses' => 'User\FanController@retrive_profile_info']);
-
+		
+		Route::get('fan/user/talent_profile_preview/{talent_id}',['as' => 'fan.view.talent.profile','uses' => 'User\FanController@preview_talent_profile']);
+		Route::get('fan/user/talent_profile_detail/{talent_id}',['as' => 'fan.view.talent.detail','uses' => 'User\FanController@preview_talent_detail']);
 
 		Route::get('fan/user/talent/lists',['as' => 'fan.talent.list','uses' => 'User\FanController@talent_listing']);
 		Route::post('fan/user/follow/talent',['as' => 'fan.follow.talent','uses' => 'User\FanController@follow']);

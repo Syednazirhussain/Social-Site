@@ -5,6 +5,8 @@ namespace App\Http\Middleware;
 use Closure;
 
 use Auth;
+use Session;
+use Spatie\Permission\Models\Role;
 
 class AdminAuth
 {
@@ -19,7 +21,15 @@ class AdminAuth
     {
         if(Auth::check())
         {
-            return $next($request);
+            $user = Auth::user();
+            if($user->hasAnyRole(['Admin','Web Master']))
+            {
+                return $next($request);
+            }
+            else
+            {
+                return redirect()->route('admin.login');
+            }
         }
         else
         {

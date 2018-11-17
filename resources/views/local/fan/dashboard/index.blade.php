@@ -182,12 +182,6 @@
 
                 <div class="about_margin pad_left">
                     <div class="card" style="width: 30rem;">
-<!--                         <div class="card-body">
-                            <h5 class="card-title">About</h5>
-                            <p class="card-text">
-                                Born on October 21, Ali Khan began his journey at an early age with school level competitions. In 1996, he became a teen heartthrob with the pop group ‘ The Vibes. After the pop groups immensely successful run in the ‘ 90s, Khan went solo in 2000, releasing his first single, Surmai Ankhon Mein in 2002. Khan proved he could stand alone by topping charts nationwide and continued his success as a solo artist with Sathiya (2006) which took the industry by storm.Topping charts for several months thus landing him 3 nominations in TMA Awards 2007 amongst nominees like Ali Azmat, Shafqat Amanat Ali, Ali Zafar & Atif Aslam.
-                            </p>
-                        </div> -->
                     </div>
                 </div>
 
@@ -218,7 +212,15 @@
                                     </div>
                             </div>
                         </div>
-                        <div class="tab-pane" id="overview"></div>
+                        <div class="tab-pane" id="overview">
+                            @if(isset($additional_info))
+                                @if($additional_info->about_us != null)
+                                    {{ $additional_info->about_us }}
+                                @else
+                                    <p class="lead"><em>Write something about us</em></p>
+                                @endif
+                            @endif
+                        </div>
                     </div>
                 </div>
             </div>
@@ -266,7 +268,20 @@
         <div class="col-md-3">
             <div class="col-md-12">
                 <h5>Social Links</h5>
-                <div class="widget social_icon" id="social_links"></div>
+                <div class="widget social_icon">
+                    @if(isset($additional_info->facebook) && $additional_info->facebook != null)
+                        <a href="@if(isset($additional_info->facebook )){{ $additional_info->facebook  }}@endif" class="fa fa-facebook" target="_blank"></a>
+                    @endif
+                    @if(isset($additional_info->instagram) && $additional_info->instagram != null)
+                    <a href="@if(isset($additional_info->instagram )){{ $additional_info->instagram  }}@endif" class="fa fa-instagram" target="_blank"></a>
+                    @endif
+                    @if(isset($additional_info->linkdin) && $additional_info->linkdin != null)
+                        <a href="@if(isset($additional_info->linkdin)){{ $additional_info->linkdin }}@endif" class="fa fa-linkedin" target="_blank"></a>
+                    @endif
+                    @if(isset($additional_info->twitter) && $additional_info->twitter != null)
+                        <a href="@if(isset($additional_info->twitter)){{ $additional_info->twitter }}@endif" class="fa fa-twitter" target="_blank"></a>
+                    @endif
+                </div>
             </div>
 
 
@@ -285,7 +300,7 @@
                                 @endif
                             </div>
                             <div class="widget-activity-header">
-                                <a href="javascript:void(0)">&nbsp;{{ $user->name }}</a>
+                                <a href="{{ route('fan.view.talent.profile',[$user->id]) }}">&nbsp;{{ $user->name }}</a>
                                 @if($user->plan_code == 'premium' && $user->hasRole('Talents'))
                                     @if(isset($follows))
                                         @if(in_array($user->id,$follows))
@@ -581,68 +596,6 @@
                 }
             }
 
-
-
-            if(additional_info.hasOwnProperty('about_us'))
-            {
-                $('#overview').text(strip_html_tags(additional_info.about_us));
-            }
-
-            $('#social_links').html('');
-            if(additional_info.hasOwnProperty('facebook'))
-            {
-                if(additional_info.facebook == null)
-                {
-                    $('#social_links').append('<a href="javascript:void(0)" class="fa fa-facebook" target="_blank"></a>');
-                }
-                else
-                {
-                    $('#social_links').append('<a href="'+additional_info.facebook+'" class="fa fa-facebook" target="_blank"></a>');
-                }
-            }
-
-            if(additional_info.hasOwnProperty('instagram'))
-            {
-                if(additional_info.instagram == null)
-                {
-                    $('#social_links').append('<a href="javascript:void(0)" class="fa fa-instagram" target="_blank"></a>');
-                }
-                else
-                {
-                    $('#social_links').append('<a href="'+additional_info.instagram+'" class="fa fa-instagram" target="_blank"></a>');
-                }
-            }
-
-            if(additional_info.hasOwnProperty('linkdin'))
-            {
-                if(additional_info.linkdin == null)
-                {
-                    $('#social_links').append('<a href="javascript:void(0)" class="fa fa-linkedin" target="_blank"></a>');
-                }
-                else
-                {
-                    $('#social_links').append('<a href="'+additional_info.linkdin+'" class="fa fa-linkedin" target="_blank"></a>');
-                }
-            }
-
-            if(additional_info.hasOwnProperty('twitter'))
-            {
-                if(additional_info.twitter == null)
-                {
-                    $('#social_links').append('<a href="javascript:void(0)" class="fa fa-twitter" target="_blank"></a>');
-                }
-                else
-                {
-                    $('#social_links').append('<a href="'+additional_info.twitter+'" class="fa fa-twitter" target="_blank"></a>');
-                }
-            }
-
-            if(additional_info.hasOwnProperty('about_us'))
-            {
-                var html = '<p>'+ strip_html_tags(additional_info.about_us) +'</p>';
-                $('#overview').html('');
-                $('#overview').html(html);
-            }
 
             $('#photos_count').text(total_images);
             $('#video_count').text(total_videos);

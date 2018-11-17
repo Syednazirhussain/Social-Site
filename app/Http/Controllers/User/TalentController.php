@@ -50,11 +50,14 @@ class TalentController extends Controller
         }
 
         $user = Auth::user();
+        $additional_info = AdditionalInfo::where('user_id',$user->id)->first();
+
 
         $data = [
-            'user'      => $user,
-            'users'     => $users,
-            'follows'   => $followers
+            'user'              => $user,
+            'additional_info'   => $additional_info,
+            'users'             => $users,
+            'follows'           => $followers
         ];
 
 

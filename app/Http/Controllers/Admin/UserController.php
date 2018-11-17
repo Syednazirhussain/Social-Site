@@ -56,7 +56,16 @@ class UserController extends Controller
 
         if (Auth::attempt(['email' => $email, 'password' => $password])) 
         {
-             return redirect()->route('admin.dashboard');
+            $user = Auth::user();
+            if($user->hasAnyRole(['Admin','Web Master']))
+            {
+                return redirect()->route('admin.dashboard');
+            }
+            else
+            {
+                Session::flash('errorMsg', 'Access Denied');
+                return view('admin.login');
+            }
 
         } 
         else
