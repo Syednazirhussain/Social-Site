@@ -77,7 +77,7 @@
                 <a href="javascript:void(0)">Shows</a>
             </li>
             <li>
-                <a href="{{ route('talent.list') }}">Charts</a>
+                <a href="javascript:void(0)">Charts</a>
             </li>
             <li>
                 <a href="javascript:void(0)">Opportunities</a>

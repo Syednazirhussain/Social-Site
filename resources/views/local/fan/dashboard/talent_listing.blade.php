@@ -1,4 +1,4 @@
-@extends('user.dashboard_layout')
+@extends('local.dashboard_layout')
 
 
 @section('css')
@@ -139,7 +139,7 @@
                                         @if($user->plan_code == 'premium' && $user->hasRole('Talents'))
                                             @if(isset($follows))
                                                 @if(in_array($user->id,$follows))
-                                                    <form action="{{ route('user.unfollow.talent') }}" method="POST">
+                                                    <form action="{{ route('fan.unfollow.talent') }}" method="POST">
                                                         <input type="hidden" name="_token" value="{{ csrf_token() }}">
                                                         <input type="hidden" name="follower_id" value="{{ Auth::user()->id }}">
                                                         <input type="hidden" name="followed_id" value="{{ $user->id }}">
@@ -148,7 +148,7 @@
                                                         </div>
                                                     </form>
                                                 @else
-                                                    <form action="{{ route('user.follow.talent') }}" method="POST">
+                                                    <form action="{{ route('fan.follow.talent') }}" method="POST">
                                                         <input type="hidden" name="_token" value="{{ csrf_token() }}">
                                                         <input type="hidden" name="follower_id" value="{{ Auth::user()->id }}">
                                                         <input type="hidden" name="followed_id" value="{{ $user->id }}">

@@ -22,6 +22,13 @@ use App\Models\Admin\Follow;
 
 class UserController extends Controller
 {
+
+    public function __construct()
+    {
+        $this->middleware('fan.route')->only('fan_logout');
+        $this->middleware('talent.route')->only('talent_logout');
+    }
+
     public function index()
     {
     	return view('local.site.index');
@@ -96,7 +103,7 @@ class UserController extends Controller
             if( $subcribe == true && $additional == true )
             {
                 Flash::success('User register successfully.');
-                return redirect()->route('user.dashboard');                
+                return redirect()->route('fan.user.dashboard');                
             }
             else
             {
@@ -143,11 +150,21 @@ class UserController extends Controller
         }
     }
 
+    public function fan_logout()
+    {
+        $user = Auth::user();
+        if($user->hasRole('Fans') && $user->plan_code == 'free')
+        {
+            Auth::logout();
+            return redirect()->route('site.dashboard');
+        }
+    }
 
-    public function logout(){
 
+    public function talent_logout()
+    {
     	$user = Auth::user();
-    	if($user->hasAnyRole(['Fans','Talents']))
+    	if($user->hasRole('Talents') && $user->plan_code == 'premium')
     	{
     		Auth::logout();
     		return redirect()->route('site.dashboard');

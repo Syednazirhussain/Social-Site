@@ -983,74 +983,77 @@
             $('#post-video').html(vedioHtml);
 
 
-
-            var postHtml = '';
-            var posts = json.posts;
-            var additional_info = json.additional_info;
-            if(Object.keys(posts).length > 0)
+            if(json.hasOwnProperty('posts'))
             {
-                $('#article_count').text(Object.keys(posts).length);
-                for (var key in posts) 
+                var posts = json.posts;
+                if(Object.keys(posts).length > 0)
                 {
-                    if(posts[key].post_type == 'text')
+                    var postHtml = '';
+                    $('#article_count').text(Object.keys(posts).length);
+                    for (var key in posts) 
                     {
-                        postHtml += '<div class="panel-body">';
-                        postHtml += '<div class="list-group-item">';
-                        if(user_plan_code != 'free')
+                        if(posts[key].post_type == 'text')
                         {
-                            postHtml += '<div class="dropdown pull-xs-right m-l-1">';
-                            postHtml += '<button type="button" class="btn btn-xs btn-outline btn-outline-colorless dropdown-toggle" data-toggle="dropdown" aria-expanded="false"><i class="fa fa-reorder"></i></button>';
-                            postHtml += '<div class="dropdown-menu dropdown-menu-right">';
-                            postHtml += '<li>';
-                            postHtml += '<a href="javascript:void(0)" class="edit_post" data-post-id="'+posts[key].id+'" >';
-                            postHtml += '<i class="dropdown-icon fa fa-pencil"></i>&nbsp;&nbsp;Edit';
-                            postHtml += '</a>';
-                            postHtml += '</li>';
-                            postHtml += '<li>';
-                            postHtml += '<a href="javascript:void(0)" class="delete_post" data-post-id="'+posts[key].id+'" >';
-                            postHtml += '<i class="dropdown-icon fa fa-times text-danger"></i>&nbsp;&nbsp;Remove';
-                            postHtml += '</a>';
-                            postHtml += '</li>';
+                            postHtml += '<div class="panel-body">';
+                            postHtml += '<div class="list-group-item">';
+                            if(user_plan_code != 'free')
+                            {
+                                postHtml += '<div class="dropdown pull-xs-right m-l-1">';
+                                postHtml += '<button type="button" class="btn btn-xs btn-outline btn-outline-colorless dropdown-toggle" data-toggle="dropdown" aria-expanded="false"><i class="fa fa-reorder"></i></button>';
+                                postHtml += '<div class="dropdown-menu dropdown-menu-right">';
+                                postHtml += '<li>';
+                                postHtml += '<a href="javascript:void(0)" class="edit_post" data-post-id="'+posts[key].id+'" >';
+                                postHtml += '<i class="dropdown-icon fa fa-pencil"></i>&nbsp;&nbsp;Edit';
+                                postHtml += '</a>';
+                                postHtml += '</li>';
+                                postHtml += '<li>';
+                                postHtml += '<a href="javascript:void(0)" class="delete_post" data-post-id="'+posts[key].id+'" >';
+                                postHtml += '<i class="dropdown-icon fa fa-times text-danger"></i>&nbsp;&nbsp;Remove';
+                                postHtml += '</a>';
+                                postHtml += '</li>';
+                                postHtml += '</div>';
+                                postHtml += '</div>';
+                            }
+                            postHtml += '<div class="blog-content">';
+                            postHtml += '<div class="post-meta">';
+                            postHtml += '<p>By <a href="javascript:void(0)">'+posts[key].user_name+'</a></p>';
+                            postHtml += '<p><i class="fa fa-clock-o"></i> <a href="javascript:void(0)">'+new Date(posts[key].created_at).toDateString("yyyy-MM-dd")+'</a></p>';
+                            postHtml += '<p>share:';
+                            postHtml += '<p class="addthis_inline_share_toolbox"></p>';
+                            // if(additional_info.hasOwnProperty('facebook'))
+                            // {
+                            //     postHtml += '<a href="'+additional_info.facebook+'" class="fa fa-facebook"></a>';
+                            // }
+                            // if(additional_info.hasOwnProperty('instagram'))
+                            // {
+                            //     postHtml += '<a href="'+additional_info.instagram+'" class="fa fa-instagram"></a>';
+                            // }
+                            // if(additional_info.hasOwnProperty('linkdin'))
+                            // {
+                            //     postHtml += '<a href="'+additional_info.linkdin+'" class="fa fa-linkedin"></a>';
+                            // }
+                            // if(additional_info.hasOwnProperty('twitter'))
+                            // {
+                            //     postHtml += '<a href="'+additional_info.twitter+'" class="fa fa-twitter"></a>';
+                            // }
+                            postHtml += '</p>';
+                            postHtml += '<p>';
+                            postHtml += strip_html_tags(posts[key].description)
+                            postHtml += '</p>';
+                            postHtml += '</div>';
+                            postHtml += '</div>';
                             postHtml += '</div>';
                             postHtml += '</div>';
                         }
-                        postHtml += '<div class="blog-content">';
-                        postHtml += '<div class="post-meta">';
-                        postHtml += '<p>By <a href="javascript:void(0)">'+posts[key].user_name+'</a></p>';
-                        postHtml += '<p><i class="fa fa-clock-o"></i> <a href="javascript:void(0)">'+new Date(posts[key].created_at).toDateString("yyyy-MM-dd")+'</a></p>';
-                        postHtml += '<p>share:';
-                        postHtml += '<p class="addthis_inline_share_toolbox"></p>';
-                        // if(additional_info.hasOwnProperty('facebook'))
-                        // {
-                        //     postHtml += '<a href="'+additional_info.facebook+'" class="fa fa-facebook"></a>';
-                        // }
-                        // if(additional_info.hasOwnProperty('instagram'))
-                        // {
-                        //     postHtml += '<a href="'+additional_info.instagram+'" class="fa fa-instagram"></a>';
-                        // }
-                        // if(additional_info.hasOwnProperty('linkdin'))
-                        // {
-                        //     postHtml += '<a href="'+additional_info.linkdin+'" class="fa fa-linkedin"></a>';
-                        // }
-                        // if(additional_info.hasOwnProperty('twitter'))
-                        // {
-                        //     postHtml += '<a href="'+additional_info.twitter+'" class="fa fa-twitter"></a>';
-                        // }
-                        postHtml += '</p>';
-                        postHtml += '<p>';
-                        postHtml += strip_html_tags(posts[key].description)
-                        postHtml += '</p>';
-                        postHtml += '</div>';
-                        postHtml += '</div>';
-                        postHtml += '</div>';
-                        postHtml += '</div>';
                     }
+                    $('#posts').html(postHtml);
                 }
             }
-            $('#posts').html(postHtml);
 
 
 
+
+            var additional_info = json.additional_info;
             if(additional_info.hasOwnProperty('about_us'))
             {
                 $('#overview').text(strip_html_tags(additional_info.about_us));

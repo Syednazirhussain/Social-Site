@@ -1,4 +1,4 @@
-@extends('user.dashboard_layout')
+@extends('local.dashboard_layout')
 
 
 @section('css')
@@ -119,7 +119,6 @@
         <div class="container">
             <div class="center fadeInDown">
                 <h2>Talents</h2>
-<!--                 <p class="lead">Lorem ipsum dolor sit amet, consectetur adipisicing elit, sed do eiusmod tempor incididunt ut <br> et dolore magna aliqua. Ut enim ad minim veniam</p> -->
             </div>
             <div class="row">
                 @if(isset($users))
@@ -135,30 +134,9 @@
                                         @endif
                                     </div>
                                     <div class="team-content">
-                                        <h4>{{ $user->name }}</h4>
-                                        @if($user->plan_code == 'premium' && $user->hasRole('Talents'))
-                                            @if(isset($follows))
-                                                @if(in_array($user->id,$follows))
-                                                    <form action="{{ route('user.unfollow.talent') }}" method="POST">
-                                                        <input type="hidden" name="_token" value="{{ csrf_token() }}">
-                                                        <input type="hidden" name="follower_id" value="{{ Auth::user()->id }}">
-                                                        <input type="hidden" name="followed_id" value="{{ $user->id }}">
-                                                        <div class="text-center">
-                                                            <button type="submit" class="btn btn-default bt-sm">Unfollow</button>
-                                                        </div>
-                                                    </form>
-                                                @else
-                                                    <form action="{{ route('user.follow.talent') }}" method="POST">
-                                                        <input type="hidden" name="_token" value="{{ csrf_token() }}">
-                                                        <input type="hidden" name="follower_id" value="{{ Auth::user()->id }}">
-                                                        <input type="hidden" name="followed_id" value="{{ $user->id }}">
-                                                        <div class="text-center">
-                                                            <button type="submit" class="btn btn-primary bt-sm">Follow</button>
-                                                        </div>
-                                                    </form>
-                                                @endif
-                                            @endif
-                                        @endif
+                                        <h4>
+                                            <a href="javascript:void(0)">{{ $user->name }}</a>
+                                        </h4>
                                         <div class="team-social">
                                             @if($user->additional_info->facebook != '')
                                                 <a class="fa fa-facebook" href="{{ $user->additional_info->facebook }}"></a>

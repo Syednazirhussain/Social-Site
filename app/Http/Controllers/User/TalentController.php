@@ -585,55 +585,14 @@ class TalentController extends Controller
     {
         $users = User::all();
 
-        $follows = Follow::all();
-        $followers = [];
-        foreach ($users as $user) 
-        {
-            if(Auth::user()->id != $user->id)
-            {
-                foreach ($follows as $follow) 
-                {
-                    if($follow->follower_id == Auth::user()->id)
-                    {
-                        if(!in_array($follow->followed_id, $followers))
-                        {
-                            array_push($followers, $follow->followed_id);
-                        }
-                    }
-                }
-            }
-        }
         $data = [
-            'users'     => $users,
-            'follows'    => $followers
+            'users'     => $users
         ];
 
-        return view('user.dashboard.talent_listing',$data);
+        return view('local.talent.dashboard.talent_listing',$data);
     }
 
-    public function follow(Request $request)
-    {
-        $input = $request->all();
-        if(Auth::user()->id == $input['follower_id'])
-        {
-            $follow = Follow::firstOrCreate(
-                [ 'follower_id' => $input['follower_id'] , 'followed_id' => $input['followed_id'] ]
-            );
-        }
-        return redirect()->back();
-    }
 
-    public function unfollow(Request $request)
-    {
-        $input = $request->all();
-        if(Auth::user()->id == $input['follower_id'])
-        {
-            if(Follow::where('follower_id',$input['follower_id'])->where('followed_id',$input['followed_id'])->first()->delete())
-            {
-                return redirect()->back();                
-            }
-        }
-    }
 
 
 }

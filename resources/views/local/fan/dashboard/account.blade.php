@@ -1,4 +1,4 @@
-@extends('user.dashboard_layout')
+@extends('local.dashboard_layout')
 
 @section('css')
 
@@ -91,7 +91,6 @@
         color: #dc3545 !important;
         font-weight: unset !important;
     }
-
 </style>
 
 <style type="text/css">
@@ -117,7 +116,7 @@
     <div class="container">
     	<div class="row">
         <div class="m-t-4">
-          <form enctype="multipart/form-data" class="form-horizontal" method="POST" action="{{ route('user.account.setting',$user->id) }}" id="account">
+          <form enctype="multipart/form-data" class="form-horizontal" method="POST" action="{{ route('fan.account.update',$user->id) }}" id="account">
             <input type="hidden" id="token" name="_token" value="{{ csrf_token() }}">
             <input type="hidden" name="_method" value="PATCH">
             <div class="col-xs-12 col-sm-12 col-md-12 col-lg-12">

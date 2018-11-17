@@ -1,59 +1,7 @@
-@extends('user.dashboard_layout')
+@extends('local.dashboard_layout')
 
 
 @section('css')
-
-<style>
-        
-    #wrap {
-        width: 1100px;
-        margin: 0 auto;
-        }
-        
-    #external-events {
-        float: left;
-        width: 150px;
-        padding: 0 10px;
-        text-align: left;
-        }
-        
-    #external-events h4 {
-        font-size: 16px;
-        margin-top: 0;
-        padding-top: 1em;
-        }
-        
-    .external-event { /* try to mimick the look of a real event */
-        margin: 10px 0;
-        padding: 2px 4px;
-        background: #3366CC;
-        color: #fff;
-        font-size: .85em;
-        cursor: pointer;
-        }
-        
-    #external-events p {
-        margin: 1.5em 0;
-        font-size: 11px;
-        color: #666;
-        }
-        
-    #external-events p input {
-        margin: 0;
-        vertical-align: middle;
-        }
-
-    #calendar {/*      float: right; */
-        margin: 0 auto;
-        width: 100%;
-        background-color: #FFFFFF;
-          border-radius: 6px;
-        box-shadow: 0 1px 2px #C3C3C3;
-        -webkit-box-shadow: 0px 0px 21px 2px rgba(0,0,0,0.18);
-        -moz-box-shadow: 0px 0px 21px 2px rgba(0,0,0,0.18);
-        box-shadow: 0px 0px 21px 2px rgba(0,0,0,0.18);
-        }
-</style>
 
 <style type="text/css">
 
@@ -260,53 +208,17 @@
                                 Overview
                             </a>
                         </li>
-                        <li>
-                            <a href="#photo" data-toggle="tab">
-                                Photos
-                            </a>
-                        </li>
-                        <li>
-                            <a href="#video" data-toggle="tab">
-                                Videos
-                            </a>
-                        </li>
-                        <li>
-                            <a href="#event" data-toggle="tab">
-                                Events
-                            </a>
-                        </li>
                     </ul>
                     <div class="tab-content"> 
                         <div id="msg"></div>    
                         <div class="tab-pane active" id="article">
                             <div class="row">
                                     <div class="col-sm-12 col-md-12">
-                                        <div class="panel">
-                                            <div id="posts"></div>
-                                        </div>
+                                        <div id="posts"></div>
                                     </div>
                             </div>
                         </div>
                         <div class="tab-pane" id="overview"></div>
-                        <div class="tab-pane" id="photo">
-                            <div class="row">
-                                <div class="col-sm-12 col-md-12">
-                                    <div id="post-images"></div>  
-                                </div>
-                            </div>
-                        </div>
-                        <div class="tab-pane" id="video">
-                            <div class="m-a-2 p-a-3">
-                                <div class="row">
-                                    <div class="col-sm-12 col-md-12">
-                                        <div id="post-video"></div>
-                                    </div>
-                                </div>
-                            </div>
-                        </div>
-                        <div class="tab-pane" id="event">
-                            <div id='calendar'></div>
-                        </div>
                     </div>
                 </div>
             </div>
@@ -377,7 +289,7 @@
                                 @if($user->plan_code == 'premium' && $user->hasRole('Talents'))
                                     @if(isset($follows))
                                         @if(in_array($user->id,$follows))
-                                            <form action="{{ route('user.unfollow.talent') }}" method="POST" style="margin-top: -24px">
+                                            <form action="{{ route('fan.unfollow.talent') }}" method="POST" style="margin-top: -24px">
                                                 <input type="hidden" name="_token" value="{{ csrf_token() }}">
                                                 <input type="hidden" name="follower_id" value="{{ Auth::user()->id }}">
                                                 <input type="hidden" name="followed_id" value="{{ $user->id }}">
@@ -386,7 +298,7 @@
                                                 </div>
                                             </form>
                                         @else
-                                            <form action="{{ route('user.follow.talent') }}" method="POST" style="margin-top: -24px">
+                                            <form action="{{ route('fan.follow.talent') }}" method="POST" style="margin-top: -24px">
                                                 <input type="hidden" name="_token" value="{{ csrf_token() }}">
                                                 <input type="hidden" name="follower_id" value="{{ Auth::user()->id }}">
                                                 <input type="hidden" name="followed_id" value="{{ $user->id }}">
@@ -475,18 +387,14 @@
     function page_refresh()
     {
         $.ajax({
-            url: "{{ route('talent.profile') }}",
+            url: "{{ route('fan.profile') }}",
             type: "GET",
             dataType: "json",
         }).done(function(response){
             var json =  response;
 
-            //console.log(json.posts);
-            // console.log(json.postCategories);
-            //console.log(json.additional_info);
-            
 
-            var imagesHtml = '';
+            var postHtml = '';
             var post_images_path = "{{ asset('storage/posts/') }}";
 
             // here is an array console.log(Object.values(json.images));
@@ -508,54 +416,51 @@
                         var post_date = keyArr1[0]; // posted date
                         var post_id = keyArr1[1];   // post_id
                         
-                        imagesHtml += '<div class="row">';
-                        imagesHtml += '<div class="col-md-12">';
-                        imagesHtml += '<div class="list-group b-a-0">';
-                        imagesHtml += '<div class="list-group-item">';
+                        postHtml += '<div class="row">';
+                        postHtml += '<div class="col-md-12">';
+                        postHtml += '<div class="list-group b-a-0">';
+                        postHtml += '<div class="list-group-item">';
                         if(user_plan_code != 'free')
                         {
-                            imagesHtml += '<div class="dropdown pull-xs-right m-l-1">';
-                            imagesHtml += '<button type="button" class="btn btn-xs btn-outline btn-outline-colorless dropdown-toggle" data-toggle="dropdown" aria-expanded="false">';
-                            imagesHtml += '<i class="fa fa-reorder"></i>';
-                            imagesHtml += '</button>';
-                            imagesHtml += '<div class="dropdown-menu dropdown-menu-right">';
-                            imagesHtml += '<li>';
-                            imagesHtml += '<a href="javascript:void(0)" class="remove_post_images" data-id="'+post_id+'">';
-                            imagesHtml += '<i class="dropdown-icon fa fa-times text-danger"></i>&nbsp;&nbsp;Remove';
-                            imagesHtml += '</a>';
-                            imagesHtml += '</li>';
-                            imagesHtml += '</div>';
-                            // imagesHtml += '<span class="loader">';
-                            // imagesHtml += '<i class="fa fa-spinner fa-1x fa-spin"></i>';
-                            // imagesHtml += '</span>';
-                            imagesHtml += '</div>';
+                            postHtml += '<div class="dropdown pull-xs-right m-l-1">';
+                            postHtml += '<button type="button" class="btn btn-xs btn-outline btn-outline-colorless dropdown-toggle" data-toggle="dropdown" aria-expanded="false">';
+                            postHtml += '<i class="fa fa-reorder"></i>';
+                            postHtml += '</button>';
+                            postHtml += '<div class="dropdown-menu dropdown-menu-right">';
+                            postHtml += '<li>';
+                            postHtml += '<a href="javascript:void(0)" class="remove_post_images" data-id="'+post_id+'">';
+                            postHtml += '<i class="dropdown-icon fa fa-times text-danger"></i>&nbsp;&nbsp;Remove';
+                            postHtml += '</a>';
+                            postHtml += '</li>';
+                            postHtml += '</div>';
+                            // postHtml += '<span class="loader">';
+                            // postHtml += '<i class="fa fa-spinner fa-1x fa-spin"></i>';
+                            // postHtml += '</span>';
+                            postHtml += '</div>';
                         }   
-                        imagesHtml += '<div class="widget blog_gallery" style="display: inline-flex;">';
+                        postHtml += '<div class="widget blog_gallery" style="display: inline-flex;">';
                         var imagesArr = images[i][talent_image][dates].images; // images array
                         total_images += imagesArr.length;
                         for(var j = 0 ; j < imagesArr.length ; j++)
                         {
                             var src = post_images_path+"/"+imagesArr[j].replace(/['"]+/g, '');
-                            imagesHtml += '<a href="javascript:void(0)" class="img-gallery" data-id="'+post_id+'"  data-toggle="modal"  data-target="#myModal">';
-                            imagesHtml += '<img src="'+src+'" class="img-thumbnail img-custom">';
-                            imagesHtml += '</a>';
+                            postHtml += '<a href="javascript:void(0)" class="img-gallery" data-id="'+post_id+'"  data-toggle="modal"  data-target="#myModal">';
+                            postHtml += '<img src="'+src+'" class="img-thumbnail img-custom">';
+                            postHtml += '</a>';
                         }
 
-                        imagesHtml += '</div>';
-                        imagesHtml += '<p class="list-group-item-text text-muted font-size-11">Post by <b>'+talent_name+'</b> on '+new Date(post_date).toDateString("yyyy-MM-dd")+'</p>';
-                        imagesHtml += '</div>';
-                        imagesHtml += '</div>';
+                        postHtml += '</div>';
+                        postHtml += '<p class="list-group-item-text text-muted font-size-11">Post by <b>'+talent_name+'</b> on '+new Date(post_date).toDateString("yyyy-MM-dd")+'</p>';
+                        postHtml += '</div>';
+                        postHtml += '</div>';
                         //
-                        imagesHtml += '</div>';
-                        imagesHtml += '</div>'; 
+                        postHtml += '</div>';
+                        postHtml += '</div>'; 
                     }                
                 }
             }
-            $('#photos_count').text(total_images);
-            $('#post-images').html(imagesHtml);
 
             // here is an array console.log(Object.values(json.images));
-            var vedioHtml = '';
             var vedios = Object.values(json.vedios);
             var total_videos = 0;
             for(var i = 0 ; i < vedios.length ; i++)
@@ -568,7 +473,7 @@
 
                     total_videos += Object.keys(vedios[i][talent_video]).length;
 
-                    vedioHtml += '<div class="ps-block videos-list p-b-2">';
+                    postHtml += '<div class="ps-block videos-list p-b-2">';
                     for(var dates in vedios[i][talent_video])
                     {
                         var keyArr1 = dates.split('_');                        
@@ -576,45 +481,41 @@
                         var post_id = keyArr1[1];   // post_id
                         var video_info = vedios[i][talent_video][dates].videos;
 
-                        vedioHtml += '<div class="videos-list-item">';
-                        vedioHtml += '<a href="javascript:void(0)">';
-                        vedioHtml += '<div class="video_date">';
-                        vedioHtml += '<i class="fa fa-calendar"></i>&nbsp;'+new Date(post_date).toDateString("yyyy-MM-dd");
-                        vedioHtml += '</div>';
+                        postHtml += '<div class="videos-list-item">';
+                        postHtml += '<a href="javascript:void(0)">';
+                        postHtml += '<div class="video_date">';
+                        postHtml += '<i class="fa fa-calendar"></i>&nbsp;'+new Date(post_date).toDateString("yyyy-MM-dd");
+                        postHtml += '</div>';
 
                         if(video_info.vedio_type == 'youtube')
                         {
-                            vedioHtml += '<img src="'+video_info.image_url+'" data-toggle="modal" data-target="#vedioModal" data-url="'+video_info.vedio_url+'" class="border-rounded vedio-modal">';
+                            postHtml += '<img src="'+video_info.image_url+'" data-toggle="modal" data-target="#vedioModal" data-url="'+video_info.vedio_url+'" class="border-rounded vedio-modal">';
                         }
                         else if(video_info.vedio_type == 'dailymotion')
                         {
-                            vedioHtml += '<img src="'+video_info.image_url+'" data-toggle="modal" data-target="#vedioModal" data-url="'+video_info.vedio_url+'"  class="border-rounded vedio-modal">';
+                            postHtml += '<img src="'+video_info.image_url+'" data-toggle="modal" data-target="#vedioModal" data-url="'+video_info.vedio_url+'"  class="border-rounded vedio-modal">';
                         }
                         else if(video_info.vedio_type == 'vimeo')
                         {
-                            vedioHtml += '<img src="'+video_info.image_url+'" data-toggle="modal" data-target="#vedioModal" data-url="'+video_info.vedio_url+'" class="border-rounded vedio-modal">';
+                            postHtml += '<img src="'+video_info.image_url+'" data-toggle="modal" data-target="#vedioModal" data-url="'+video_info.vedio_url+'" class="border-rounded vedio-modal">';
                         }
 
-                        vedioHtml += '</a>';
-                        vedioHtml += '<div class="font-size-11 text-muted" style="margin-top: 5px;">';
-                        vedioHtml += '<div class="post_vedio_author">';
-                        vedioHtml += '<i class="fa fa-user"></i>&nbsp;'+talent_name;
-                        vedioHtml += '</div>';
-                        vedioHtml += '<div>';
-                        vedioHtml += '<i class="fa fa-video-camera"></i>&nbsp;'+video_info.vedio_type.charAt(0).toUpperCase()+video_info.vedio_type.slice(1);
-                        vedioHtml += '</div>';
-                        vedioHtml += '</div>';
-                        vedioHtml += '</div>';
+                        postHtml += '</a>';
+                        postHtml += '<div class="font-size-11 text-muted" style="margin-top: 5px;">';
+                        postHtml += '<div class="post_vedio_author">';
+                        postHtml += '<i class="fa fa-user"></i>&nbsp;'+talent_name;
+                        postHtml += '</div>';
+                        postHtml += '<div>';
+                        postHtml += '<i class="fa fa-video-camera"></i>&nbsp;'+video_info.vedio_type.charAt(0).toUpperCase()+video_info.vedio_type.slice(1);
+                        postHtml += '</div>';
+                        postHtml += '</div>';
+                        postHtml += '</div>';
                     } 
-                    vedioHtml += '</div>';
+                    postHtml += '</div>';
                 }        
             }
-            $('#video_count').text(total_videos);
-            $('#post-video').html(vedioHtml);
 
 
-
-            var postHtml = '';
             var posts = json.posts;
             var additional_info = json.additional_info;
             if(Object.keys(posts).length > 0)
@@ -624,6 +525,7 @@
                 {
                     if(posts[key].post_type == 'text')
                     {
+                        postHtml += '<div class="panel">';
                         postHtml += '<div class="panel-body">';
                         postHtml += '<div class="list-group-item">';
                         if(user_plan_code != 'free')
@@ -674,10 +576,10 @@
                         postHtml += '</div>';
                         postHtml += '</div>';
                         postHtml += '</div>';
+                        postHtml += '</div>';
                     }
                 }
             }
-            $('#posts').html(postHtml);
 
 
 
@@ -742,23 +644,9 @@
                 $('#overview').html(html);
             }
 
-            var postCategoryHtml = '';
-            var postCategory = json.postCategories;
-            if(Object.keys(postCategory).length > 0)
-            {
-                $('#post_category').html('');
-                for (var key in postCategory) 
-                {
-                    if(postCategory[key].name == 'Un categorized')
-                    {
-                        $('#post_category').append('<option value='+postCategory[key].id+' selected>' + postCategory[key].name + '</option>');
-                    }
-                    else
-                    {
-                        $('#post_category').append('<option value='+postCategory[key].id+'>' + postCategory[key].name + '</option>');
-                    }
-                }
-            }
+            $('#photos_count').text(total_images);
+            $('#video_count').text(total_videos);
+            $('#posts').html(postHtml);
 
         });
     }

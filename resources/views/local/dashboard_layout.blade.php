@@ -62,13 +62,10 @@
             background-color: unset !important;
             color: #fff !important;
         }
-
     </style>
-
 
 </head>
 <body>
-
     <nav class="navbar navbar-inverse">
       <div class="container">
         <div class="navbar-header">
@@ -77,7 +74,7 @@
                 <img src="{{ asset('/theme/images/logo1.png') }}" style="max-width: 115px;max-height: 52px" alt="logo">
             </a>
             @else
-            <a class="navbar-brand" href="javascript:void(0)">
+            <a class="navbar-brand" href="{{ route('fan.user.dashboard') }}">
                 <img src="{{ asset('/theme/images/logo1.png') }}" style="max-width: 115px;max-height: 52px" alt="logo">
             </a>
             @endrole
@@ -95,9 +92,16 @@
             <li>
                 <a href="javascript:void(0)">Shows</a>
             </li>
-            <li>
-                <a href="{{ route('talent.list') }}">Charts</a>
-            </li>
+            @role('Talents')
+                <li>
+                    <a href="{{ route('talent.list') }}">Charts</a>
+                </li>            
+            @else
+                <li>
+                    <a href="{{ route('fan.talent.list') }}">Charts</a>
+                </li>
+            @endrole
+
             <li>
                 <a href="javascript:void(0)">Opportunities</a>
             </li>
@@ -114,13 +118,14 @@
                     @role('Talents')
                         <li><a href="{{ route('talent.user.dashboard') }}">Profile</a></li>
                         <li><a href="javascript:void(0)">Cancel Subcription</a></li>
+                        <li><a href="{{ route('talent.account.setting',['']) }}/@if(isset( Auth::user()->id )){{ Auth::user()->id }}@endif">Setting</a></li>
+                        <li><a href="{{ route('talent.logout') }}">Log Out</a></li>
                     @else
-                        <li><a href="javascript:void(0)">Profile</a></li>
-                        <li><a href="{{ route('user.membership.pricing') }}">Subscription</a></li>
+                        <li><a href="{{ route('fan.user.dashboard') }}">Profile</a></li>
+                        <li><a href="javascript:void(0)">Subscription</a></li>
+                        <li><a href="{{ route('fan.account.setting',['']) }}/@if(isset( Auth::user()->id )){{ Auth::user()->id }}@endif">Setting</a></li>
+                        <li><a href="{{ route('fan.logout') }}">Log Out</a></li>
                     @endrole
-
-                    <li><a href="{{ route('user.account.setting',['']) }}/@if(isset( Auth::user()->id )){{ Auth::user()->id }}@endif">Setting</a></li>
-                    <li><a href="{{ route('user.logout') }}">Log Out</a></li>
                 </ul>
             </li>
         </ul>
