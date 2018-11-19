@@ -225,6 +225,81 @@ class TalentController extends Controller
         return response()->json($data, 200, ['Content-type'=> 'application/json; charset=utf-8'], JSON_UNESCAPED_UNICODE);
     }
 
+    public function edit_vedio($post_id)
+    {
+        if(!is_null($post_id))
+        {
+            $postMeta = PostMeta::where('post_id',$post_id)->first();
+            $vedio_info = json_decode($postMeta->meta_value,true);
+            $post =[
+                'id'            => $postMeta->id,
+                'post_id'       => $postMeta->post_id,
+                'meta_key'      => $postMeta->meta_key,
+                'meta_value'    => $vedio_info,
+                'created_at'    => $postMeta->created_at
+            ];
+
+            $response = [
+                'status'    => 'success',
+                'payload'   => $post
+            ];
+
+            return response()->json($response);
+        }
+        else
+        {
+            return response()->json([
+                'status'    => 'fail',
+                'message'   => 'Video post cannot found'
+            ]);            
+        }
+    }
+
+    public function update_vedio($post_meta_id,Request $request)
+    {
+
+        $input = $request->except(['_token']);
+        $postMeta = PostMeta::findOrFail($post_meta_id);
+        $postMeta->meta_value = json_encode($input);
+        if($postMeta->save())
+        {
+            return response()->json([
+                'status'    => 'success',
+                'message'   => 'post video updated successfully'
+            ]);
+        }
+        else
+        {
+            return response()->json([
+                'status'    => 'fail',
+                'message'   => 'post video cannot update'
+            ]);
+        }
+    }
+
+    public function delete_vedio($post_id)
+    {
+        $postMeta = PostMeta::where('post_id',$post_id)->first();
+
+        if(!empty($postMeta))
+        {
+            if($postMeta->delete())
+            {
+                return response()->json([
+                    'status'    => 'success',
+                    'message'   => 'Post video deleted successfully'
+                ]);
+            }
+            else
+            {
+                return response()->json([
+                    'status'    => 'success',
+                    'message'   => 'Post video cannot found'
+                ]);
+            }
+        }
+    }
+
     public function post_article(Request $request)
     {
     	$this->validate($request,[

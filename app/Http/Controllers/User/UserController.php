@@ -55,10 +55,7 @@ class UserController extends Controller
         return response()->json(['success'=> $success, 'code'=>$response]);
     }
 
-    public function membership()
-    {
-        return view('user.membership.pricing');
-    }
+
 
     public function signUp(Request $request){
 

@@ -122,7 +122,7 @@
                         <li><a href="{{ route('talent.logout') }}">Log Out</a></li>
                     @else
                         <li><a href="{{ route('fan.user.dashboard') }}">Profile</a></li>
-                        <li><a href="javascript:void(0)">Subscription</a></li>
+                        <li><a href="{{ route('fan.subcription.plan') }}">Subscription</a></li>
                         <li><a href="{{ route('fan.account.setting',['']) }}/@if(isset( Auth::user()->id )){{ Auth::user()->id }}@endif">Setting</a></li>
                         <li><a href="{{ route('fan.logout') }}">Log Out</a></li>
                     @endrole

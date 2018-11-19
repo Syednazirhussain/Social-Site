@@ -262,6 +262,11 @@ class FanController extends Controller
         return response()->json($data, 200, ['Content-type'=> 'application/json; charset=utf-8'], JSON_UNESCAPED_UNICODE);
     }
 
+    public function subcription_plan()
+    {
+        return view('local.fan.subcription.index');
+    }
+
 
     public function retrive_profile_info()
     {

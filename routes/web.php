@@ -108,51 +108,56 @@ Route::post('user/verify/email', ['as'=> 'user.email.verify', 'uses' => 'User\Us
 
 Route::group(['middleware' => ['user.auth']], function () {
 
-	Route::get('user/membership/pricing', ['as'=> 'user.membership.pricing', 'uses' => 'User\UserController@membership']);
+
 	Route::get('user/membership/payment', ['as'=> 'user.membership.payment', 'uses' => 'User\PayPalController@subcribe']);
 
 	Route::group(['middleware' => ['talent.route']], function () {
 
-		Route::get('talent/user/profile',['as' => 'talent.user.dashboard','uses' => 'User\TalentController@dashboard']);
+		Route::get('talent/profile',['as' => 'talent.user.dashboard','uses' => 'User\TalentController@dashboard']);
 
-		Route::get('talent/user/profile/retrive',['as' => 'talent.profile','uses' => 'User\TalentController@retrive_profile_info']);
+		Route::get('talent/profile/retrive',['as' => 'talent.profile','uses' => 'User\TalentController@retrive_profile_info']);
 
-		Route::post('talent/user/post/add',['as' => 'add.single.post' , 'uses' => 'User\TalentController@post_article']);
-		Route::get('talent/user/post/edit/{post_id}',['as' => 'edit.single.post','uses' => 'User\TalentController@edit_post']);
-		Route::put('talent/user/post/update/{post_id}', ['as'=> 'update.single.post', 'uses' => 'User\TalentController@update_post']);
-		Route::delete('talent/user/post/delete/{post_id}', ['as'=> 'delete.single.post', 'uses' => 'User\TalentController@delete_post']);
+		Route::post('talent/post/add',['as' => 'add.single.post' , 'uses' => 'User\TalentController@post_article']);
+		Route::get('talent/post/edit/{post_id}',['as' => 'edit.single.post','uses' => 'User\TalentController@edit_post']);
+		Route::put('talent/post/update/{post_id}', ['as'=> 'update.single.post', 'uses' => 'User\TalentController@update_post']);
+		Route::delete('talent/post/delete/{post_id}', ['as'=> 'delete.single.post', 'uses' => 'User\TalentController@delete_post']);
 		
-		Route::post('talent/user/post/images',['as' => 'add.multiple.images' , 'uses' => 'User\TalentController@post_images']);
-		Route::delete('talent/user/post/images/{post_id}', ['as'=> 'delete.multiple.images', 'uses' => 'User\TalentController@post_image_destroy']);
-		Route::post('talent/user/post/image/remove', ['as'=> 'delete.single.image', 'uses' => 'User\TalentController@post_image_remove']);
+		Route::post('talent/post/images',['as' => 'add.multiple.images' , 'uses' => 'User\TalentController@post_images']);
+		Route::delete('talent/post/images/{post_id}', ['as'=> 'delete.multiple.images', 'uses' => 'User\TalentController@post_image_destroy']);
+		Route::post('talent/post/image/remove', ['as'=> 'delete.single.image', 'uses' => 'User\TalentController@post_image_remove']);
 		
-		Route::post('talent/user/post/vedio',['as' => 'add.single.vedio' , 'uses' => 'User\TalentController@post_vedio']);
+		Route::get('talent/post/vedio/{post_id}',['as' => 'edit.single.vedio' , 'uses' => 'User\TalentController@edit_vedio']);
+		Route::post('talent/post/vedio',['as' => 'add.single.vedio' , 'uses' => 'User\TalentController@post_vedio']);
+		Route::put('talent/post/vedio/{post_meta_id}',['as' => 'update.single.vedio' , 'uses' => 'User\TalentController@update_vedio']);
+		Route::delete('talent/post/vedio/{post_id}',['as' => 'delete.single.vedio' , 'uses' => 'User\TalentController@delete_vedio']);
 
-		Route::get('talent/user/talent/lists',['as' => 'talent.list','uses' => 'User\TalentController@talent_listing']);
+		Route::get('talent/lists',['as' => 'talent.list','uses' => 'User\TalentController@talent_listing']);
 
-		Route::get('talent/user/account/{account}',['as' => 'talent.account.setting','uses' => 'User\AccountSetting@talent_edit']);
-		Route::patch('talent/user/account/{account}',['as' => 'talent.account.update','uses' => 'User\AccountSetting@talent_update']);
-		Route::get('talent/user/logout', ['as'=> 'talent.logout', 'uses' => 'User\UserController@talent_logout']);
+		Route::get('talent/account/{account}',['as' => 'talent.account.setting','uses' => 'User\AccountSetting@talent_edit']);
+		Route::patch('talent/account/{account}',['as' => 'talent.account.update','uses' => 'User\AccountSetting@talent_update']);
+		Route::get('talent/logout', ['as'=> 'talent.logout', 'uses' => 'User\UserController@talent_logout']);
 
 
 	});
 
 	Route::group(['middleware' => ['fan.route']], function () {
 
-		Route::get('fan/user/profile',['as' => 'fan.user.dashboard','uses' => 'User\FanController@dashboard']);		
+		Route::get('fan/profile',['as' => 'fan.user.dashboard','uses' => 'User\FanController@dashboard']);		
 
-		Route::get('fan/user/profile/retrive',['as' => 'fan.profile','uses' => 'User\FanController@retrive_profile_info']);
+		Route::get('fan/profile/retrive',['as' => 'fan.profile','uses' => 'User\FanController@retrive_profile_info']);
 		
-		Route::get('fan/user/talent_profile_preview/{talent_id}',['as' => 'fan.view.talent.profile','uses' => 'User\FanController@preview_talent_profile']);
-		Route::get('fan/user/talent_profile_detail/{talent_id}',['as' => 'fan.view.talent.detail','uses' => 'User\FanController@preview_talent_detail']);
+		Route::get('fan/talent_profile_preview/{talent_id}',['as' => 'fan.view.talent.profile','uses' => 'User\FanController@preview_talent_profile']);
+		Route::get('fan/talent_profile_detail/{talent_id}',['as' => 'fan.view.talent.detail','uses' => 'User\FanController@preview_talent_detail']);
 
-		Route::get('fan/user/talent/lists',['as' => 'fan.talent.list','uses' => 'User\FanController@talent_listing']);
-		Route::post('fan/user/follow/talent',['as' => 'fan.follow.talent','uses' => 'User\FanController@follow']);
-		Route::post('fan/user/unfollow/talent',['as' => 'fan.unfollow.talent','uses' => 'User\FanController@unfollow']);
+		Route::get('fan/talent/lists',['as' => 'fan.talent.list','uses' => 'User\FanController@talent_listing']);
+		Route::post('fan/follow/talent',['as' => 'fan.follow.talent','uses' => 'User\FanController@follow']);
+		Route::post('fan/unfollow/talent',['as' => 'fan.unfollow.talent','uses' => 'User\FanController@unfollow']);
 
-		Route::get('fan/user/account/{account}',['as' => 'fan.account.setting','uses' => 'User\AccountSetting@fan_edit']);
-		Route::patch('fan/user/account/{account}',['as' => 'fan.account.update','uses' => 'User\AccountSetting@fan_update']);
-		Route::get('fan/user/logout', ['as'=> 'fan.logout', 'uses' => 'User\UserController@fan_logout']);
+		Route::get('fan/subcription/plan', ['as'=> 'fan.subcription.plan', 'uses' => 'User\FanController@subcription_plan']);
+
+		Route::get('fan/account/{account}',['as' => 'fan.account.setting','uses' => 'User\AccountSetting@fan_edit']);
+		Route::patch('fan/account/{account}',['as' => 'fan.account.update','uses' => 'User\AccountSetting@fan_update']);
+		Route::get('fan/logout', ['as'=> 'fan.logout', 'uses' => 'User\UserController@fan_logout']);
 
 	});
 

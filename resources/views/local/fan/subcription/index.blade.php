@@ -1,4 +1,4 @@
-@extends('user.dashboard_layout')
+@extends('local.dashboard_layout')
 
 
 @section('css')
@@ -128,7 +128,7 @@
                             <li><i class="fa fa-image"></i> Upload photos</li>
                         </ul>
                     </div>
-                    <a href="{{ route('user.membership.payment') }}">Subcribe</a>
+                    <a href="javascript:void(0)">Subcribe</a>
                 </div>
             </div>
         </div>

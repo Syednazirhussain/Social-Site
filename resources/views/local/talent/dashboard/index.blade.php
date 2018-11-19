@@ -369,7 +369,7 @@
                                                     <div class="row">
                                                         <div class="form-group col-sm-6">
                                                             <label class="control-label">Title</label>
-                                                            <input type="text" class="form-control" style="height: 30px !important" name="title" placeholder="ex Picnic">
+                                                            <input type="text" id="video_title" class="form-control" style="height: 30px !important" name="title" placeholder="ex Picnic">
                                                         </div>
                                                         <div class="form-group col-sm-6">
                                                             <label class="control-label">Type</label>
@@ -383,7 +383,7 @@
                                                     <div class="row">
                                                         <div class="form-group col-sm-12">
                                                             <label class="control-label">URL</label>
-                                                            <input type="text" class="form-control" style="height: 30px !important" name="vedio_url" placeholder="ex https://youtu.be/cH6kxtzovew">
+                                                            <input type="text" class="form-control" style="height: 30px !important" id="vedio_url" name="vedio_url" placeholder="ex https://youtu.be/cH6kxtzovew">
                                                         </div>
                                                     </div>
                                                 </div>
@@ -416,6 +416,11 @@
                     <div class="modal-body">
                         <div class="row">
                             <div class="col-sm-12 col-md-12">
+                                @hasanyrole('Talents|Web Master|Admin')
+                                <a href="javascript:void(0)" id="remove_post_video" data-post-id="" class="label label-danger">
+                                    <i class="fa fa-trash"></i>
+                                </a> 
+                                @endhasanyrole
                                 <button type="button" class="close btn-rounded pull-right" data-dismiss="modal">&times;</button>
                             </div>
                         </div>
@@ -815,41 +820,6 @@
         e.preventDefault();
     });
 
-
-    $('#post_vedio').submit(function(e){
-
-        var formData  = $(this).serializeArray();
-
-        $('#videoSubmit').prop('disabled', true);
-
-        $.ajax({
-                url: "{{ route('add.single.vedio') }}",
-                type: "POST",
-                dataType: "json",
-                data : formData
-        }).done(function(response){
-            $('#videoSubmit').prop('disabled', false);
-            if(response.status == 'success')
-            {
-                alert(response.message);
-                page_refresh();
-            }
-            else
-            {
-                alert(response.message);
-            }
-        });
-
-        e.preventDefault();
-    });
-
-    $(document).on('click','.vedio-modal',function(){
-        $('#vedio-panel').attr('src', '');
-        var vedioSrc = $(this).attr('data-url');
-        console.log(vedioSrc);
-        $('#vedio-panel').attr('src', vedioSrc);
-    });
-
     function page_refresh()
     {
         $.ajax({
@@ -962,24 +932,26 @@
 
                         if(video_info.vedio_type == 'youtube')
                         {
-                            vedioHtml += '<img src="'+video_info.image_url+'" data-toggle="modal" data-target="#vedioModal" data-url="'+video_info.vedio_url+'" class="border-rounded vedio-modal">';
+                            vedioHtml += '<img src="'+video_info.image_url+'" data-toggle="modal" data-target="#vedioModal" data-post-id="'+post_id+'" data-url="'+video_info.vedio_url+'" class="border-rounded vedio-modal">';
                         }
                         else if(video_info.vedio_type == 'dailymotion')
                         {
-                            vedioHtml += '<img src="'+video_info.image_url+'" data-toggle="modal" data-target="#vedioModal" data-url="'+video_info.vedio_url+'"  class="border-rounded vedio-modal">';
+                            vedioHtml += '<img src="'+video_info.image_url+'" data-toggle="modal" data-target="#vedioModal" data-post-id="'+post_id+'" data-url="'+video_info.vedio_url+'"  class="border-rounded vedio-modal">';
                         }
                         else if(video_info.vedio_type == 'vimeo')
                         {
-                            vedioHtml += '<img src="'+video_info.image_url+'" data-toggle="modal" data-target="#vedioModal" data-url="'+video_info.vedio_url+'" class="border-rounded vedio-modal">';
+                            vedioHtml += '<img src="'+video_info.image_url+'" data-toggle="modal" data-target="#vedioModal" data-post-id="'+post_id+'" data-url="'+video_info.vedio_url+'" class="border-rounded vedio-modal">';
                         }
 
                         vedioHtml += '</a>';
                         vedioHtml += '<div class="font-size-11 text-muted" style="margin-top: 5px;">';
                         vedioHtml += '<div class="post_vedio_author">';
-                        vedioHtml += '<i class="fa fa-user"></i>&nbsp;'+talent_name;
+                        //vedioHtml += '<i class="fa fa-user"></i>&nbsp;'+video_info.title;  talent_name;
+                        vedioHtml += video_info.title+'&nbsp;<a href="javascript:void(0)" class="edit_post_vedio" data-post-id='+post_id+'><i class="fa fa-pencil-square-o"></i></a>';
                         vedioHtml += '</div>';
                         vedioHtml += '<div>';
-                        vedioHtml += '<i class="fa fa-video-camera"></i>&nbsp;'+video_info.vedio_type.charAt(0).toUpperCase()+video_info.vedio_type.slice(1);
+                        vedioHtml += '<p class="list-group-item-text text-muted font-size-11">Post by <b>'+talent_name+'</b> on '+video_info.vedio_type.charAt(0).toUpperCase()+video_info.vedio_type.slice(1);
+                        //vedioHtml += '<i class="fa fa-video-camera"></i>&nbsp;'+video_info.vedio_type.charAt(0).toUpperCase()+video_info.vedio_type.slice(1);
                         vedioHtml += '</div>';
                         vedioHtml += '</div>';
                         vedioHtml += '</div>';
@@ -1144,6 +1116,123 @@
         });
     }
 
+    var vedio_post_id = 0;
+    var post_meta_id = 0;
+    $(document).on('click','.edit_post_vedio',function(){
+
+        vedio_post_id = $(this).data('post-id');
+
+        $.get("{{ route('edit.single.vedio',['']) }}/"+vedio_post_id,function(response){
+            if(response.hasOwnProperty('status'))
+            {   
+                if(response.status == 'success')
+                {
+                    post_meta_id = response.payload.id;
+                    $('#videoSubmit').text('Update');
+                    $('#video_title').val(response.payload.meta_value.title);
+                    $('#vedio_type option[value='+response.payload.meta_value.vedio_type+']').prop('selected', 'selected').change();
+                    $('#vedio_url').val(response.payload.meta_value.vedio_url);
+
+                }
+            }
+        });
+    });
+
+    $('#post_vedio').submit(function(e){
+
+        var formData  = $(this).serializeArray();
+
+        $('#videoSubmit').prop('disabled', true);
+
+        if(vedio_post_id == 0 && post_meta_id == 0)
+        {
+            $.ajax({
+                    url: "{{ route('add.single.vedio') }}",
+                    type: "POST",
+                    dataType: "json",
+                    data : formData,
+                    beforeSend: function(){
+                        $('#videoSubmit').prop('disabled', false);                    
+                    }
+            }).done(function(response){
+
+                if(response.status == 'success')
+                {
+                    alert(response.message);
+                    page_refresh();
+                }
+                else
+                {
+                    alert(response.message);
+                }
+            });
+        }
+        else
+        {
+            $.ajax({
+                    url: "{{ route('update.single.vedio',['']) }}/"+post_meta_id,
+                    type: "PUT",
+                    dataType: "json",
+                    data : formData,
+                    beforeSend: function(){
+                        $('#videoSubmit').prop('disabled', false);                    
+                    }
+            }).done(function(response){
+                if(response.status == 'success')
+                {
+                    $('#videoSubmit').text('Add');
+                    $('#video_title').val('');
+                    $('#vedio_type option:selected').remove();
+                    $('#vedio_url').val('');
+                    alert(response.message);
+                    page_refresh();
+                }
+                else
+                {
+                    alert(response.message);
+                }
+            });
+        }
+        e.preventDefault();
+    });
+
+    $(document).on('click','.vedio-modal',function(){
+        
+        $('#vedio-panel').attr('src', '');
+        var vedioSrc = $(this).attr('data-url');
+        var post_id = $(this).data('post-id');
+        
+        $('#remove_post_video').data('post-id',post_id); 
+
+        $('#vedio-panel').attr('src', vedioSrc);
+    });
+
+    $(document).on('click','#remove_post_video',function(){
+
+        var post_id = $(this).data('post-id');
+
+        if(confirm('Are you sure.?'))
+        {
+            $.ajax({
+                    url: "{{ route('delete.single.vedio',['']) }}/"+post_id,
+                    type: "DELETE"
+            }).done(function(response){
+                if(response.status == 'success')
+                {
+                    $("#vedioModal").modal('hide');
+                    $(document.body).removeClass("modal-open");
+                    $(".modal-backdrop").remove();
+                    alert(response.message);
+                    page_refresh();
+                }
+                else
+                {
+                    alert(response.message);
+                }
+            });
+        }
+    });
+
     function errorMessage(message)
     {
         var html = '<div class="alert alert-success alert-dismissable" style="text-align: center;">';
@@ -1189,7 +1278,7 @@
           'title': {
             required: true,
             minlength: 3,
-            maxlength: 40,
+            maxlength: 12,
           },
           'vedio_url': {
             required: true,
