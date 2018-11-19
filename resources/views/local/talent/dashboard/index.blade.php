@@ -553,10 +553,11 @@
 
     var post_id=0;
     $(document).on('click','.edit_post',function(){
-        $('#articleSubmit').text('Edit');
+        $('#articleSubmit').text('Update');
         post_id = $(this).data('post-id');
         $.get("{{ route('edit.single.post',['']) }}/"+post_id,function(response){
             var post = response.post;
+            $('#post_category option[value='+post.post_category_id+']').prop('selected', 'selected').change();
             $('#post_article').summernote('code', post.description);
         });
     });
