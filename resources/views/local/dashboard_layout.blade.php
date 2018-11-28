@@ -20,6 +20,7 @@
     <link href="{{ asset('/theme/css/responsive.css') }}" rel="stylesheet">
     <link href="{{ asset('/theme/css/profile.css') }}" rel="stylesheet">
 
+
     <link href="{{ asset('/skin-1/assets/css/pixeladmin.min.css') }}" rel="stylesheet">
     <link href="{{ asset('/skin-1/assets/css/widgets.min.css') }}" rel="stylesheet">
     <link href="{{ asset('/skin-1/assets/plugins/jasny-bootstrap/css/jasny-bootstrap.min.css') }}" rel="stylesheet">
@@ -28,7 +29,7 @@
     <link href="{{ asset('/skin-1/assets/fileuploader/css/jquery.fileuploader-theme-thumbnails.css') }}" media="all" rel="stylesheet">
     <link href="{{ asset('/skin-1/assets/calender/calender-css.css') }}" media="all" rel="stylesheet">
 
-
+    <link href="{{ asset('/skin-1/assets/calender/calender-css.css') }}" rel='stylesheet' />
 
     <link rel="shortcut icon" href="{{ asset('/theme/images/artist.png') }}">
     <link rel="apple-touch-icon-precomposed" sizes="144x144" href="{{ asset('/theme/images/ico/apple-touch-icon-144-precomposed.png') }}">
@@ -117,7 +118,7 @@
                 <ul class="dropdown-menu">
                     @role('Talents')
                         <li><a href="{{ route('talent.user.dashboard') }}">Profile</a></li>
-                        <li><a href="javascript:void(0)">Cancel Subcription</a></li>
+                        <li><a href="{{ route('subcription.info') }}">Subcription</a></li>
                         <li><a href="{{ route('talent.account.setting',['']) }}/@if(isset( Auth::user()->id )){{ Auth::user()->id }}@endif">Setting</a></li>
                         <li><a href="{{ route('talent.logout') }}">Log Out</a></li>
                     @else
@@ -168,6 +169,11 @@
     <script src="{{ asset('/skin-1/assets/fileuploader/src/jquery.fileuploader.min.js') }}" type="text/javascript"></script>
     <script src="{{ asset('/skin-1/assets/fileuploader/js/custom.js') }}" type="text/javascript"></script>
     <script src="{{ asset('/skin-1/assets/calender/calender-js.js') }}" type="text/javascript"></script>
+
+
+    <script src="{{ asset('/skin-1/assets/calender/calender-js.js') }}"></script>
+
+
 
     @yield('js')
 </body>

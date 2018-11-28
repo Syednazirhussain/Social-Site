@@ -31,8 +31,9 @@ class Subscription extends Model
 
 
     public $fillable = [
-        'plan_code',
+        'code',
         'user_id',
+        'membership_id',
         'status',
         'renewal_date',
         'renewed_date'
@@ -46,6 +47,7 @@ class Subscription extends Model
     protected $casts = [
         'plan_code' => 'string',
         'user_id' => 'integer',
+        'membership_id' => 'integer',
         'status' => 'string',
         'renewal_date' => 'date:Y-m-d',
         'renewed_date' => 'date:Y-m-d'
@@ -66,6 +68,22 @@ class Subscription extends Model
     public function users()
     {
         return $this->hasMany(\App\User::class);
+    }
+
+    /**
+     * @return \Illuminate\Database\Eloquent\Relations\HasMany
+     **/
+    public function subscriptionOrder()
+    {
+        return $this->hasMany(\App\Models\Admin\SubscriptionOrder::class);
+    }
+
+    /**
+     * @return \Illuminate\Database\Eloquent\Relations\HasMany
+     **/
+    public function membership()
+    {
+        return $this->belongsTo(\App\Models\Admin\MemberShipPlan::class);
     }
     
 }

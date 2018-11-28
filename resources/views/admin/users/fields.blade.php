@@ -170,7 +170,7 @@
             email: true,
             maxlength: 50,
             minlength: 3,
-              remote: {
+            remote: {
                 param: {
                   url: '{{ route("admin.user.email") }}',
                   type: "post",

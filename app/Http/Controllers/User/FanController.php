@@ -7,7 +7,8 @@ use Illuminate\Http\Request;
 
 use Spatie\Permission\Models\Role;
 use Spatie\Permission\Models\Permission;
-use App\Models\Admin\Subscription;
+use Srmklive\PayPal\Services\ExpressCheckout;
+use Illuminate\Support\Facades\Log;
 
 use Auth;
 use Flash;
@@ -19,13 +20,217 @@ use App\Models\Admin\Post;
 use App\Models\Admin\PostCategory;
 use App\Models\Admin\PostMeta;
 use App\Models\Admin\Follow;
+use App\Models\Admin\Subscription;
+use App\Models\Admin\SubscriptionOrder;
+use App\Models\Admin\MemberShipPlan;
 
 class FanController extends Controller
 {
 
-    function __construct()
+    private $provider; 
+
+    function __construct(ExpressCheckout $express)
     {
-        $this->middleware('fan.route');
+        $this->provider = $express;
+        $this->middleware('fan.route')->except('subcription_details');
+    }
+
+    public function subcription_plan()
+    {
+        $user_id = Auth::user()->id;
+        $memberShipPlan = MemberShipPlan::where('code','premium')->first();
+
+        $amount = $memberShipPlan->price;
+        $planCode = $memberShipPlan->code;
+        // $subscription = Subscription::where('code','premium')->first();
+
+        // $subscription_id = $subscription->id;
+        // $amount = $subscription->membership->price;
+
+        $data = [
+            'user_id'           => $user_id,
+            'planCode'          => $planCode,
+            // 'subscription_id'   => $subscription_id,
+            'amount'            => $amount
+        ];
+
+        return view('local.fan.subcription.index',$data);
+    }
+
+
+
+    public function subcription_request(Request $request)
+    {
+        $input = $request->except(['_token']);
+
+        $user_id = $input['user_id'];
+        $planCode = $input['planCode'];
+
+        $subcription = Subscription::where('user_id',$user_id)->first();
+
+        if(!empty($subcription))
+        {
+            $amount = MemberShipPlan::where('code',$planCode)->first()->price;
+            $status = 'pending';
+
+            $subscriptionOrder = new SubscriptionOrder;
+            $subscriptionOrder->user_id = $user_id;
+            $subscriptionOrder->subscription_plan_id = $subcription->id;
+            $subscriptionOrder->amount = $amount;
+            $subscriptionOrder->status = $status;
+            if($subscriptionOrder->save())
+            {
+                $data = [];
+                $data['items'] = [
+                    [
+                        'name' => 'Creatify premium offer',
+                        'price' => $amount,
+                        'qty' => 1
+                    ]
+                ];
+
+                $data['invoice_id'] = $subscriptionOrder->id;
+                $data['invoice_description'] = "Order #{$data['invoice_id']} Invoice";
+                $data['return_url'] = route('fan.subcription.response');
+                $data['cancel_url'] = route('fan.subcription.plan');
+                $data['total'] = $amount;
+                $data['shipping_discount'] = round((10 / 100) * $amount, 2);
+
+                $response = $this->provider->setExpressCheckout($data);
+
+                return redirect($response['paypal_link']);
+            }
+            else
+            {
+                Session::flash('errorMsg','Subcription order were not created');
+                return redirect()->route('fan.subcription.plan');
+            }
+        }
+        else
+        {
+            Session::flash('errorMsg','User subcription were not found');
+            return redirect()->route('fan.subcription.plan');
+        }
+
+        // $subscription_id = $input['subscription_id'];
+        // $subcription = Subscription::find($subscription_id);
+
+        // $amount = $subcription->membership->price;
+        
+        // $subscriptionOrder = SubscriptionOrder::where('user_id',$input['user_id'])->first();
+
+
+
+    }
+
+    public function subcription_response(Request $request)
+    {
+        if($request->has('token') && $request->has('PayerID'))
+        {
+            $token = $request->input('token');
+            $payerID = $request->input('PayerID');
+
+            $response = $this->provider->getExpressCheckoutDetails($token);
+
+            if(isset($response['PAYMENTREQUEST_0_INVNUM']))
+            {
+                $subcription_order_id = $response['PAYMENTREQUEST_0_INVNUM'];
+                $subscriptionOrder = SubscriptionOrder::findOrFail($subcription_order_id);
+                if(!empty($subscriptionOrder))
+                {
+                    $subcription_id = $subscriptionOrder->subscription_plan_id;
+                    $user_id = $subscriptionOrder->user_id;
+
+                    $subscriptionOrder->transaction_id = $token;
+                    $subscriptionOrder->status = 'paid';
+                    if($subscriptionOrder->save())
+                    {
+                        if(Auth::user()->id = $user_id)
+                        {
+                            $memberShip_id = MemberShipPlan::where('code','premium')->first()->id;
+                            
+                            if(Subscription::find($subcription_id)->update(['membership_id' => $memberShip_id,'code' => 'premium']))
+                            {
+                                User::find($user_id)->update(['plan_code' => 'premium']);
+
+                                $user = Auth::user();
+                                $user->syncRoles(['Talents']);
+
+                                Session::flash('errorMsg','Thank for you to subcribe our platfrom');
+                                return redirect()->route('talent.user.dashboard');
+                            }
+                            else
+                            {
+                                Session::flash('errorMsg','Subcription plan were not updated');
+                                return redirect()->route('fan.subcription.plan');
+                            }
+                        }
+                        else
+                        {
+                            Session::flash('errorMsg','User identity invalid');
+                            return redirect()->route('fan.subcription.plan');
+                        }
+                    }
+                    else
+                    {
+                        Session::flash('errorMsg','Subcription Order not found');
+                        return redirect()->route('fan.subcription.plan');
+                    }
+                }
+                else
+                {
+                    Session::flash('errorMsg','Payment were not successful');
+                    return redirect()->route('fan.subcription.plan');
+                }
+            }
+            else
+            {
+                Session::flash('errorMsg','OrderID not found');
+                return redirect()->route('fan.subcription.plan');
+            }
+        }
+        else
+        {
+            Session::flash('errorMsg','Payment were not successful');
+            return redirect()->route('fan.subcription.plan');
+        }
+    }
+
+    public function subcription_message()
+    {
+        return view('local.fan.subcription.message');
+    }
+
+    public function subcription_details(Request $request)
+    {
+
+        //Log::info('Inside details: ',['message' => 'Hello']);
+        //$request->merge(['cmd' => '_notify-validate']);
+        $post = $request->all();        
+        
+        //$response = (string) $this->provider->verifyIPN($post);
+
+        Log::info('This is test', $post);
+
+
+        // Log::info('Data: ',$request->all());
+
+        // return $request->all();
+
+        
+        // if ($response === 'VERIFIED') 
+        // {
+
+        // }
+
+        // $input = $request->all();
+        // $token = $input['token'];
+        // $payerID = $input['PayerID'];
+
+        // $response = $this->provider->getExpressCheckoutDetails($token);
+        // echo "<pre>";
+        // print_r($response);
+        // exit;
     }
 
     public function dashboard()
@@ -262,10 +467,7 @@ class FanController extends Controller
         return response()->json($data, 200, ['Content-type'=> 'application/json; charset=utf-8'], JSON_UNESCAPED_UNICODE);
     }
 
-    public function subcription_plan()
-    {
-        return view('local.fan.subcription.index');
-    }
+
 
 
     public function retrive_profile_info()

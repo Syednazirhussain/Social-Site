@@ -7,6 +7,7 @@
         </div>
         <div class="row">
             <div class="col-md-8 col-md-offset-2">
+                @include('flash::message')
                 <div class="panel">
                     <div class="panel-heading">
                         <div class="panel-title">Add User</div>

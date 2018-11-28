@@ -208,7 +208,7 @@
     });
 
       jQuery.validator.addMethod("alphanumeric", function(value, element) {
-              return this.optional(element) || /^[a-zA-Z ]+$/.test(value);
+              return this.optional(element) || /^[a-zA-Z_ ]+$/.test(value);
       }, "Please enter alphabets only");
 
   </script>

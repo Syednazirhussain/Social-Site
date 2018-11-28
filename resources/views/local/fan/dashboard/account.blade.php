@@ -114,106 +114,138 @@
 
 <section id="contact-page">
     <div class="container">
-    	<div class="row">
-        <div class="m-t-4">
-          <form enctype="multipart/form-data" class="form-horizontal" method="POST" action="{{ route('fan.account.update',$user->id) }}" id="account">
-            <input type="hidden" id="token" name="_token" value="{{ csrf_token() }}">
-            <input type="hidden" name="_method" value="PATCH">
-            <div class="col-xs-12 col-sm-12 col-md-12 col-lg-12">
+      <div class="m-t-4">
+          <form action="{{ route('fan.account.update',$user->id) }}" enctype="multipart/form-data" class="form-horizontal" method="POST" id="account">
+            <div class="row">
+              <input type="hidden" id="token" name="_token" value="{{ csrf_token() }}">
+              <input type="hidden" name="_method" value="PATCH">
               @include('flash::message')
-              <div class="col-xs-12 col-sm-12 col-md-6 col-lg-6">
 
-                <div class="col-sm-12 col-xs-12">
-                  <div class="form-group">
-                    <label class="control-label" for="name">Name</label>
-                    <input type="text" name="name" id="name" value="@if(isset($user)){{ $user->name }}@endif" class="form-control" placeholder="ex John Doe" >
-                  </div>            
+              <div class="col-xs-12 col-sm-12 col-md-12 col-lg-12">
+
+                <div class="col-md-6 col-lg-6">
+                  <div class="fileinput fileinput-new" id="fileinput" data-provides="fileinput">
+                            <div class="fileinput-new thumbnail" style="width: 200px; height: 150px;">
+                                  @if(isset($user))
+                                    @if($user->image != null)
+                                      <img class="img-responsive" src="{{ asset('storage/users/'.$user->image ) }}" data-src="{{ asset('storage/users/'.$user->image) }}" alt="{{ $user->name}}" />
+                                    @else
+                                      <img class="img-responsive" src="{{ asset('storage/users/default.png') }}" alt="{{ $user->name}}"/>
+                                    @endif
+                                  @else
+                                      <img class="img-responsive" src="{{ asset('storage/users/default.png') }}" alt="user"/>
+                                  @endif
+                            </div>
+                            <div class="fileinput-preview fileinput-exists thumbnail" style="max-width: 200px; max-height: 150px;"></div>
+                          <div>
+                            <span class="btn btn-default btn-file">
+                                <span class="fileinput-new">Select image</span>
+                                <span class="fileinput-exists">Change</span>
+                            <input type="file" name="profile_image"></span>
+                            <a href="#" class="btn btn-default fileinput-exists" data-dismiss="fileinput">Remove</a>
+                          </div>
+                    </div>  
+                    <label class="control-label pull-left m-l-4" for="name">Profile Image</label>
                 </div>
 
-                <div class="col-sm-12 col-xs-12">
-                  <div class="form-group">
-                    <label class="control-label" for="phone">Phone</label>
-                    <input type="text" name="phone" id="phone" value="@if(isset($user)){{ $user->phone }}@endif" class="form-control" placeholder="ex. 03xxxxxxxxx">
-                  </div>
+                <div class="col-md-6 col-lg-6">
+                    <div class="fileinput fileinput-new" id="fileinput" data-provides="fileinput">
+                            <div class="fileinput-new thumbnail" style="width: 200px; height: 150px;">
+                                  @if(isset($additional_info))
+                                    @if($additional_info->cover_image != null)
+                                      <img class="img-responsive" src="{{ asset('storage/users/'.$additional_info->cover_image ) }}" data-src="{{ asset('storage/users/'.$user->image) }}" alt="{{ $user->name}}" />
+                                    @else
+                                      <img class="img-responsive" src="{{ asset('storage/users/default_cover.png') }}" alt="{{ $user->name}}"/>
+                                    @endif
+                                  @else
+                                      <img class="img-responsive" src="{{ asset('storage/users/default_cover.png') }}" alt="user"/>
+                                  @endif
+                            </div>
+                            <div class="fileinput-preview fileinput-exists thumbnail" style="max-width: 200px; max-height: 150px;"></div>
+                          <div>
+                            <span class="btn btn-default btn-file">
+                                <span class="fileinput-new">Select image</span>
+                                <span class="fileinput-exists">Change</span>
+                            <input type="file" name="cover_image"></span>
+                            <a href="#" class="btn btn-default fileinput-exists" data-dismiss="fileinput">Remove</a>
+                          </div>
+                    </div> 
+                    <label class="control-label pull-left m-l-4" for="name">Cover Image</label> 
                 </div>
-
-                <div class="col-xs-12 col-sm-12 m-t-1">
-                  <div class="form-group">
-                    <label class="control-label" for="linkdin">Linkdin</label>
-                    <input type="text" name="linkdin" id="linkdin" value="@if(isset($additional_info)){{ $additional_info->linkdin }}@endif" class="form-control">
-                  </div>
-                </div>
-
-                <div class="col-xs-12 col-sm-12">
-                  <div class="form-group">
-                    <label class="control-label" for="instagram">Instagram</label>
-                    <input type="text" name="instagram" id="instagram" value="@if(isset($additional_info)){{ $additional_info->instagram }}@endif" class="form-control">
-                  </div>
-                </div>
-
-                <div class="col-sm-12 col-xs-12">
-                  <div class="form-group">
-                    <label class="control-label" for="remail">Email</label>
-                        <input type="email"  placeholder="ex john@example.com" id="remail" value="@if(isset($user)){{ $user->email }}@endif" name="remail" class="form-control">
-                        <input type="hidden" id="compare_email" value="@if(isset($user)){{ $user->email }}@endif" >
-                  </div>
-                </div>
-
               </div>
 
-              <div class="col-xs-12 col-sm-12 col-md-6 col-lg-6">
+              <div class="col-xs-12 col-sm-12 col-md-12 col-lg-12">
 
-                <div class="col-xs-12 col-sm-12 pull-right">
-                  <div class="fileinput fileinput-new" id="fileinput" data-provides="fileinput">
-                          <div class="fileinput-new thumbnail" style="width: 200px; height: 150px;">
-                                @if(isset($user))
-                                  @if($user->image != null)
-                                    <input type="hidden" name="profile_image" id="logo-hidden" value="{{ $user->image }}">
-                                    <img class="img-responsive" src="{{ asset('storage/users/'.$user->image ) }}" data-src="{{ asset('storage/users/'.$user->image) }}" alt="{{ $user->name}}" />
-                                  @else
-                                    <img class="img-responsive" src="{{ asset('storage/users/default.png') }}" alt="{{ $user->name}}"/>
-                                  @endif
-                                @else
-                                    <img class="img-responsive" src="{{ asset('storage/users/default.png') }}" alt="user"/>
-                                @endif
-                          </div>
-                          <div class="fileinput-preview fileinput-exists thumbnail" style="max-width: 200px; max-height: 150px;"></div>
-                        <div>
-                          <span class="btn btn-default btn-file">
-                              <span class="fileinput-new">Select image</span>
-                              <span class="fileinput-exists">Change</span>
-                          <input type="file" name="pic"></span>
-                          <a href="#" class="btn btn-default fileinput-exists" data-dismiss="fileinput">Remove</a>
-                        </div>
-                  </div>     
+                <div class="col-md-6 col-lg-6">
+                    <div class="form-group">
+                      <label class="control-label" for="name">Name</label>
+                      <input type="text" name="name" id="name" value="@if(isset($user)){{ $user->name }}@endif" class="form-control" placeholder="ex John Doe" >
+                    </div> 
                 </div>
 
-                <div class="col-xs-12 col-sm-12">
-                  <div class="form-group">
-                    <label class="control-label" for="facebook">Facebook</label>
-                    <input type="text" name="facebook" id="facebook" value="@if(isset($additional_info)){{ $additional_info->facebook }}@endif" class="form-control">
-                  </div>
+                <div class="col-md-6 col-lg-6">
+                    <div class="form-group">
+                      <label class="control-label" for="phone">Phone</label>
+                      <input type="text" name="phone" id="phone" value="@if(isset($user)){{ $user->phone }}@endif" class="form-control" placeholder="ex. 03xxxxxxxxx">
+                    </div>
+                </div>
+              </div>
+                
+              <div class="col-xs-12 col-sm-12 col-md-12 col-lg-12">
+
+                <div class="col-md-6 col-lg-6">
+                    <div class="form-group">
+                      <label class="control-label" for="linkdin">Linkdin</label>
+                      <input type="text" name="linkdin" id="linkdin" value="@if(isset($additional_info)){{ $additional_info->linkdin }}@endif" class="form-control">
+                    </div>
                 </div>
 
-                <div class="col-xs-12 col-sm-12">
-                  <div class="form-group">
-                    <label class="control-label" for="twitter">Twitter</label>
-                    <input type="text" name="twitter" id="twitter" value="@if(isset($additional_info)){{ $additional_info->twitter }}@endif" class="form-control">
-                  </div>
-                </div> 
+                <div class="col-md-6 col-lg-6">
+                    <div class="form-group">
+                      <label class="control-label" for="instagram">Instagram</label>
+                      <input type="text" name="instagram" id="instagram" value="@if(isset($additional_info)){{ $additional_info->instagram }}@endif" class="form-control">
+                    </div>
+                </div>
+              </div>
 
-                <div class="col-sm-12 col-xs-12">
-                  <div class="form-group">
-                    <label class="control-label" for="password">Password</label>
-                        @if(isset($user))
-                          <input type="password" id="password_id" name="password_edit" placeholder="Enter password"  class="form-control">
-                          <p class="text-danger font-size-12"> * Leave it blank, if you don't want to change password.</p>
-                        @else
-                          <input type="password" id="password_id" name="password"  placeholder="Enter password"  class="form-control">
-                        @endif
-                  </div>  
+              <div class="col-xs-12 col-sm-12 col-md-12 col-lg-12">
+
+                <div class="col-md-6 col-lg-6">
+                    <div class="form-group">
+                      <label class="control-label" for="facebook">Facebook</label>
+                      <input type="text" name="facebook" id="facebook" value="@if(isset($additional_info)){{ $additional_info->facebook }}@endif" class="form-control">
+                    </div>
                 </div>
 
+                <div class="col-md-6 col-lg-6">
+                    <div class="form-group">
+                      <label class="control-label" for="twitter">Twitter</label>
+                      <input type="text" name="twitter" id="twitter" value="@if(isset($additional_info)){{ $additional_info->twitter }}@endif" class="form-control">
+                    </div>
+                </div>
+              </div>
+
+              <div class="col-xs-12 col-sm-12 col-md-12 col-lg-12">
+
+                <div class="col-md-6 col-lg-6">
+                    <div class="form-group">
+                      <label class="control-label" for="remail">Email</label>
+                          <input type="email"  placeholder="ex john@example.com" id="remail" value="@if(isset($user)){{ $user->email }}@endif" name="remail" class="form-control">
+                          <input type="hidden" id="compare_email" value="@if(isset($user)){{ $user->email }}@endif" >
+                    </div>
+                </div>
+
+                <div class="col-md-6 col-lg-6">
+                    <div class="form-group">
+                      <label class="control-label" for="password">Password</label>
+                          @if(isset($user))
+                            <input type="password" id="password_id" name="password_edit" placeholder="Enter password"  class="form-control">
+                            <p class="text-danger font-size-12"> * Leave it blank, if you don't want to change password.</p>
+                          @else
+                            <input type="password" id="password_id" name="password"  placeholder="Enter password"  class="form-control">
+                          @endif
+                    </div>  
+                </div>
               </div>
 
               <div class="col-xs-12 col-sm-12 col-md-12 col-lg-12">
@@ -230,8 +262,8 @@
               </div>
 
             </div>
+
           </form>
-        </div>
     	</div>
     </div>
 </section>

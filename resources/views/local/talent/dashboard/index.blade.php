@@ -54,7 +54,6 @@
         box-shadow: 0px 0px 21px 2px rgba(0,0,0,0.18);
         }
 </style>
-
 <style type="text/css">
 
     .blog_archieve li a {
@@ -199,7 +198,11 @@
 <div class="main-secction">
     <div class="row">
         <div class="col-md-12 col-sm-12 col-xs-12 image-section">
-            <img src="https://png.pngtree.com/thumb_back/fw800/back_pic/00/08/57/41562ad4a92b16a.jpg">
+            @if($user->additional_info->cover_image != null)
+                <img src="{{ asset('storage/users/'.$user->additional_info->cover_image ) }}">
+            @else
+                <img src="https://png.pngtree.com/thumb_back/fw800/back_pic/00/08/57/41562ad4a92b16a.jpg">
+            @endif
         </div>
     </div>
     <div class="row">
@@ -536,8 +539,6 @@
 <!-- Go to www.addthis.com/dashboard to customize your tools -->
 <script type="text/javascript" src="//s7.addthis.com/js/300/addthis_widget.js#pubid=ra-5bebbdba767f5386"></script>
 
-
-
 <script type="text/javascript">
 
     //$('.loader').css("visibility", "hidden");
@@ -834,7 +835,6 @@
             // console.log(json.postCategories);
             //console.log(json.additional_info);
             
-
             var imagesHtml = '';
             var post_images_path = "{{ asset('storage/posts/') }}";
 
@@ -1369,10 +1369,7 @@
             });
          },
     });
-
-
 </script>
-
 
 <script>
 
@@ -1426,7 +1423,6 @@
             firstDay: 1, //  1(Monday) this can be changed to 0(Sunday) for the USA system
             selectable: true,
             defaultView: 'month',
-            
             axisFormat: 'h:mm',
             columnFormat: {
                 month: 'ddd',    // Mon
@@ -1441,7 +1437,9 @@
             },
             allDaySlot: false,
             selectHelper: true,
+            droppable: true, // this allows things to be dropped onto the calendar !!!
             select: function(start, end, allDay) {
+                //console.log(start+" "+end+" "+allDay);
                 var title = prompt('Event Title:');
                 if (title) {
                     calendar.fullCalendar('renderEvent',
@@ -1456,7 +1454,6 @@
                 }
                 calendar.fullCalendar('unselect');
             },
-            droppable: true, // this allows things to be dropped onto the calendar !!!
             drop: function(date, allDay) { // this function is called when something is dropped
             
                 // retrieve the dropped element's stored Event Object
@@ -1478,13 +1475,13 @@
                     // if so, remove the element from the "Draggable Events" list
                     $(this).remove();
                 }
-                
             },
             
             events: [
                 {
                     title: 'All Day Event',
-                    start: new Date(y, m, 1)
+                    start: new Date(y, m, 1),
+                    editable: true
                 },
                 {
                     id: 999,
@@ -1532,7 +1529,5 @@
         
     });
 </script>
-
-
 
 @endsection

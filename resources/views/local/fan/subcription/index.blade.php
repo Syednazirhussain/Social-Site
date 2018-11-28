@@ -94,8 +94,6 @@
     }
 </style>
 
-
-
 @endsection
 
 @section('content')
@@ -114,11 +112,23 @@
     <div class="container">
         <div class="row">
             <div class="col-md-10 col-md-offset-1 text-center">
+                @if(Session::has('errorMsg'))
+                    <div class="alert alert-danger">
+                        <button type="button" class="close" data-dismiss="alert">×</button>
+                        <strong>{{ Session::get('errorMsg') }}</strong> 
+                    </div>
+                @endif
+                @if(Session::has('successMsg'))
+                  <div class="alert alert-success alert-dismissable" style="text-align: center;">
+                      <a href="#" class="close" data-dismiss="alert" aria-label="close">&times;</a>
+                      <h4 class="m-t-0 m-b-0"><strong><i class="fa fa-check-circle fa-lg"></i>&nbsp;&nbsp;{{ Session::get('successMsg') }}</strong></h4>
+                  </div>
+                @endif
                 <div class="single-pricing featured">
                     <span>PayPal</span>
                     <h1>
                         <span>$</span>
-                        90
+                        @if(isset($amount)){{ round($amount,0)}}@endif
                         <span>/mo</span>
                     </h1>
                     <div class="clearfix">
@@ -128,11 +138,36 @@
                             <li><i class="fa fa-image"></i> Upload photos</li>
                         </ul>
                     </div>
-                    <a href="javascript:void(0)">Subcribe</a>
+                    <form action="{{ route('fan.subcription.request') }}" method="POST" id="subcription">
+                        <input type="hidden" name="_token" value="{{ csrf_token() }}">
+                        <input type="hidden" name="user_id" value="@if(isset($user_id)){{ $user_id }}@endif">
+                        <input type="hidden" name="planCode" value="@if(isset($planCode)){{ $planCode }}@endif">
+                        <input class="btn btn-primary" id="subcribe" type="submit" value="Subcribe">               
+                    </form>
+<!--                     <a href="javascript:void(0)">Subcribe</a> -->
                 </div>
             </div>
         </div>
     </div>
 </section>
+
+@endsection
+
+@section('js')
+
+<script type="text/javascript">
+    
+
+    $('#subcription').submit(function(e){
+
+        $('#subcribe').prop('disabled',true);
+
+        $(this).submit();
+
+        e.preventDefault();
+
+    });
+
+</script>
 
 @endsection

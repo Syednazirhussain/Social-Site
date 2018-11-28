@@ -147,14 +147,29 @@
 <div class="main-secction">
     <div class="row">
         <div class="col-md-12 col-sm-12 col-xs-12 image-section">
-            <img src="https://png.pngtree.com/thumb_back/fw800/back_pic/00/08/57/41562ad4a92b16a.jpg">
+
+            @if($user->additional_info->cover_image != null)
+                <img src="{{ asset('storage/users/'.$user->additional_info->cover_image ) }}">
+            @else
+                <img src="https://png.pngtree.com/thumb_back/fw800/back_pic/00/08/57/41562ad4a92b16a.jpg">
+            @endif
+
         </div>
     </div>
     <div class="row">
         <div class="col-md-3">
             <div class="pull-left">
                 <div class="user-image text-center">
-                    <img src="{{ asset('storage/users/'.$user->image) }}" class="img-thumbnail img-custom">
+                    @if(isset($user))
+                        @if($user->image != null)
+                            <input type="hidden" name="profile_image" id="logo-hidden" value="{{ $user->image }}">
+                            <img class="img-thumbnail img-custom" src="{{ asset('storage/users/'.$user->image ) }}" data-src="{{ asset('storage/users/'.$user->image) }}" alt="{{ $user->name}}" />
+                        @else
+                            <img class="img-thumbnail img-custom" src="{{ asset('storage/users/default.png') }}" alt="{{ $user->name}}"/>
+                        @endif
+                    @else
+                        <img class="img-thumbnail img-custom" src="{{ asset('storage/users/default.png') }}" alt="user"/>
+                    @endif
                 </div>
 
                 <div class="pad_left">

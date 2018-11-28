@@ -21,7 +21,7 @@
                 @endif
             </td>
             <td>{!! $post->title !!}</td>
-            <td>{!! $post->post_type !!}</td>
+            <td>{{ ucfirst($post->post_type) }}</td>
             <td>{!! $post->postCategory->name !!}</td>
             <td>{!! $post->user->name !!}</td>
             <td>

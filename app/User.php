@@ -23,6 +23,7 @@ class User extends Authenticatable
         'phone',
         'status',
         'plan_code',
+        'reset_password',
         'image'
     ];
 
@@ -66,6 +67,14 @@ class User extends Authenticatable
     public function follow()
     {
         return $this->belongsTo(\App\Models\Admin\MemberShipPlan::class,'id','follower_id','followed_id');
+    }
+
+    /**
+     * @return \Illuminate\Database\Eloquent\Relations\BelongsTo
+    **/
+    public function subscriptionOrder()
+    {
+        return $this->hasMany(\App\Models\Admin\SubscriptionOrder::class,'id','user_id');
     }
 
     /**

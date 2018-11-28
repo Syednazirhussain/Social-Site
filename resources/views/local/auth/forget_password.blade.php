@@ -6,6 +6,10 @@
             color: #dc3545 !important;
             font-weight: unset !important;
         }
+    .form-containner {
+        margin-top: 37px;
+        margin-bottom: 37px;
+    }
 </style>
 
 @endsection
@@ -13,15 +17,15 @@
 @section('content')
 
 <div class="page-title" style='background-image: url("{{ asset("/theme/images/page-title.png") }}")'>
-    <h1>Login&nbsp;/&nbsp;Register</h1>
+    <h1>Forget Password</h1>
 </div>
-
+<meta name="csrf-token" content="{{ csrf_token() }}">
 
 <section id="contact-page">
     <div class="container"> 
         <div class="row contact-wrap"> 
             @if(Session::has('errorMsg'))
-                <div class="alert alert-danger alert-dark">
+                <div class="alert alert-danger">
                     <button type="button" class="close" data-dismiss="alert">×</button>
                     <strong>{{ Session::get('errorMsg') }}</strong> 
                 </div>
@@ -32,14 +36,16 @@
                   <h4 class="m-t-0 m-b-0"><strong><i class="fa fa-check-circle fa-lg"></i>&nbsp;&nbsp;{{ Session::get('successMsg') }}</strong></h4>
               </div>
             @endif
-            
-            <div class="col-lg-12 col-md-12">
-                <div class="col-lg-5 col-md-5 col-sm-12 col-xs-12 col-md-offset-1">
-                    @include('local.auth.login')
+
+            <div class="col-sm-12 col-md-4 col-md-offset-4 form-containner">
+              <form action="{{ route('user.password.request') }}" method="POST" class="form-horizontal" id="forgetPassword">
+                <input type="hidden" name="_token" value="{{ csrf_token() }}">
+                <div class="form-group">
+                  <label class="control-label" for="">Email</label>
+                  <input type="text" name="email" id="email" placeholder="john@example.com" class="form-control">
                 </div>
-                <div class="col-lg-5 col-md-5 col-sm-12 col-xs-12 col-md-offset-1">
-                    @include('local.auth.register')
-                </div>
+                <button type="submit" class="btn btn-primary">Reset Password</button> 
+              </form>
             </div>
 
         </div>
@@ -52,43 +58,19 @@
 @section('js')
 
 <script type="text/javascript">
-  $('#login').validate({
-    focusInvalid: false,
-    rules: {
-      'email': {
-        required: true,
-        email: true,
-        maxlength: 100,
-      },
-      'password': {
-        required: true,
-        minlength: 6,
-        maxlength: 20,
-      }
-    },
-    messages: {
-      'email': {
-        required: "Enter your email",
-      },
-      'password': {
-        required: "Enter your password",
-      }
-    }
-  });
+
+
+
     $.ajaxSetup({
       headers: {
         'X-CSRF-TOKEN': $('meta[name="csrf-token"]').attr('content')
       }
     });
-    $('#signup').validate({
+
+    $('#forgetPassword').validate({
         focusInvalid: false,
         rules: {
-          'name': {
-            required: true,
-            maxlength: 100,
-            minlength: 3
-          },
-          'remail': {
+          'email': {
             required: true,
             email: true,
             maxlength: 50,
@@ -100,7 +82,7 @@
                   dataType : "json",
                   data: {
                     remail: function() {
-                      return $( "#remail" ).val();
+                      return $( "#email" ).val();
                     }
                   },                         
                   dataFilter: function(response) {
@@ -109,41 +91,23 @@
               }
             }
           },
-          'password': {
-            required: true,
-            maxlength: 20,
-            minlength: 6,
-          },
-          'phone':{
-            required: true,
-            minlength: 11,
-            maxlength:15,
-            digits: true
-          }
         },
         messages: {
-          'name': {
-            required: "Please enter name",
-            minlength: jQuery.validator.format("At least {0} characters required!")
-          },
-          'remail': {
+          'email': {
             required: "Please enter user email",
-            remote : "Email already in use"
-          },
-          'phone':{
-            required: "Please enter phone no"
-          },
-          'password': {
-            required: "Please enter password"
+            remote : "Email cannot found"
           }
         }
     });
+
+
+
     checkField = function(response) {
         switch ($.parseJSON(response).code) {
             case 200:
-                return "true"; // <-- the quotes are important!
+                return false; // <-- the quotes are important!
             case 401:
-                //alert("Sorry, our system has detected that an account with this email address already exists.");
+                  return true;
                 break;
             case undefined:
                 alert("An undefined error occurred.");
@@ -154,6 +118,10 @@
         }
         return false;
     };
+
+
+
+
     
 </script>
 

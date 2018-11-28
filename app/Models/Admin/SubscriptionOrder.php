@@ -3,10 +3,11 @@
 namespace App\Models\Admin;
 
 use Eloquent as Model;
-use Illuminate\Database\Eloquent\SoftDeletes;
+
+use Carbon\Carbon;
 
 /**
- * Class MemberShipPlan
+ * Class Subscription
  * @package App\Models\Admin
  * @version October 22, 2018, 9:00 am UTC
  *
@@ -17,24 +18,30 @@ use Illuminate\Database\Eloquent\SoftDeletes;
  * @property decimal price
  * @property string status
  */
-class MemberShipPlan extends Model
+class SubscriptionOrder extends Model
 {
-    use SoftDeletes;
 
-    public $table = 'membership_plan';
+    public $table = 'subscription_orders';
     
     const CREATED_AT = 'created_at';
     const UPDATED_AT = 'updated_at';
 
+    public $timestamps = true;
 
-    protected $dates = ['deleted_at'];
 
 
     public $fillable = [
-        'name',
-        'code',
-        'price',
+        'user_id',
+        'subscription_plan_id',
+        'transaction_id',
+        'amount',
         'status'
+        // 'code',
+        // 'user_id',
+        // 'membership_id',
+        // 'status',
+        // 'renewal_date',
+        // 'renewed_date'
     ];
 
     /**
@@ -43,9 +50,10 @@ class MemberShipPlan extends Model
      * @var array
      */
     protected $casts = [
-        'id' => 'integer',
-        'name' => 'string',
-        'code' => 'string',
+        'user_id' => 'integer',
+        'subscription_plan_id' => 'integer',
+        'transaction_id' => 'string',
+        'amount' => 'double',
         'status' => 'string'
     ];
 
@@ -63,15 +71,26 @@ class MemberShipPlan extends Model
      **/
     public function users()
     {
-        return $this->hasMany(\App\User::class);
+        return $this->belongsTo(\App\User::class,'user_id','id');
     }
 
     /**
      * @return \Illuminate\Database\Eloquent\Relations\HasMany
-     **/
-    public function subcription()
+    **/
+    public function subscription()
     {
-        return $this->hasMany(\App\Models\Admin\Subscription::class,'id','membership_id');
+        return $this->belongsTo(\App\Models\Admin\Subscription::class,'subscription_plan_id','id');
+    }
+
+
+    public function getCreatedAtAttribute($value)
+    {
+        return Carbon::parse($value)->format('F d, Y');
+    }
+
+    public function getStatusAttribute($value)
+    {
+        return ucfirst($value);
     }
     
 }

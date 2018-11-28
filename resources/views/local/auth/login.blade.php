@@ -12,5 +12,10 @@
         <label class="control-label" for="password">Password</label>
         <input type="password" name="password" id="password" class="form-control" placeholder="xxxxxxx">
     </div>
-    <input type="submit" class="btn btn-primary" value="Login" />
+    <div>
+        <a href="{{ route('user.forget.password') }}">Forget password</a>        
+    </div>
+    <div>
+        <input type="submit" class="btn btn-primary" value="Login" />        
+    </div>
 </form>

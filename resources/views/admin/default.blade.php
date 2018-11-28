@@ -94,7 +94,7 @@
                 </a>
             </li>
             @endcan
-            @hasanyrole('Admin|Web Master|Talents')
+            @hasanyrole('Admin|Web Master')
             <li class="px-nav-item px-nav-dropdown">
                 <a href="javascript:void(0)">
                     <span class="px-nav-label">
@@ -118,10 +118,17 @@
                     </li>
                 </ul>
             </li>
+            <li class="px-nav-item">
+                <a href="{{ route('admin.newsletter.index') }}">
+                    <span class="px-nav-label">
+                        <i class="fa fa-paper-plane-o"></i>&nbsp;Newsletters
+                    </span>
+                </a>
+            </li>
             @endhasanyrole 
             @can('Settings')
             <li class="px-nav-item">
-                <a href="javascript:void(0)">
+                <a href="{{ route('admin.setting.edit',[auth()->user()->id]) }}">
                     <span class="px-nav-label"><i class="fa fa-cog"></i>&nbsp;Setting</span>
                 </a>
             </li> 
@@ -145,7 +152,11 @@
                         <span class="hidden-md">{{ ucfirst(Auth::user()->name) }}</span>
                     </a>
                     <ul class="dropdown-menu">
-                        <li><a href="javascript:void(0)"><i class="dropdown-icon fa fa-wrench"></i>&nbsp;&nbsp;Account Settings</a></li>
+                        <li>
+                            <a href="{{ route('admin.setting.edit',[auth()->user()->id]) }}">
+                                <i class="dropdown-icon fa fa-wrench"></i>&nbsp;&nbsp;Account Settings
+                            </a>
+                        </li>
                         <li class="divider"></li>
                         <li>
                             <a href="{{ route('admin.logout') }}">

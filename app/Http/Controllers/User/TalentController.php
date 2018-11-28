@@ -19,6 +19,7 @@ use App\Models\Admin\Post;
 use App\Models\Admin\PostCategory;
 use App\Models\Admin\PostMeta;
 use App\Models\Admin\Follow;
+use App\Models\Admin\SubscriptionOrder;
 
 class TalentController extends Controller
 {
@@ -62,6 +63,19 @@ class TalentController extends Controller
 
 
         return view('local.talent.dashboard.index',$data);
+    }
+
+    public function subcription_info()
+    {
+        $user_id = Auth::user()->id;
+
+        $subscriptionOrders = SubscriptionOrder::where('user_id',$user_id)->get();
+
+        $data = [
+            'subscriptionOrders'   => $subscriptionOrders
+        ];
+
+        return view('local.talent.dashboard.subcription_info',$data);
     }
 
 

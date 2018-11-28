@@ -11,12 +11,20 @@
 |
 */
 
-Route::get('/admin', function () {
+Route::get('/admin', function (\Illuminate\Http\Request $request) {
+	$request->session()->flush();
     return redirect()->route('admin.login');
 });
 
 Route::get('admin/login', ['as'=> 'admin.login', 'uses' => 'Admin\UserController@adminLogin']);
 Route::post('admin/authenticate', ['as'=> 'admin.user.authenticate', 'uses' => 'Admin\UserController@adminAuth']);
+
+Route::get('admin/forget-password',['as' => 'admin.forget.password','uses' => 'Admin\UserController@forget_password']);
+Route::post('admin/forget-password',['as' => 'admin.password.request','uses' => 'Admin\UserController@password_request']);
+
+Route::get('admin/reset-password/{user_id}',['as' => 'admin.reset.password','uses' => 'Admin\UserController@reset_password']);
+Route::post('admin/reset-password',['as' => 'admin.password.reset','uses' => 'Admin\UserController@reset_password_request']);
+
 
 
 Route::group(['middleware' => ['admin.auth']], function () {
@@ -77,6 +85,12 @@ Route::group(['middleware' => ['admin.auth']], function () {
 		Route::get('admin/posts/{posts}/edit', ['as'=> 'admin.posts.edit', 'uses' => 'Admin\PostController@edit']);
 
 
+		Route::get('admin/setting/{user_id}', ['as'=> 'admin.setting.edit', 'uses' => 'Admin\UserController@account_setting']);
+		Route::patch('admin/setting/{user_id}', ['as'=> 'admin.setting.update', 'uses' => 'Admin\UserController@account_setting_update']);
+
+		Route::get('admin/newsletters', ['as'=> 'admin.newsletter.index', 'uses' => 'Admin\NewletterController@index']);
+
+
 	});
 
 	Route::group(['middleware' => ['permission:Membership Managment']], function () {
@@ -91,10 +105,10 @@ Route::group(['middleware' => ['admin.auth']], function () {
 		Route::get('admin/memberShipPlans/{memberShipPlans}/edit', ['as'=> 'admin.memberShipPlans.edit', 'uses' => 'Admin\MemberShipPlanController@edit']);	
 
 	});
-
 });
 
-Route::get('/', function () {
+Route::get('/', function (\Illuminate\Http\Request $request) {
+	$request->session()->flush();
     return redirect()->route('site.dashboard');
 });
 
@@ -102,9 +116,19 @@ Route::get('/', function () {
 
 Route::get('creatifny', ['as'=> 'site.dashboard', 'uses' => 'User\UserController@index']);
 Route::get('user/login',['as' => 'user.login','uses' => 'User\UserController@viewLogin']);
+
+Route::get('user/forget-password',['as' => 'user.forget.password','uses' => 'User\UserController@forget_password']);
+Route::post('user/forget-password',['as' => 'user.password.request','uses' => 'User\UserController@password_request']);
+
+Route::get('user/reset-password/{user_id}',['as' => 'user.reset.password','uses' => 'User\UserController@reset_password']);
+Route::post('user/reset-password',['as' => 'reset.password','uses' => 'User\UserController@reset_password_request']);
+
 Route::post('user/login',['as' => 'user.authenticate','uses' => 'User\UserController@authenticate']);
 Route::post('user/signup',['as' => 'user.signup','uses' => 'User\UserController@signUp']);
 Route::post('user/verify/email', ['as'=> 'user.email.verify', 'uses' => 'User\UserController@verifyEmail']);
+
+
+Route::any('fan/subcription/details', ['as'=> 'fan.subcription.details', 'uses' => 'User\FanController@subcription_details']);
 
 Route::group(['middleware' => ['user.auth']], function () {
 
@@ -117,21 +141,23 @@ Route::group(['middleware' => ['user.auth']], function () {
 
 		Route::get('talent/profile/retrive',['as' => 'talent.profile','uses' => 'User\TalentController@retrive_profile_info']);
 
-		Route::post('talent/post/add',['as' => 'add.single.post' , 'uses' => 'User\TalentController@post_article']);
 		Route::get('talent/post/edit/{post_id}',['as' => 'edit.single.post','uses' => 'User\TalentController@edit_post']);
+		Route::post('talent/post/add',['as' => 'add.single.post' , 'uses' => 'User\TalentController@post_article']);
 		Route::put('talent/post/update/{post_id}', ['as'=> 'update.single.post', 'uses' => 'User\TalentController@update_post']);
 		Route::delete('talent/post/delete/{post_id}', ['as'=> 'delete.single.post', 'uses' => 'User\TalentController@delete_post']);
-		
-		Route::post('talent/post/images',['as' => 'add.multiple.images' , 'uses' => 'User\TalentController@post_images']);
-		Route::delete('talent/post/images/{post_id}', ['as'=> 'delete.multiple.images', 'uses' => 'User\TalentController@post_image_destroy']);
-		Route::post('talent/post/image/remove', ['as'=> 'delete.single.image', 'uses' => 'User\TalentController@post_image_remove']);
 		
 		Route::get('talent/post/vedio/{post_id}',['as' => 'edit.single.vedio' , 'uses' => 'User\TalentController@edit_vedio']);
 		Route::post('talent/post/vedio',['as' => 'add.single.vedio' , 'uses' => 'User\TalentController@post_vedio']);
 		Route::put('talent/post/vedio/{post_meta_id}',['as' => 'update.single.vedio' , 'uses' => 'User\TalentController@update_vedio']);
 		Route::delete('talent/post/vedio/{post_id}',['as' => 'delete.single.vedio' , 'uses' => 'User\TalentController@delete_vedio']);
 
+		Route::post('talent/post/images',['as' => 'add.multiple.images' , 'uses' => 'User\TalentController@post_images']);
+		Route::delete('talent/post/images/{post_id}', ['as'=> 'delete.multiple.images', 'uses' => 'User\TalentController@post_image_destroy']);
+		Route::post('talent/post/image/remove', ['as'=> 'delete.single.image', 'uses' => 'User\TalentController@post_image_remove']);
+
 		Route::get('talent/lists',['as' => 'talent.list','uses' => 'User\TalentController@talent_listing']);
+		
+		Route::get('talent/subcription/info',['as' => 'subcription.info','uses' => 'User\TalentController@subcription_info']);
 
 		Route::get('talent/account/{account}',['as' => 'talent.account.setting','uses' => 'User\AccountSetting@talent_edit']);
 		Route::patch('talent/account/{account}',['as' => 'talent.account.update','uses' => 'User\AccountSetting@talent_update']);
@@ -153,7 +179,11 @@ Route::group(['middleware' => ['user.auth']], function () {
 		Route::post('fan/follow/talent',['as' => 'fan.follow.talent','uses' => 'User\FanController@follow']);
 		Route::post('fan/unfollow/talent',['as' => 'fan.unfollow.talent','uses' => 'User\FanController@unfollow']);
 
+		Route::get('fan/subcription/message', ['as'=> 'fan.subcription.message', 'uses' => 'User\FanController@subcription_message']);
 		Route::get('fan/subcription/plan', ['as'=> 'fan.subcription.plan', 'uses' => 'User\FanController@subcription_plan']);
+		Route::post('fan/subcription/plan', ['as'=> 'fan.subcription.request', 'uses' => 'User\FanController@subcription_request']);
+		Route::any('fan/subcription/response', ['as'=> 'fan.subcription.response', 'uses' => 'User\FanController@subcription_response']);
+
 
 		Route::get('fan/account/{account}',['as' => 'fan.account.setting','uses' => 'User\AccountSetting@fan_edit']);
 		Route::patch('fan/account/{account}',['as' => 'fan.account.update','uses' => 'User\AccountSetting@fan_update']);

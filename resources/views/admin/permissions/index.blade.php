@@ -5,7 +5,7 @@
     <div class="px-content">
         <div class="page-header">
             <h1><span class="text-muted font-weight-light">
-                <i class="fa fa-hand-o-right"></i>&nbsp;Permissions&nbsp;/</span>
+                <i class="fa fa-hand-o-right"></i>&nbsp;Permissions</span>
             </h1>
         </div>
 

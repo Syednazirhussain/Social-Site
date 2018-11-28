@@ -20,7 +20,7 @@ class AccountSetting extends Controller
         $this->middleware('fan.route')->only('fan_update');
 
         $this->middleware('talent.route')->only('talent_update');
-        $this->middleware('talent.route')->only('talent_update');
+        $this->middleware('talent.route')->only('talent_edit');
     }
 
     public function fan_edit($id)
@@ -53,8 +53,11 @@ class AccountSetting extends Controller
     public function fan_update($id,Request $request)
     {
         $input = $request->all();
+
         //dd($request->all());
+
     	$user = User::find($id);
+
     	if(!empty($user))
     	{
     		$user->name = $request->input('name');
@@ -68,23 +71,42 @@ class AccountSetting extends Controller
     				$user->password = bcrypt($request->input('password_edit'));
     			}
     		}
-    		if($request->hasFile('pic'))
-    		{
-	    		$file_path =  $_SERVER['SCRIPT_FILENAME'];
-	            $file = str_replace("/index.php", "", $file_path)."/storage/users/".$user->image;
-	            if(is_file($file))
-	            {
-	                unlink($file);
-	            }
 
-	            $path = $request->file('pic')->store('/public/users');
+    		if($request->hasFile('profile_image'))
+    		{
+	    		// $file_path =  $_SERVER['SCRIPT_FILENAME'];
+	      //       $file = str_replace("/index.php", "", $file_path)."/storage/users/".$user->image;
+	      //       if(is_file($file))
+	      //       {
+	      //           unlink($file);
+	      //       }
+
+	            $path = $request->file('profile_image')->store('/public/users');
 	            $path = explode("/", $path);
 	            $count = count($path)-1;
 	            $user->image = $path[$count];
     		}
+
     		if($user->save())
     		{
                 $additional_info = AdditionalInfo::where('user_id',$user->id)->first();
+
+                if($request->hasFile('cover_image'))
+                {
+                    // $file_path =  $_SERVER['SCRIPT_FILENAME'];
+                    // $file = str_replace("/index.php", "", $file_path)."/storage/users/".$user->image;
+                    // if(is_file($file))
+                    // {
+                    //     unlink($file);
+                    // }
+
+                    $path = [];
+                    $path = $request->file('cover_image')->store('/public/users');
+                    $path = explode("/", $path);
+                    $count = count($path)-1;
+                    $additional_info->cover_image = $path[$count];
+                }
+                
                 $additional_info->about_us = $input['about_us'];
                 (isset($input['facebook'])) ? $additional_info->facebook = $input['facebook'] : $additional_info->facebook = null;
                 (isset($input['instagram'])) ? $additional_info->instagram = $input['instagram'] : $additional_info->instagram = null;
@@ -145,7 +167,7 @@ class AccountSetting extends Controller
     public function talent_update($id,Request $request)
     {
         $input = $request->all();
-        //dd($request->all());
+
         $user = User::find($id);
         if(!empty($user))
         {
@@ -154,6 +176,7 @@ class AccountSetting extends Controller
                 $user->name = $request->input('name');
                 $user->email = $request->input('remail');
                 $user->phone = $request->input('phone');
+
                 if($request->input('password_edit'))
                 {
                     $password = $request->input('password_edit');
@@ -162,23 +185,59 @@ class AccountSetting extends Controller
                         $user->password = bcrypt($request->input('password_edit'));
                     }
                 }
-                if($request->hasFile('pic'))
-                {
-                    $file_path =  $_SERVER['SCRIPT_FILENAME'];
-                    $file = str_replace("/index.php", "", $file_path)."/storage/users/".$user->image;
-                    if(is_file($file))
-                    {
-                        unlink($file);
-                    }
 
-                    $path = $request->file('pic')->store('/public/users');
+                if($request->hasFile('profile_image'))
+                {
+                    // $file_path =  $_SERVER['SCRIPT_FILENAME'];
+              //       $file = str_replace("/index.php", "", $file_path)."/storage/users/".$user->image;
+              //       if(is_file($file))
+              //       {
+              //           unlink($file);
+              //       }
+
+                    $path = $request->file('profile_image')->store('/public/users');
                     $path = explode("/", $path);
                     $count = count($path)-1;
                     $user->image = $path[$count];
                 }
+
+                // if($request->hasFile('pic'))
+                // {
+                //     // $file_path =  $_SERVER['SCRIPT_FILENAME'];
+                //     // $file = str_replace("/index.php", "", $file_path)."/storage/users/".$user->image;
+                //     // if(is_file($file))
+                //     // {
+                //     //     unlink($file);
+                //     // }
+
+                //     $path = $request->file('pic')->store('/public/users');
+                //     $path = explode("/", $path);
+                //     $count = count($path)-1;
+                //     $user->image = $path[$count];
+                // }
+
+
                 if($user->save())
                 {
                     $additional_info = AdditionalInfo::where('user_id',$user->id)->first();
+
+                    if($request->hasFile('cover_image'))
+                    {
+                        // $file_path =  $_SERVER['SCRIPT_FILENAME'];
+                        // $file = str_replace("/index.php", "", $file_path)."/storage/users/".$user->image;
+                        // if(is_file($file))
+                        // {
+                        //     unlink($file);
+                        // }
+
+                        $path = [];
+                        $path = $request->file('cover_image')->store('/public/users');
+                        $path = explode("/", $path);
+                        $count = count($path)-1;
+                        $additional_info->cover_image = $path[$count];
+                    }
+
+
                     $additional_info->about_us = $input['about_us'];
                     (isset($input['facebook'])) ? $additional_info->facebook = $input['facebook'] : $additional_info->facebook = null;
                     (isset($input['instagram'])) ? $additional_info->instagram = $input['instagram'] : $additional_info->instagram = null;

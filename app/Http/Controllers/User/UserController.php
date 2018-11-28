@@ -19,6 +19,11 @@ use App\Models\Admin\PostCategory;
 use App\Models\Admin\Post;
 use App\Models\Admin\PostMeta;
 use App\Models\Admin\Follow;
+use App\Models\Admin\MemberShipPlan;
+
+
+use Mail;
+use Crypt;
 
 class UserController extends Controller
 {
@@ -55,7 +60,96 @@ class UserController extends Controller
         return response()->json(['success'=> $success, 'code'=>$response]);
     }
 
+    public function forget_password()
+    {
+        return view('local.auth.forget_password');     
+    }
 
+    public function password_request(Request $request)
+    {
+        $input = $request->except(['_token']);
+
+        $email = $input['email'];
+        $user = User::where('email',$email)->first();
+        if(!empty($user))
+        {
+            $input['name'] = $user->name;
+            $new_password = $this->generateRandomString();
+            $input['password'] = $new_password;
+            $user_id = Crypt::encrypt($user->id);
+            $input['reset_url'] = route('user.reset.password',[$user_id]);
+            $user->password = $new_password;
+            if($user->save())
+            {   
+                Mail::send('email.forget_password' , $input, function($message) use( $input ) {
+                     $message->to($input['email'])->subject('Reset Password');
+                });
+                if(Mail::failures()) 
+                {
+                    Session::flash('errorMsg','Some thing went to be wrong');
+                    return redirect()->back();
+                }
+            }
+        }
+
+        Session::flash('successMsg','We have sent reset password details to your email');
+        return redirect()->back();
+    }
+
+    public function reset_password($user_id)
+    {
+        $data = [
+            'user_id'   => $user_id
+        ];
+        return view('local.auth.reset_password',$data);
+    }
+
+    public function reset_password_request(Request $request)
+    {
+        $input = $request->except(['_token']);
+
+        $user_id = Crypt::decrypt($input['user_id']);
+
+        $user = User::find($user_id);
+        if(!empty($user))
+        {
+            if($user->password == $input['password'])
+            {
+                $user->password = bcrypt($input['password']);
+                if($user->save())
+                {
+                    Session::flash('successMsg','Your password successfully updated');
+                    return redirect()->route('user.login');                    
+                }
+                else
+                {
+                    Session::flash('errorMsg','Whoops. Some thing went to be wrong');
+                    return redirect()->route('user.login');
+                }
+            }
+            else
+            {
+                Session::flash('errorMsg','Whoops. Some thing went to be wrong');
+                return redirect()->route('user.login');
+            }
+        }
+        else
+        {
+            Session::flash('errorMsg','Whoops. Some thing went to be wrong');
+            return redirect()->route('user.login');
+        }
+    }
+
+    public function generateRandomString($length = 10) 
+    {
+        $characters = '0123456789abcdefghijklmnopqrstuvwxyzABCDEFGHIJKLMNOPQRSTUVWXYZ';
+        $charactersLength = strlen($characters);
+        $randomString = '';
+        for ($i = 0; $i < $length; $i++) {
+            $randomString .= $characters[rand(0, $charactersLength - 1)];
+        }
+        return $randomString;
+    }
 
     public function signUp(Request $request){
 
@@ -82,20 +176,23 @@ class UserController extends Controller
         {
         	$user->assignRole('Fans');
             //$user->assignRole('Talents');
-        	Auth::login($user, true);
-    
-            $subscription = new Subscription;
-            $subscription->user_id = $user->id;
-            $subscription->plan_code = $user->plan_code;
-            $subscription->status = $user->status;
-            $subscription->renewal_date = date('Y-m-d');
-            $subscription->renewed_date = date('Y-m-d', strtotime('+1 months'));
-            $subcribe =  $subscription->save();
 
-            $additional_info = new AdditionalInfo;
-            $additional_info->user_id = $user->id;
-            $additional = $additional_info->save();
+            $memberShip_id = MemberShipPlan::where('code','free')->first()->id;
+            
+            $subcribe = Subscription::firstOrCreate([
+                'user_id'       => $user->id,
+                'code'          => $user->plan_code,
+                'membership_id' => $memberShip_id,
+                'status'        => $user->status,
+                'renewal_date'  => date('Y-m-d'),
+                'renewed_date'  => date('Y-m-d', strtotime('+1 months'))
+            ]);
 
+            $additional = AdditionalInfo::firstOrCreate([
+                'user_id'   => $user->id
+            ]);
+
+            Auth::login($user, true);
 
             if( $subcribe == true && $additional == true )
             {
