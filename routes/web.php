@@ -89,6 +89,7 @@ Route::group(['middleware' => ['admin.auth']], function () {
 		Route::patch('admin/setting/{user_id}', ['as'=> 'admin.setting.update', 'uses' => 'Admin\UserController@account_setting_update']);
 
 		Route::get('admin/newsletters', ['as'=> 'admin.newsletter.index', 'uses' => 'Admin\NewletterController@index']);
+		Route::post('admin/newsletters', ['as'=> 'admin.newsletter.send', 'uses' => 'Admin\NewletterController@send']);
 
 
 	});

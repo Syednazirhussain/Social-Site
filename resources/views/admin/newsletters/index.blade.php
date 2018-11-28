@@ -12,7 +12,7 @@
 @endsection
 
 @section('content')
-
+    <meta name="csrf-token" content="{{ csrf_token() }}">
     <div class="px-content">
         <div class="page-header">
             <h1>
@@ -30,15 +30,19 @@
                     <div class="row">
                         <div class="form-group col-sm-12">
                             <label class="control-label">Message</label>
-                            <textarea id="message" class="form-control"></textarea>
+                            <textarea id="message" name="message" class="form-control"></textarea>
                         </div>
                         <div class="form-group col-sm-12">
-                            <button class="btn btn-primary pull-right"><i class="fa fa-paper-plane-o"></i>&nbsp;Send</button>
+                            <span id="loader">
+                                <i class="fa fa-spinner fa-2x fa-spin pull-right"></i>
+                            </span>
+                            <button type="button" id="send" class="btn btn-primary pull-right"><i class="fa fa-paper-plane-o"></i>&nbsp;Send</button>
                         </div>
                     </div>
                 </form>
             </div>
         </div>
+
         <div class="panel panel-list">
             <li class="list-group-item">
                 <label class="custom-control custom-checkbox">
@@ -51,7 +55,7 @@
                 @foreach($users as $user)
                 <div class="widget-tasks-item">
                     <label class="custom-control custom-checkbox">
-                        <input type="checkbox" class="custom-control-input">
+                        <input type="checkbox" data-user-id="{{ $user->id }}" class="custom-control-input selected-user">
                         <span class="custom-control-indicator"></span>
                         <span class="widget-tasks-title">&nbsp;{{ $user->name }}</span>
                     </label>
@@ -59,6 +63,7 @@
                 @endforeach
             @endif
         </div>
+
     </div>
 @endsection
 
@@ -67,11 +72,68 @@
 
 <script type="text/javascript">
 
+    $.ajaxSetup({
+      headers: {
+        'X-CSRF-TOKEN': $('meta[name="csrf-token"]').attr('content')
+      }
+    });
+
+    $('#loader').css("visibility", "hidden");
+
     $('#select-all').on('click', function(e){
         $this = this;  
         $.each($(this).parents('div.panel-list').find('.widget-tasks-item>label>input'), function(i, item){
           $(item).prop('checked', $this.checked);
         });
+    });
+
+    $('#send').on('click',function(){
+
+        var selected_user = [];
+
+        $('.selected-user').each(function(index,element){
+
+            if($(element).is(':checked'))
+            {
+                selected_user.push($(element).data('user-id'));
+            }
+
+        });
+
+        var message = $('#message').val();
+        var users_id = Object.assign({}, selected_user);
+
+        var jsObj = {
+            'users_id' : users_id,
+            'message'  : message
+        };
+
+        $.ajax({
+            url: "{{ route('admin.newsletter.send') }}",
+            type: "POST",
+            dataType: "json",
+            data: jsObj,
+            beforeSend: function(){
+                $('#send').prop('disabled', true);
+                $('#loader').css("visibility", "visible");
+            }
+        }).done(function(response){
+            $('#loader').css("visibility", "hidden");
+            $('#send').prop('disabled', false);
+            $('#message').summernote('reset');
+            $('.selected-user').each(function(index,element){
+                if($(element).is(':checked'))
+                {
+                    $(element).prop('checked', false);
+                }
+            });
+            if($('#select-all').is(':checked'))
+            {
+                $('#select-all').prop('checked', false);
+            }
+            alert(response.message);
+        });
+
     });
     
     // Initialize Summernote
