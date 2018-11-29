@@ -100,3 +100,7 @@
     <a href="{!! route('admin.memberShipPlans.index') !!}"><i class="fa fa-edit"></i><span>Member Ship Plans</span></a>
 </li>
 
+<li class="{{ Request::is('events*') ? 'active' : '' }}">
+    <a href="{!! route('events.index') !!}"><i class="fa fa-edit"></i><span>Events</span></a>
+</li>
+

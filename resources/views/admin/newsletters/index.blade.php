@@ -43,26 +43,62 @@
             </div>
         </div>
 
-        <div class="panel panel-list">
-            <li class="list-group-item">
-                <label class="custom-control custom-checkbox">
-                    <input type="checkbox" id="select-all" class="custom-control-input">
-                    <span class="custom-control-indicator"></span>
-                    <span class="widget-tasks-title">&nbsp;Select All</span>
-                </label>
-            </li>
-            @if(isset($users))
-                @foreach($users as $user)
-                <div class="widget-tasks-item">
-                    <label class="custom-control custom-checkbox">
-                        <input type="checkbox" data-user-id="{{ $user->id }}" class="custom-control-input selected-user">
-                        <span class="custom-control-indicator"></span>
-                        <span class="widget-tasks-title">&nbsp;{{ $user->name }}</span>
-                    </label>
+        <div class="row">
+            
+            <div class="col-md-6">
+                <div class="panel panel-list">
+                    <div class="panel-title">
+                        Fans
+                    </div>
+                    <li class="list-group-item">
+                        <label class="custom-control custom-checkbox">
+                            <input type="checkbox" id="allFans" class="custom-control-input">
+                            <span class="custom-control-indicator"></span>
+                            <span class="widget-tasks-title">&nbsp;Select All</span>
+                        </label>
+                    </li>
+                    @if(isset($fanUsers))
+                        @foreach($fanUsers as $fanUser)
+                        <div class="widget-tasks-item">
+                            <label class="custom-control custom-checkbox">
+                                <input type="checkbox" data-user-id="{{ $fanUser->id }}" class="custom-control-input selected-fan">
+                                <span class="custom-control-indicator"></span>
+                                <span class="widget-tasks-title">&nbsp;{{ $fanUser->name }}</span>
+                            </label>
+                        </div>
+                        @endforeach
+                    @endif
+                </div>                    
+            </div>
+            
+            <div class="col-md-6">
+                <div class="panel panel-list">
+                    <div class="panel-title">
+                        Talents
+                    </div>
+                    <li class="list-group-item">
+                        <label class="custom-control custom-checkbox">
+                            <input type="checkbox" id="allTalents" class="custom-control-input">
+                            <span class="custom-control-indicator"></span>
+                            <span class="widget-tasks-title">&nbsp;Select All</span>
+                        </label>
+                    </li>
+                    @if(isset($talentUsers))
+                        @foreach($talentUsers as $talentUser)
+                        <div class="widget-tasks-item">
+                            <label class="custom-control custom-checkbox">
+                                <input type="checkbox" data-user-id="{{ $talentUser->id }}" class="custom-control-input selected-talent">
+                                <span class="custom-control-indicator"></span>
+                                <span class="widget-tasks-title">&nbsp;{{ $talentUser->name }}</span>
+                            </label>
+                        </div>
+                        @endforeach
+                    @endif
                 </div>
-                @endforeach
-            @endif
+            </div>
         </div>
+
+
 
     </div>
 @endsection
@@ -80,7 +116,14 @@
 
     $('#loader').css("visibility", "hidden");
 
-    $('#select-all').on('click', function(e){
+    $('#allFans').on('click', function(e){
+        $this = this;  
+        $.each($(this).parents('div.panel-list').find('.widget-tasks-item>label>input'), function(i, item){
+          $(item).prop('checked', $this.checked);
+        });
+    });
+
+    $('#allTalents').on('click', function(e){
         $this = this;  
         $.each($(this).parents('div.panel-list').find('.widget-tasks-item>label>input'), function(i, item){
           $(item).prop('checked', $this.checked);
@@ -91,14 +134,20 @@
 
         var selected_user = [];
 
-        $('.selected-user').each(function(index,element){
-
+        $('.selected-fan').each(function(index,element){
             if($(element).is(':checked'))
             {
                 selected_user.push($(element).data('user-id'));
             }
-
         });
+
+        $('.selected-talent').each(function(index,element){
+            if($(element).is(':checked'))
+            {
+                selected_user.push($(element).data('user-id'));
+            }
+        });
+
 
         var message = $('#message').val();
         var users_id = Object.assign({}, selected_user);

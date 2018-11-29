@@ -136,6 +136,7 @@ Route::group(['middleware' => ['user.auth']], function () {
 
 	Route::get('user/membership/payment', ['as'=> 'user.membership.payment', 'uses' => 'User\PayPalController@subcribe']);
 
+
 	Route::group(['middleware' => ['talent.route']], function () {
 
 		Route::get('talent/profile',['as' => 'talent.user.dashboard','uses' => 'User\TalentController@dashboard']);
@@ -164,7 +165,6 @@ Route::group(['middleware' => ['user.auth']], function () {
 		Route::patch('talent/account/{account}',['as' => 'talent.account.update','uses' => 'User\AccountSetting@talent_update']);
 		Route::get('talent/logout', ['as'=> 'talent.logout', 'uses' => 'User\UserController@talent_logout']);
 
-
 	});
 
 	Route::group(['middleware' => ['fan.route']], function () {
@@ -184,8 +184,7 @@ Route::group(['middleware' => ['user.auth']], function () {
 		Route::get('fan/subcription/plan', ['as'=> 'fan.subcription.plan', 'uses' => 'User\FanController@subcription_plan']);
 		Route::post('fan/subcription/plan', ['as'=> 'fan.subcription.request', 'uses' => 'User\FanController@subcription_request']);
 		Route::any('fan/subcription/response', ['as'=> 'fan.subcription.response', 'uses' => 'User\FanController@subcription_response']);
-
-
+		
 		Route::get('fan/account/{account}',['as' => 'fan.account.setting','uses' => 'User\AccountSetting@fan_edit']);
 		Route::patch('fan/account/{account}',['as' => 'fan.account.update','uses' => 'User\AccountSetting@fan_update']);
 		Route::get('fan/logout', ['as'=> 'fan.logout', 'uses' => 'User\UserController@fan_logout']);

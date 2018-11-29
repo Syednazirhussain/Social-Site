@@ -36,17 +36,31 @@ class NewletterController extends Controller
     public function index()
     {
         $users = User::all();
-        $usersArr = [];
+        
+        $fanUsers = [];
+        $talentUsers = [];
+        
         foreach ($users as $user) 
         {
             if(!$user->hasAnyRole('Admin','Web Master'))
             {
-                array_push($usersArr, $user);
+                if($user->hasRole('Talents'))
+                {
+                    array_push($talentUsers, $user);
+                }
+                else
+                {
+                    array_push($fanUsers, $user);
+                }
             }
         }
+
         $data = [
-            'users'    => $usersArr
+            'fanUsers'     => $fanUsers,
+            'talentUsers'  => $talentUsers  
         ];
+
+        //dd($data);
 
         return view('admin.newsletters.index',$data);
     }

@@ -34,10 +34,9 @@ class PostController extends Controller
     public function index(Request $request)
     {
         $this->postRepository->pushCriteria(new RequestCriteria($request));
-        $posts = $this->postRepository->all();
-
-        return view('admin.posts.index')
-            ->with('posts', $posts);
+        //$posts = $this->postRepository->all();
+        $posts = Post::where('post_type','text')->get();
+        return view('admin.posts.index')->with('posts', $posts);
     }
 
     /**
@@ -65,12 +64,22 @@ class PostController extends Controller
      */
     public function store(CreatePostRequest $request)
     {
-        $input = $request->all();
+        $this->validate($request,[
+            'post_type'         => 'required',
+            'post_category_id'  => 'required',
+            'status'            => 'required',
+            'description'       => 'required'
+        ]);
+
+        $input = $request->except(['_token']);
 
         $user_id = Auth::user()->id;
 
         $post = new Post;
-        $post->title = $input['title'];
+        if(isset($input['title']))
+        {
+            $post->title = $input['title'];
+        }
         $post->post_type = $input['post_type'];
         $post->post_category_id = $input['post_category_id'];
         $post->status = $input['status'];
@@ -156,7 +165,14 @@ class PostController extends Controller
      */
     public function update($id, UpdatePostRequest $request)
     {
-        $input = $request->all();
+        $this->validate($request,[
+            'post_type'         => 'required',
+            'post_category_id'  => 'required',
+            'status'            => 'required',
+            'description'       => 'required'
+        ]);
+
+        $input = $request->except(['_token','_method']);
 
         $post = Post::find($id);
 
@@ -165,9 +181,12 @@ class PostController extends Controller
             Flash::error('Post not found');
             return redirect(route('admin.posts.index'));
         }
-        $user_id = Auth::user()->id;
 
-        $post->title = $input['title'];
+        if(isset($input['title']))
+        {
+            $post->title = $input['title'];
+        }
+        $user_id = Auth::user()->id;
         $post->post_type = $input['post_type'];
         $post->post_category_id = $input['post_category_id'];
         $post->status = $input['status'];

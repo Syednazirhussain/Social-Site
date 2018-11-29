@@ -27,9 +27,11 @@
     <link href="{{ asset('/skin-1/assets/css/themes/candy-orange.min.css') }}" rel="stylesheet">
     <link href="{{ asset('/skin-1/assets/fileuploader/src/jquery.fileuploader.css') }}" media="all" rel="stylesheet">
     <link href="{{ asset('/skin-1/assets/fileuploader/css/jquery.fileuploader-theme-thumbnails.css') }}" media="all" rel="stylesheet">
-    <link href="{{ asset('/skin-1/assets/calender/calender-css.css') }}" media="all" rel="stylesheet">
+    
+    <link href="{{ asset('/skin-1/assets/maddhatter_fullcalander/fullcalendar.css') }}" rel="stylesheet">
 
-    <link href="{{ asset('/skin-1/assets/calender/calender-css.css') }}" rel='stylesheet' />
+<!--     <link href="/skin-1/assets/calender/calender-css.css" media="all" rel="stylesheet">
+    <link href="/skin-1/assets/calender/calender-css.css" rel='stylesheet' /> -->
 
     <link rel="shortcut icon" href="{{ asset('/theme/images/artist.png') }}">
     <link rel="apple-touch-icon-precomposed" sizes="144x144" href="{{ asset('/theme/images/ico/apple-touch-icon-144-precomposed.png') }}">
@@ -116,6 +118,7 @@
                     @if(isset( Auth::user()->name  )){{ Auth::user()->name }}@endif
                 </a>
                 <ul class="dropdown-menu">
+                    <li><a href="{{ url('forum/home') }}">Forums</a></li>
                     @role('Talents')
                         <li><a href="{{ route('talent.user.dashboard') }}">Profile</a></li>
                         <li><a href="{{ route('subcription.info') }}">Subcription</a></li>
@@ -152,14 +155,13 @@
         </div>
     </footer>
     <!--/#footer-->
-    <script src="{{ asset('/theme/js/jquery.js') }}"></script>
+    <script src="{{ asset('/theme/js/jquery.js') }}"></script>    
     <script src="{{ asset('/theme/js/bootstrap.min.js') }}"></script>
     <script src="{{ asset('/theme/js/jquery.prettyPhoto.js') }}"></script>
     <script src="{{ asset('/theme/js/owl.carousel.min.js') }}"></script>
     <script src="{{ asset('/theme/js/jquery.isotope.min.js') }}"></script>
     <script src="{{ asset('/theme/js/main.js') }}"></script>
 
-    <script src="http://ajax.googleapis.com/ajax/libs/jquery/3.2.1/jquery.min.js"></script>
     <script src="{{ asset('/skin-1/assets/js/bootstrap.min.js') }}"></script>
     <script src="{{ asset('/skin-1/assets/js/pixeladmin.min.js') }}"></script>
     <script src="{{ asset('/skin-1/assets/js/jquery.validate.min.js') }}"></script>
@@ -168,10 +170,15 @@
     <script src="{{ asset('/skin-1/assets/plugins/jasny-bootstrap/js/jasny-bootstrap.min.js') }}"></script>
     <script src="{{ asset('/skin-1/assets/fileuploader/src/jquery.fileuploader.min.js') }}" type="text/javascript"></script>
     <script src="{{ asset('/skin-1/assets/fileuploader/js/custom.js') }}" type="text/javascript"></script>
-    <script src="{{ asset('/skin-1/assets/calender/calender-js.js') }}" type="text/javascript"></script>
+    
+
+    <!-- <script src="/skin-1/assets/maddhatter_fullcalander/scripts/jquery.js" type="text/javascript"></script> -->
+    <script src="{{ asset('/skin-1/assets/maddhatter_fullcalander/scripts/moment.js') }}" type="text/javascript"></script>
+    <script src="{{ asset('/skin-1/assets/maddhatter_fullcalander/fullcalendar.js') }}" type="text/javascript"></script>
 
 
-    <script src="{{ asset('/skin-1/assets/calender/calender-js.js') }}"></script>
+<!--     <script src="/skin-1/assets/calender/calender-js.js" type="text/javascript"></script>
+    <script src="/skin-1/assets/calender/calender-js.js"></script> -->
 
 
 

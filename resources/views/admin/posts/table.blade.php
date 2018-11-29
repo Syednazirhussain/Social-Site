@@ -1,11 +1,11 @@
 <table class="table table-responsive" id="datatables">
     <thead>
         <tr>
-            <th>Image</th>
-            <th>Title</th>
-            <th>Post Type</th>
-            <th>Category</th>
+<!--             <th>Image</th>
+            <th>Title</th> -->
+<!--             <th>Post Type</th> -->
             <th>User</th>
+            <th>Category</th>
             <th>Status</th>
             <th>Action</th>
         </tr>
@@ -13,17 +13,17 @@
     <tbody>
     @foreach($posts as $post)
         <tr>
-            <td>
-                @if($post->image != null)
-                    <img class="img-thumbnail" src="<?php echo asset("storage/posts/".$post->image); ?>" title="{{ $post->title }}" style="width: 75px; height:75px;"> 
-                @else
-                    <img class="img-thumbnail" src="<?php echo asset("storage/posts/default.png"); ?>" style="width: 75px; height:75px;"> 
-                @endif
+<!--             <td>
+                if(post->image != null)
+                    <img class="img-thumbnail" src="storage/posts/" title="post->title" style="width: 75px; height:75px;"> 
+                else
+                    <img class="img-thumbnail" src="storage/posts/default.png" style="width: 75px; height:75px;">
+                endif
             </td>
-            <td>{!! $post->title !!}</td>
-            <td>{{ ucfirst($post->post_type) }}</td>
-            <td>{!! $post->postCategory->name !!}</td>
+            <td>post->title</td> -->
+<!--             <td>post->post_type</td> -->
             <td>{!! $post->user->name !!}</td>
+            <td>{!! $post->postCategory->name !!}</td>
             <td>
                 @if($post->status == 'active')
                     <span class="label label-success">{{ $post->status }}</span>

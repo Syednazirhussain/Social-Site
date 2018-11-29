@@ -11,11 +11,13 @@
 <div class="row">
 
   <div class="col-sm-12 col-md-12">
-    <div class="col-md-7">
-      <div class="col-sm-12  form-group">
+    <div class="col-md-12">
+      
+<!--       <div class="col-sm-12  form-group">
           <label for="title">Title</label>
-          <input type="text" name="title" id="title" placeholder="Enter title here" class="form-control" value="@if(isset($post)){{ $post->title }}@endif">
-      </div>
+          <input type="text" name="title" id="title" placeholder="Enter title here" class="form-control" value="post->title">
+      </div> -->
+
       <div class="col-sm-12 form-group">
           <label for="post_type">Post Type</label>
           <input type="text" name="post_type" id="post_type" class="form-control" placeholder="Enter post type here" value="@if(isset($post)){{ $post->post_type }}@endif">
@@ -37,20 +39,20 @@
         </select>
       </div>
     </div>
-    <div class="col-md-5">
+<!--     <div class="col-md-5">
       <div class="form-group col-sm-12">
         <div class="pull-right fileinput fileinput-new" id="fileinput" data-provides="fileinput">
           <div class="fileinput-new thumbnail" style="width: 200px; height: 150px;">
-                @if(isset($post))
-                  @if($post->image != null)
-                    <input type="hidden" name="profile_image" id="logo-hidden" value="{{ $post->image }}">
-                    <img src="{{ asset('storage/posts/'.$post->image ) }}" data-src="{{ asset('storage/posts/'.$post->image) }}" alt="{{ $post->title}}" />
-                  @else
-                    <img src="{{ asset('storage/posts/default.png') }}" alt="{{ $post->title}}"/>
-                  @endif
-                @else
-                    <img src="{{ asset('storage/posts/default.png') }}" alt="post"/>
-                @endif
+                if(isset(post))
+                  if(post->image != null)
+                    <input type="hidden" name="profile_image" id="logo-hidden" value="post->image">
+                    <img src="storage/posts/post->image" data-src="storage/posts/post->image" alt="post->title" />
+                  else
+                    <img src="storage/posts/default.png" alt="post->title"/>
+                  endif
+                else
+                    <img src="storage/posts/default.png" alt="post"/>
+                endif
           </div>
           <div class="fileinput-preview fileinput-exists thumbnail" style="max-width: 200px; max-height: 150px;"></div>
           <div>
@@ -62,7 +64,7 @@
           </div>
         </div>
       </div>
-    </div>
+    </div> -->
   </div>
 
   <div class="col-sm-12 col-md-12">

@@ -21,6 +21,8 @@ use App\Models\Admin\PostMeta;
 use App\Models\Admin\Follow;
 use App\Models\Admin\SubscriptionOrder;
 
+use Calendar;
+
 class TalentController extends Controller
 {
     public function __construct()
@@ -61,6 +63,41 @@ class TalentController extends Controller
             'follows'           => $followers
         ];
 
+        // $event = Calendar::event(
+        //     "Valentine's Day",
+        //     true,
+        //     '2018-11-29',
+        //     '2018-11-29',
+        //     1, //optional event ID
+        //     [
+        //         'url' => 'http://full-calendar.io'
+        //     ]
+        // );
+        // dd($event);
+
+        // $events = [];
+
+        // $events[] = Calendar::event(
+        //     'Event One', //event title
+        //     false, //full day event?
+        //     '2018-11-11', //start time (you can also use Carbon instead of DateTime)
+        //     '2018-11-12', //end time (you can also use Carbon instead of DateTime)
+        //     0 //optionally, you can specify an event ID
+        // );
+
+        // $events[] = Calendar::event(
+        //     "Valentine's Day", //event title
+        //     true, //full day event?
+        //     '2018-11-14', //start time (you can also use Carbon instead of DateTime)
+        //     '2018-11-14', //end time (you can also use Carbon instead of DateTime)
+        //     0 //optionally, you can specify an event ID
+        // );
+
+
+        // $calendar = Calendar::addEvents($events);//add an array with addEvents
+
+
+        // $data['calendar'] = $calendar;
 
         return view('local.talent.dashboard.index',$data);
     }

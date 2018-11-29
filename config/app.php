@@ -182,7 +182,8 @@ return [
         Prettus\Repository\Providers\RepositoryServiceProvider::class,
         \InfyOm\Generator\InfyOmGeneratorServiceProvider::class,
         \InfyOm\AdminLTETemplates\AdminLTETemplatesServiceProvider::class,
-        Srmklive\PayPal\Providers\PayPalServiceProvider::class 
+        Srmklive\PayPal\Providers\PayPalServiceProvider::class,
+        //DevDojo\Chatter\ChatterServiceProvider::class,
 
     ],
 
