@@ -400,6 +400,7 @@
                   </div>
             </div>
         </div>
+
   
         <div class="col-md-3">
             <div class="col-md-12">
@@ -485,16 +486,10 @@
     $(document).ready(function(){
     
           $('#calendar').fullCalendar({
-            selectable: true,         
-            dayClick: function() {
-                alert('a day has been clicked!');
-            },
-            events: [
-                {
-                  title  : 'event1',
-                  start  : '2018-11-10'
-                }
-            ]
+            selectable: true,
+            dayClick: function(date) {
+                alert(date.format());
+            }
           });
     
     });

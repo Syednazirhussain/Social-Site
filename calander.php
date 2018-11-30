@@ -53,6 +53,9 @@
 
 <div id='calendar'></div>
 
+<!--     <script src="/skin-1/assets/calender/calender-js.js" type="text/javascript"></script>
+    <script src="/skin-1/assets/calender/calender-js.js"></script> -->
+
 <script>
 
     $(document).ready(function() {
