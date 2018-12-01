@@ -151,6 +151,70 @@ class UserController extends Controller
         return $randomString;
     }
 
+    public function verify_account($user_id,$token)
+    {
+        $id = Crypt::decrypt($user_id);
+        $token = Crypt::decrypt($token);
+
+        $user  = User::findOrFail($id);
+        if(!empty($user))
+        {
+            if($user->token == $token)
+            {
+                $user->token = null;
+                $user->status = 'active';
+                if($user->save())
+                {
+                    $user->assignRole('Fans');
+                    //$user->assignRole('Talents');
+
+                    $memberShip_id = MemberShipPlan::where('code','free')->first()->id;
+                    
+                    $subcribe = Subscription::firstOrCreate([
+                        'user_id'       => $user->id,
+                        'code'          => $user->plan_code,
+                        'membership_id' => $memberShip_id,
+                        'status'        => $user->status,
+                        'renewal_date'  => date('Y-m-d'),
+                        'renewed_date'  => date('Y-m-d', strtotime('+1 months'))
+                    ]);
+
+                    $additional = AdditionalInfo::firstOrCreate([
+                        'user_id'   => $user->id
+                    ]);
+
+                    Auth::login($user, true);
+
+                    if( $subcribe == true && $additional == true )
+                    {
+                        Flash::success('User register successfully.');
+                        return redirect()->route('fan.user.dashboard');                
+                    }
+                    else
+                    {
+                        Flash::error('User register but cannot subscribe');
+                        return redirect()->route('user.login');                
+                    }
+                }
+                else
+                {
+                    Session::flash('errorMsg','There is some problem to confirm your account');
+                    return redirect()->route('user.login');
+                }
+            }
+            else
+            {
+                Session::flash('errorMsg','Bad request');
+                return redirect()->route('user.login');
+            }
+        }   
+        else
+        {
+            Session::flash('errorMsg','Bad request');
+            return redirect()->route('user.login');
+        }
+    }
+
     public function signUp(Request $request){
 
     	$this->validate($request,[
@@ -162,68 +226,57 @@ class UserController extends Controller
 
         $input = $request->all();
 
-
     	$user = new User;
     	$user->name = $input['name'];
         $user->email = $input['remail'];
         $user->password = bcrypt($input['password']);
         $user->phone = $input['phone'];
-        $user->status = 'active';
+        $user->status = 'inactive';
         $user->plan_code = 'free';
-        //$user->plan_code = 'premium';
         $user->image = 'default.png';
+        $user->token = $this->generateRandomString();
         if($user->save())
         {
-        	$user->assignRole('Fans');
-            //$user->assignRole('Talents');
+            $encrypt_id = Crypt::encrypt($user->id);
+            $encrypt_token = Crypt::encrypt($user->token);
 
-            $memberShip_id = MemberShipPlan::where('code','free')->first()->id;
-            
-            $subcribe = Subscription::firstOrCreate([
-                'user_id'       => $user->id,
-                'code'          => $user->plan_code,
-                'membership_id' => $memberShip_id,
-                'status'        => $user->status,
-                'renewal_date'  => date('Y-m-d'),
-                'renewed_date'  => date('Y-m-d', strtotime('+1 months'))
-            ]);
+            $data = [
+                'name'  => $user->name,
+                'email' => $user->email,
+                'link'  => route('user.verify.email',[$encrypt_id,$encrypt_token])
+            ];
 
-            $additional = AdditionalInfo::firstOrCreate([
-                'user_id'   => $user->id
-            ]);
+            Mail::send('email.verify_email',$data,function($message) use($data){
+                $message->to($data['email'])->subject('Account verification');
+            });
 
-            Auth::login($user, true);
-
-            if( $subcribe == true && $additional == true )
+            if(Mail::failures())
             {
-                Flash::success('User register successfully.');
-                return redirect()->route('fan.user.dashboard');                
+                Session::flash('errorMsg','Please verify your email to continue');
+                return redirect()->back();
             }
             else
             {
-                Flash::error('User register but cannot subscribe');
-                return redirect()->route('user.login');                
+                Session::flash('successMsg','We have sent an email to confirm your account');
+                return redirect()->back();   
             }
-
         }
         else
         {
-			Flash::error('User not saved successfully.');
-			return redirect()->back();
+            Session::flash('errorMsg','Registeration fail');
+            return redirect()->back();
         }
 
     }
 
-    public function authenticate(Request $request){
-
+    public function authenticate(Request $request)
+    {
     	$this->validate($request,[
             'email' => 'required|email',
             'password' => 'required|string|min:6|max:20',
         ]);
-
         $email    = $request->get("email");
         $password = $request->get("password");
-
         if (Auth::attempt(['email' => $email, 'password' => $password])) 
         {
             $user = Auth::user();
@@ -253,16 +306,14 @@ class UserController extends Controller
             return redirect()->route('site.dashboard');
         }
     }
-
-
     public function talent_logout()
     {
-    	$user = Auth::user();
-    	if($user->hasRole('Talents') && $user->plan_code == 'premium')
-    	{
-    		Auth::logout();
-    		return redirect()->route('site.dashboard');
-    	}
+        $user = Auth::user();
+        if($user->hasRole('Talents') && $user->plan_code == 'premium')
+        {
+            Auth::logout();
+            return redirect()->route('site.dashboard');
+        }
     }
 
 }

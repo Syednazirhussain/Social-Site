@@ -118,6 +118,10 @@ Route::get('/', function (\Illuminate\Http\Request $request) {
 Route::get('creatifny', ['as'=> 'site.dashboard', 'uses' => 'User\UserController@index']);
 Route::get('user/login',['as' => 'user.login','uses' => 'User\UserController@viewLogin']);
 
+Route::get('user/verify-account/{user_id}/{token}',['as' => 'user.verify.email','uses' => 'User\UserController@verify_account']);
+
+
+
 Route::get('user/forget-password',['as' => 'user.forget.password','uses' => 'User\UserController@forget_password']);
 Route::post('user/forget-password',['as' => 'user.password.request','uses' => 'User\UserController@password_request']);
 

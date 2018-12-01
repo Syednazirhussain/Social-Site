@@ -23,6 +23,7 @@ class User extends Authenticatable
         'phone',
         'status',
         'plan_code',
+        'token',
         'reset_password',
         'image'
     ];
