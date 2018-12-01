@@ -3,9 +3,9 @@
 namespace App\Models;
 
 use Eloquent as Model;
-use Illuminate\Database\Eloquent\SoftDeletes;
 
-use \MaddHatter\LaravelFullcalendar\IdentifiableEvent;
+
+use \MaddHatter\LaravelFullcalendar\Event as EventInterface;
 
 /**
  * Class Event
@@ -26,9 +26,9 @@ use \MaddHatter\LaravelFullcalendar\IdentifiableEvent;
  * @property string|\Carbon\Carbon end
  * @property string parameters
  */
-class Event extends Model implements IdentifiableEvent
+class Event extends Model implements EventInterface
 {
-    use SoftDeletes;
+
 
     public $table = 'events';
     
@@ -36,7 +36,7 @@ class Event extends Model implements IdentifiableEvent
     const UPDATED_AT = 'updated_at';
 
 
-    protected $dates = ['deleted_at'];
+
 
 
     public $fillable = [
@@ -70,12 +70,61 @@ class Event extends Model implements IdentifiableEvent
         
     ];
 
+    protected $dates = ['start', 'end'];
+
     /**
-     * Get the event's ID
+     * Get the event's id number
      *
-     * @return int|string|null
+     * @return int
      */
-    public function getId();
+    public function getId() {
+        return $this->id;
+    }
+
+    /**
+     * Get the event's title
+     *
+     * @return string
+     */
+    public function getTitle()
+    {
+        return $this->title;
+    }
+
+    /**
+     * Is it an all day event?
+     *
+     * @return bool
+     */
+    public function isAllDay()
+    {
+        return (bool)$this->all_day;
+    }
+
+    /**
+     * Get the start time
+     *
+     * @return DateTime
+     */
+    public function getStart()
+    {
+        return $this->start;
+    }
+
+    /**
+     * Get the end time
+     *
+     * @return DateTime
+     */
+    public function getEnd()
+    {
+        return $this->end;
+    }
+
+    public function getStartAttribute($value)
+    {
+        return date("Y-m-d", strtotime($value));
+    }
 
     
 }

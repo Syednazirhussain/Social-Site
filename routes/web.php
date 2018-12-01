@@ -160,6 +160,11 @@ Route::group(['middleware' => ['user.auth']], function () {
 		Route::get('talent/lists',['as' => 'talent.list','uses' => 'User\TalentController@talent_listing']);
 		
 		Route::get('talent/subcription/info',['as' => 'subcription.info','uses' => 'User\TalentController@subcription_info']);
+		
+		Route::get('/talent/events',['as' => 'talent.events','uses' => 'User\TalentController@event']);
+		Route::post('/talent/events',['as' => 'talent.events.store','uses' => 'User\TalentController@event_store']);
+		Route::put('/talent/events/{event_id}',['as' => 'talent.events.update','uses' => 'User\TalentController@event_update']);
+		Route::delete('/talent/events/{event_id}',['as' => 'talent.events.delete','uses' => 'User\TalentController@event_delete']);
 
 		Route::get('talent/account/{account}',['as' => 'talent.account.setting','uses' => 'User\AccountSetting@talent_edit']);
 		Route::patch('talent/account/{account}',['as' => 'talent.account.update','uses' => 'User\AccountSetting@talent_update']);

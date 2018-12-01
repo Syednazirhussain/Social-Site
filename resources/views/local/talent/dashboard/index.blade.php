@@ -212,11 +212,7 @@
                                 Videos
                             </a>
                         </li>
-                        <li>
-                            <a href="#event" data-toggle="tab">
-                                Events
-                            </a>
-                        </li>
+                        <!-- <li><a href="#event" data-toggle="tab">Events</a></li> -->
                     </ul>
                     <div class="tab-content"> 
                         <div id="msg"></div>    
@@ -342,11 +338,7 @@
                                 </div>
                             </div>
                         </div>
-                        <div class="tab-pane" id="event">
-                            @hasanyrole('Talents|Web Master|Admin')
-                            <div id='calendar'></div>
-                            @endhasanyrole
-                        </div>
+                        <!-- <div class="tab-pane" id="event"></div> -->
                     </div>
                 </div>
             </div>
@@ -480,20 +472,6 @@
 <script type="text/javascript" src="//s7.addthis.com/js/300/addthis_widget.js#pubid=ra-5bebbdba767f5386"></script>
 
 
-
-<!-- full calander Js -->
-<script type="text/javascript">
-    $(document).ready(function(){
-    
-          $('#calendar').fullCalendar({
-            selectable: true,
-            dayClick: function(date) {
-                alert(date.format());
-            }
-          });
-    
-    });
-</script>
 
 <script type="text/javascript">
 

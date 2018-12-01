@@ -22,6 +22,7 @@ use App\Models\Admin\Follow;
 use App\Models\Admin\SubscriptionOrder;
 
 use Calendar;
+use App\Models\Event;
 
 class TalentController extends Controller
 {
@@ -100,6 +101,116 @@ class TalentController extends Controller
         // $data['calendar'] = $calendar;
 
         return view('local.talent.dashboard.index',$data);
+    }
+
+    public function event()
+    {
+        $user_id = Auth::user()->id;
+        $events = Event::where('user_id',$user_id)->get(['id','title','start'])->toArray();
+
+        //dd($events
+
+        return view('local.talent.dashboard.calander',['events' => $events]);
+    }
+
+    public function event_update($event_id,Request $request)
+    {
+        $input = $request->all();
+        $event = Event::findOrFail($event_id);
+        if(!empty($event))
+        {
+            $event->user_id = $input['user_id'];
+            $event->title = $input['title'];
+            $event->start = $input['start'];
+            if($event->save())
+            {
+                $response = [
+                    'status'    => 'success',
+                    'message'   => 'Event updated successfully'
+                ];
+                return response()->json($response);
+            }
+        }
+        else
+        {
+            $response = [
+                'status'    => 'fail',
+                'message'   => 'Event cannot updated'
+            ];
+
+            return response()->json($response);
+        }
+    }
+
+    public function event_delete($event_id)
+    {
+        $event = Event::findOrFail($event_id);
+        if(!empty($event))
+        {
+            if($event->delete())
+            {
+                $response = [
+                    'status'    => 'success',
+                    'message'   => 'Event removed successfully'
+                ];
+                return response()->json($response);
+            }
+            else
+            {
+                $response = [
+                    'status'    => 'fail',
+                    'message'   => 'Event cannot removed'
+                ];
+                return response()->json($response);
+            }
+        }
+    }
+
+
+    public function event_store(Request $request)
+    {
+        $this->validate($request,[
+            'title' => 'required',
+            'start' => 'required'
+        ]);
+
+        $input = $request->all();
+
+        $user = Auth::user();
+
+        if($user->hasRole('Talents'))
+        {
+            $event = Event::Create([
+                'title'     => $input['title'],
+                'start'     => $input['start'],
+                'user_id'   => $user->id
+            ]);
+
+            if(!empty($event))
+            {
+
+                $response = [
+                    'event'     => $event->toArray()
+                ];
+
+                return response()->json($response);
+            }
+            else
+            {
+                $response = [
+                    'message'   => 'There is some problem while creating events'
+                ];
+                return response()->json($response);                
+            }
+        }
+        else
+        {      
+            $response = [
+                'message'   => 'Permission denied'
+            ];
+            return response()->json($response);
+        }       
+
     }
 
     public function subcription_info()

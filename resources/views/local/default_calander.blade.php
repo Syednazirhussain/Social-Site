@@ -19,7 +19,7 @@
     <link href="{{ asset('/theme/css/profile.css') }}" rel="stylesheet">
 
 
-    <link href="{{ asset('/skin-1/assets/css/pixeladmin.min.css') }}" rel="stylesheet">
+<!--     <link href="{{ asset('/skin-1/assets/css/pixeladmin.min.css') }}" rel="stylesheet"> -->
     <link href="{{ asset('/skin-1/assets/css/widgets.min.css') }}" rel="stylesheet">
     <link href="{{ asset('/skin-1/assets/plugins/jasny-bootstrap/css/jasny-bootstrap.min.css') }}" rel="stylesheet">
     <link href="{{ asset('/skin-1/assets/css/themes/candy-orange.min.css') }}" rel="stylesheet">
@@ -27,9 +27,6 @@
     <link href="{{ asset('/skin-1/assets/fileuploader/css/jquery.fileuploader-theme-thumbnails.css') }}" media="all" rel="stylesheet">
     
     <link href="{{ asset('/skin-1/assets/maddhatter_fullcalander/fullcalendar.min.css') }}" rel="stylesheet">
-
-<!--     <link href="/skin-1/assets/calender/calender-css.css" media="all" rel="stylesheet">
-    <link href="/skin-1/assets/calender/calender-css.css" rel='stylesheet' /> -->
 
     <link rel="shortcut icon" href="{{ asset('/theme/images/artist.png') }}">
     <link rel="apple-touch-icon-precomposed" sizes="144x144" href="{{ asset('/theme/images/ico/apple-touch-icon-144-precomposed.png') }}">
@@ -55,14 +52,18 @@
 
         .navbar-inverse .navbar-nav>li>a {
             color: #ddd !important;
-            padding: 10px 5px !important;
+            padding: 10px 10px;
+            margin: 0px 17px;
             font-weight: 600 !important;
         }
 
         .navbar-inverse .navbar-nav>li>a:hover {
             background-color: unset !important;
             color: #fff !important;
+            padding: 10px 10px;
+            margin: 0px 17px;
         }
+
     </style>
 
 </head>
@@ -155,32 +156,7 @@
     </footer>
     <!--/#footer-->
 
-
-    <!-- <script src="{{ asset('/theme/js/jquery.js') }}"></script>     -->
-
-
-    <script src="{{ asset('/skin-1/assets/maddhatter_fullcalander/lib/jquery-2-4.min.js') }}" type="text/javascript"></script>
-    
-    <script src="{{ asset('/theme/js/bootstrap.min.js') }}"></script>
-    <script src="{{ asset('/theme/js/jquery.prettyPhoto.js') }}"></script>
-    <script src="{{ asset('/theme/js/owl.carousel.min.js') }}"></script>
-    <script src="{{ asset('/theme/js/jquery.isotope.min.js') }}"></script>
-    <script src="{{ asset('/theme/js/main.js') }}"></script>
-
-    <!-- <script src="/skin-1/assets/js/bootstrap.min.js"></script> -->
-    <script src="{{ asset('/skin-1/assets/js/pixeladmin.min.js') }}"></script>
-    <script src="{{ asset('/skin-1/assets/js/jquery.validate.min.js') }}"></script>
-    <script src="{{ asset('/skin-1/assets/js/custom.js') }}"></script>
-
-    <script src="{{ asset('/skin-1/assets/plugins/jasny-bootstrap/js/jasny-bootstrap.min.js') }}"></script>
-    <script src="{{ asset('/skin-1/assets/fileuploader/src/jquery.fileuploader.min.js') }}" type="text/javascript"></script>
-    <script src="{{ asset('/skin-1/assets/fileuploader/js/custom.js') }}" type="text/javascript"></script>
-    
-
-    <!-- <script src="/skin-1/assets/maddhatter_fullcalander/scripts/jquery.js" type="text/javascript"></script> -->
-    <!-- <script src="/skin-1/assets/maddhatter_fullcalander/scripts/moment.js" type="text/javascript"></script> -->
-    
-
+    <script src="{{ asset('/skin-1/assets/maddhatter_fullcalander/lib/jquery.min.js') }}" type="text/javascript"></script>
     <script src="{{ asset('/skin-1/assets/maddhatter_fullcalander/lib/moment.min.js') }}" type="text/javascript"></script>
     <script src="{{ asset('/skin-1/assets/maddhatter_fullcalander/fullcalendar.min.js') }}" type="text/javascript"></script>
 
