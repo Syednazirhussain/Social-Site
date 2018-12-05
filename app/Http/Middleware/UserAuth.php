@@ -33,7 +33,7 @@ class UserAuth
         }
         else
         {
-            return redirect()->back();
+            return redirect()->route('user.login');
         }
     }
 }

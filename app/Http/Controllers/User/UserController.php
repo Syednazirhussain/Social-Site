@@ -34,11 +34,6 @@ class UserController extends Controller
         $this->middleware('talent.route')->only('talent_logout');
     }
 
-    public function index()
-    {
-    	return view('local.site.index');
-    }
-
     public function viewLogin()
     {
     	return view('local.auth.index');
@@ -165,6 +160,16 @@ class UserController extends Controller
                 $user->status = 'active';
                 if($user->save())
                 {
+
+                    $data = [
+                        'name'  => $user->name,
+                        'email' => $user->email
+                    ];
+
+                    Mail::send('email.account_confirmation',$data,function($message) use($data){
+                        $message->to($data['email'])->subject('Account verifed successfully');
+                    });
+
                     $user->assignRole('Fans');
                     //$user->assignRole('Talents');
 
@@ -215,7 +220,8 @@ class UserController extends Controller
         }
     }
 
-    public function signUp(Request $request){
+    public function signUp(Request $request)
+    {
 
     	$this->validate($request,[
             'name' => 'required',
@@ -266,6 +272,42 @@ class UserController extends Controller
             Session::flash('errorMsg','Registeration fail');
             return redirect()->back();
         }
+    }
+
+    public function accountConfirmation()
+    {
+        $user = Auth::user();
+        if(!empty($user))
+        {
+            $encrypt_id = Crypt::encrypt($user->id);
+            $encrypt_token = Crypt::encrypt($user->token);
+
+            $data = [
+                'name'  => $user->name,
+                'email' => $user->email,
+                'link'  => route('user.verify.email',[$encrypt_id,$encrypt_token])
+            ];
+
+            Mail::send('email.verify_email',$data,function($message) use($data){
+                $message->to($data['email'])->subject('Account verification');
+            });
+
+            if(Mail::failures())
+            {
+                Session::flash('errorMsg','Please verify your email to continue');
+                return redirect()->back();
+            }
+            else
+            {
+                Session::flash('successMsg','We have sent an email to confirm your account');
+                return redirect()->back();   
+            }
+        }
+        else
+        {
+            Session::flash('errorMsg','Access Denied');
+            return redirect()->back();
+        }
 
     }
 
@@ -275,6 +317,8 @@ class UserController extends Controller
             'email' => 'required|email',
             'password' => 'required|string|min:6|max:20',
         ]);
+
+
         $email    = $request->get("email");
         $password = $request->get("password");
         if (Auth::attempt(['email' => $email, 'password' => $password])) 
@@ -286,7 +330,17 @@ class UserController extends Controller
             }
             else
             {
-                return redirect()->route('fan.user.dashboard');
+                $user = Auth::user();
+                if($user->status == 'inactive')
+                {
+                    Session::flash('errorMsg', 'Please verify your account.');
+                    Session::flash('sendMail',route('user.account.confirmation'));
+                    return redirect()->back();
+                }
+                else
+                {
+                    return redirect()->route('fan.user.dashboard');
+                }
             }
 
         } 

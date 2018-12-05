@@ -12,6 +12,47 @@
 		border: 10px solid #eee;
 	}
 
+
+
+	.fc-unthemed th span {
+	    color: #fff;
+	}
+
+	.fc-unthemed th {
+	    background: #151515;
+	    border: unset;
+	    padding: 4px 0;
+	}
+
+	.fc-button {
+	    background: #e94e27;
+	    border: 0;
+	    border-radius: 0 !important;
+	    box-shadow: unset;
+	    text-shadow: unset;
+	    color: white;
+	    margin: 0 1px !important;
+	    text-transform: capitalize;
+	}
+
+	.panel-heading .title{
+		border-bottom: 1px solid #ddd;
+	    margin: 0 0 10px 0;
+	    text-align: center;
+	    padding: 5px 0px 10px 0px;
+	    text-transform: uppercase;
+	}
+
+	div#calendar {
+	    padding: 0 15px 15px 15px;
+	}
+	.fc-day-grid.fc-unselectable {
+	    background: white;
+	}
+	.fc-event, .fc-event-dot {
+    background-color: #e94e27;
+    border-color: #e94e27;
+}
 </style>
 
 @endsection
@@ -26,7 +67,7 @@
 		<div class="col-sm-12 col-md-12">
 			<div class="panel">
 				<div class="panel-heading">
-					<h2 style="border-bottom: 1px solid #000">Events</h2>
+					<h2 class="title">Events</h2>
 				</div>
 			    @hasanyrole('Talents|Web Master|Admin')
 			    	<div id='calendar'></div>

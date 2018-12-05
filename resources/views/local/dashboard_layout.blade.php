@@ -63,10 +63,17 @@
             background-color: unset !important;
             color: #fff !important;
         }
+
+        .image-section img {
+            object-fit: cover;
+            object-position: center;
+        }
+
     </style>
 
 </head>
 <body>
+
     <nav class="navbar navbar-inverse">
       <div class="container">
         <div class="navbar-header">
@@ -82,16 +89,16 @@
         </div>
         <ul class="nav navbar-nav">
             <li>
-                <a href="javascript:void(0)">Feature</a>
+                <a href="{{ route('site.creatifny.feature') }}">Feature</a>
             </li>
             <li>
-                <a href="javascript:void(0)">Discover</a>
+                <a href="{{ route('site.creatifny.discover') }}">Discover</a>
             </li>
             <li>
-                <a href="javascript:void(0)">Crowd Picks</a>
+                <a href="{{ route('site.creatifny.crowd_pick') }}">Crowd Picks</a>
             </li>
             <li>
-                <a href="javascript:void(0)">Shows</a>
+                <a href="{{ route('site.creatifny.show') }}">Shows</a>
             </li>
             @role('Talents')
                 <li>
@@ -102,14 +109,11 @@
                     <a href="{{ route('fan.talent.list') }}">Charts</a>
                 </li>
             @endrole
-
             <li>
-                <a href="javascript:void(0)">Opportunities</a>
-            </li>
-            <li>
-                <a href="javascript:void(0)">Pricing</a>
+                <a href="{{ route('site.creatifny.pricing') }}">Pricing</a>
             </li>
         </ul>
+
         <ul class="nav navbar-nav navbar-right">
             <li class="dropdown">
                 <a href="javascript:void(0)" class="dropdown-toggle" data-toggle="dropdown">
@@ -132,28 +136,25 @@
                 </ul>
             </li>
         </ul>
+
       </div>
     </nav>
 
     @yield('content')
+
     <footer id="footer" class="midnight-blue">
         <div class="container">
             <div class="row">
                 <div class="col-sm-6">
-                    &copy; 2013 <a target="_blank" href="http://shapebootstrap.net/" title="Free Twitter Bootstrap WordPress Themes and HTML templates">ShapeBootstrap</a>. All Rights Reserved.
-                </div>
-                <div class="col-sm-6">
-                    <ul class="pull-right">
-                        <li><a href="javascript:void(0)">Home</a></li>
-                        <li><a href="javascript:void(0)">About Us</a></li>
-                        <li><a href="javascript:void(0)">Faq</a></li>
-                        <li><a href="javascript:void(0)">Contact Us</a></li>
-                    </ul>
+                    @role('Talents')
+                        &copy; {{ date('Y') }} <a href="{{ route('talent.user.dashboard') }}">Creatifny</a>. All Rights Reserved.
+                    @else
+                        &copy; {{ date('Y') }} <a href="{{ route('fan.user.dashboard') }}">Creatifny</a>. All Rights Reserved.
+                    @endrole
                 </div>
             </div>
         </div>
     </footer>
-    <!--/#footer-->
 
 
     <!-- <script src="{{ asset('/theme/js/jquery.js') }}"></script>     -->

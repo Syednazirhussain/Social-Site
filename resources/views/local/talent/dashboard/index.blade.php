@@ -1,9 +1,6 @@
 @extends('local.dashboard_layout')
 
-
 @section('css')
-
-
 
 <style type="text/css">
 
@@ -139,8 +136,6 @@
 </style>
 
 @endsection
-
-
 
 @section('content')
 
@@ -441,7 +436,6 @@
                                         </div>
                                         <div class="widget-activity-header">
                                             <a href="javascript:void(0)">&nbsp;{{ $user->name }}</a>
-<!--                                             <button class="btn btn-default btn_clr talent_btn">Block</button> -->
                                         </div>
                                     </div>
                                 @endif
@@ -451,7 +445,6 @@
                 </div>
                 @endif
             @endhasrole
-
         </div>
 
     </div>
@@ -1025,9 +1018,16 @@
 
             if(additional_info.hasOwnProperty('about_us'))
             {
-                var html = '<p>'+ strip_html_tags(additional_info.about_us) +'</p>';
-                $('#overview').html('');
-                $('#overview').html(html);
+                if(additional_info.about_us == null)
+                {
+                    $('#overview').html('Write something about us...');
+                }
+                else
+                {
+                    var html = '<p>'+ strip_html_tags(additional_info.about_us) +'</p>';
+                    $('#overview').html('');
+                    $('#overview').html(html);
+                }
             }
 
             var postCategoryHtml = '';
@@ -1093,6 +1093,8 @@
 
                 if(response.status == 'success')
                 {
+                    $('#vedio_title').val('');
+                    $('#vedio_url').val('');
                     alert(response.message);
                     page_refresh();
                 }

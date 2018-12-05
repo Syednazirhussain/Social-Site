@@ -24,6 +24,8 @@ use App\Models\Admin\Subscription;
 use App\Models\Admin\SubscriptionOrder;
 use App\Models\Admin\MemberShipPlan;
 
+use Mail;
+
 class FanController extends Controller
 {
 
@@ -42,31 +44,38 @@ class FanController extends Controller
 
         $amount = $memberShipPlan->price;
         $planCode = $memberShipPlan->code;
-        // $subscription = Subscription::where('code','premium')->first();
-
-        // $subscription_id = $subscription->id;
-        // $amount = $subscription->membership->price;
 
         $data = [
             'user_id'           => $user_id,
             'planCode'          => $planCode,
-            // 'subscription_id'   => $subscription_id,
             'amount'            => $amount
         ];
 
         return view('local.fan.subcription.index',$data);
     }
 
-
-
     public function subcription_request(Request $request)
     {
         $input = $request->except(['_token']);
-
+        
         $user_id = $input['user_id'];
         $planCode = $input['planCode'];
 
-        $subcription = Subscription::where('user_id',$user_id)->first();
+        $membership_id = MemberShipPlan::where('code',$input['planCode'])->first()->id;
+
+        $renewal_date = date('Y-m-d');
+        $date = strtotime(date('Y-m-d', strtotime($renewal_date)) . "+1 months");
+        $renewed_date = date('Y-m-d',$date);
+
+
+        $subcription = Subscription::firstOrCreate([
+            'code'          => $input['planCode'],
+            'user_id'       => $user_id,
+            'membership_id' => $membership_id,
+            'status'        => 'active',
+            'renewal_date'  => $renewal_date,
+            'renewed_date'  => $renewed_date
+        ]);
 
         if(!empty($subcription))
         {
@@ -88,7 +97,7 @@ class FanController extends Controller
                         'qty' => 1
                     ]
                 ];
-
+                
                 $data['invoice_id'] = $subscriptionOrder->id;
                 $data['invoice_description'] = "Order #{$data['invoice_id']} Invoice";
                 $data['return_url'] = route('fan.subcription.response');
@@ -97,7 +106,6 @@ class FanController extends Controller
                 $data['shipping_discount'] = round((10 / 100) * $amount, 2);
 
                 $response = $this->provider->setExpressCheckout($data);
-
                 return redirect($response['paypal_link']);
             }
             else
@@ -114,13 +122,8 @@ class FanController extends Controller
 
         // $subscription_id = $input['subscription_id'];
         // $subcription = Subscription::find($subscription_id);
-
         // $amount = $subcription->membership->price;
-        
         // $subscriptionOrder = SubscriptionOrder::where('user_id',$input['user_id'])->first();
-
-
-
     }
 
     public function subcription_response(Request $request)
@@ -156,7 +159,15 @@ class FanController extends Controller
                                 $user = Auth::user();
                                 $user->syncRoles(['Talents']);
 
-                                Session::flash('errorMsg','Thank for you to subcribe our platfrom');
+                                // send Thank you email
+                                $data = [
+                                    'name'  => $user->name,
+                                    'email' => $user->email
+                                ];
+                                Mail::send('email.subcription',$data,function($message) use($data){
+                                    $message->to($data['email'])->subject('Become a talent');
+                                });
+                                Session::flash('successMsg','Thank for you to subcribe our platfrom');
                                 return redirect()->route('talent.user.dashboard');
                             }
                             else

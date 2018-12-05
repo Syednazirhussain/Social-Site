@@ -428,193 +428,202 @@
             var post_images_path = "{{ asset('storage/posts/') }}";
 
             // here is an array console.log(Object.values(json.images));
-            var images = Object.values(json.images);
 
-            var total_images = 0;
-            for(var i = 0 ; i < images.length ; i++)
+            if(json.hasOwnProperty('images'))
             {
-                for(var talent_image in images[i])
+                var images = Object.values(json.images);
+                var total_images = 0;
+                for(var i = 0 ; i < images.length ; i++)
                 {
-                    var keyArr = talent_image.split('_');
-                    var talent_name = keyArr[0];
-                    var talent_id = keyArr[1];
-
-
-                    for(var dates in images[i][talent_image])
+                    for(var talent_image in images[i])
                     {
-                        var keyArr1 = dates.split('_');                        
-                        var post_date = keyArr1[0]; // posted date
-                        var post_id = keyArr1[1];   // post_id
-                        
-                        postHtml += '<div class="row">';
-                        postHtml += '<div class="col-md-12">';
-                        postHtml += '<div class="list-group b-a-0">';
-                        postHtml += '<div class="list-group-item">';
-                        if(user_plan_code != 'free')
+                        var keyArr = talent_image.split('_');
+                        var talent_name = keyArr[0];
+                        var talent_id = keyArr[1];
+
+
+                        for(var dates in images[i][talent_image])
                         {
-                            postHtml += '<div class="dropdown pull-xs-right m-l-1">';
-                            postHtml += '<button type="button" class="btn btn-xs btn-outline btn-outline-colorless dropdown-toggle" data-toggle="dropdown" aria-expanded="false">';
-                            postHtml += '<i class="fa fa-reorder"></i>';
-                            postHtml += '</button>';
-                            postHtml += '<div class="dropdown-menu dropdown-menu-right">';
-                            postHtml += '<li>';
-                            postHtml += '<a href="javascript:void(0)" class="remove_post_images" data-id="'+post_id+'">';
-                            postHtml += '<i class="dropdown-icon fa fa-times text-danger"></i>&nbsp;&nbsp;Remove';
-                            postHtml += '</a>';
-                            postHtml += '</li>';
+                            var keyArr1 = dates.split('_');                        
+                            var post_date = keyArr1[0]; // posted date
+                            var post_id = keyArr1[1];   // post_id
+                            
+                            postHtml += '<div class="row">';
+                            postHtml += '<div class="col-md-12">';
+                            postHtml += '<div class="list-group b-a-0">';
+                            postHtml += '<div class="list-group-item">';
+                            if(user_plan_code != 'free')
+                            {
+                                postHtml += '<div class="dropdown pull-xs-right m-l-1">';
+                                postHtml += '<button type="button" class="btn btn-xs btn-outline btn-outline-colorless dropdown-toggle" data-toggle="dropdown" aria-expanded="false">';
+                                postHtml += '<i class="fa fa-reorder"></i>';
+                                postHtml += '</button>';
+                                postHtml += '<div class="dropdown-menu dropdown-menu-right">';
+                                postHtml += '<li>';
+                                postHtml += '<a href="javascript:void(0)" class="remove_post_images" data-id="'+post_id+'">';
+                                postHtml += '<i class="dropdown-icon fa fa-times text-danger"></i>&nbsp;&nbsp;Remove';
+                                postHtml += '</a>';
+                                postHtml += '</li>';
+                                postHtml += '</div>';
+                                // postHtml += '<span class="loader">';
+                                // postHtml += '<i class="fa fa-spinner fa-1x fa-spin"></i>';
+                                // postHtml += '</span>';
+                                postHtml += '</div>';
+                            }   
+                            postHtml += '<div class="widget blog_gallery" style="display: inline-flex;">';
+                            var imagesArr = images[i][talent_image][dates].images; // images array
+                            total_images += imagesArr.length;
+                            for(var j = 0 ; j < imagesArr.length ; j++)
+                            {
+                                var src = post_images_path+"/"+imagesArr[j].replace(/['"]+/g, '');
+                                postHtml += '<a href="javascript:void(0)" class="img-gallery" data-id="'+post_id+'"  data-toggle="modal"  data-target="#myModal">';
+                                postHtml += '<img src="'+src+'" class="img-thumbnail img-custom">';
+                                postHtml += '</a>';
+                            }
+
                             postHtml += '</div>';
-                            // postHtml += '<span class="loader">';
-                            // postHtml += '<i class="fa fa-spinner fa-1x fa-spin"></i>';
-                            // postHtml += '</span>';
-                            postHtml += '</div>';
-                        }   
-                        postHtml += '<div class="widget blog_gallery" style="display: inline-flex;">';
-                        var imagesArr = images[i][talent_image][dates].images; // images array
-                        total_images += imagesArr.length;
-                        for(var j = 0 ; j < imagesArr.length ; j++)
-                        {
-                            var src = post_images_path+"/"+imagesArr[j].replace(/['"]+/g, '');
-                            postHtml += '<a href="javascript:void(0)" class="img-gallery" data-id="'+post_id+'"  data-toggle="modal"  data-target="#myModal">';
-                            postHtml += '<img src="'+src+'" class="img-thumbnail img-custom">';
-                            postHtml += '</a>';
-                        }
-
-                        postHtml += '</div>';
-                        postHtml += '<p class="list-group-item-text text-muted font-size-11">Post by <b>'+talent_name+'</b> on '+new Date(post_date).toDateString("yyyy-MM-dd")+'</p>';
-                        postHtml += '</div>';
-                        postHtml += '</div>';
-                        //
-                        postHtml += '</div>';
-                        postHtml += '</div>'; 
-                    }                
-                }
-            }
-
-            // here is an array console.log(Object.values(json.images));
-            var vedios = Object.values(json.vedios);
-            var total_videos = 0;
-            for(var i = 0 ; i < vedios.length ; i++)
-            {
-                for(var talent_video in vedios[i])
-                {
-                    var keyArr = talent_video.split('_');
-                    var talent_name = keyArr[0];
-                    var talent_id = keyArr[1];
-
-                    total_videos += Object.keys(vedios[i][talent_video]).length;
-
-                    postHtml += '<div class="ps-block videos-list p-b-2">';
-                    for(var dates in vedios[i][talent_video])
-                    {
-                        var keyArr1 = dates.split('_');                        
-                        var post_date = keyArr1[0]; // posted date
-                        var post_id = keyArr1[1];   // post_id
-                        var video_info = vedios[i][talent_video][dates].videos;
-
-                        postHtml += '<div class="videos-list-item">';
-                        postHtml += '<a href="javascript:void(0)">';
-                        postHtml += '<div class="video_date">';
-                        postHtml += '<i class="fa fa-calendar"></i>&nbsp;'+new Date(post_date).toDateString("yyyy-MM-dd");
-                        postHtml += '</div>';
-
-                        if(video_info.vedio_type == 'youtube')
-                        {
-                            postHtml += '<img src="'+video_info.image_url+'" data-toggle="modal" data-target="#vedioModal" data-url="'+video_info.vedio_url+'" class="border-rounded vedio-modal">';
-                        }
-                        else if(video_info.vedio_type == 'dailymotion')
-                        {
-                            postHtml += '<img src="'+video_info.image_url+'" data-toggle="modal" data-target="#vedioModal" data-url="'+video_info.vedio_url+'"  class="border-rounded vedio-modal">';
-                        }
-                        else if(video_info.vedio_type == 'vimeo')
-                        {
-                            postHtml += '<img src="'+video_info.image_url+'" data-toggle="modal" data-target="#vedioModal" data-url="'+video_info.vedio_url+'" class="border-rounded vedio-modal">';
-                        }
-
-                        postHtml += '</a>';
-                        postHtml += '<div class="font-size-11 text-muted" style="margin-top: 5px;">';
-                        postHtml += '<div class="post_vedio_author">';
-                        postHtml += '<i class="fa fa-user"></i>&nbsp;'+talent_name;
-                        postHtml += '</div>';
-                        postHtml += '<div>';
-                        postHtml += '<i class="fa fa-video-camera"></i>&nbsp;'+video_info.vedio_type.charAt(0).toUpperCase()+video_info.vedio_type.slice(1);
-                        postHtml += '</div>';
-                        postHtml += '</div>';
-                        postHtml += '</div>';
-                    } 
-                    postHtml += '</div>';
-                }        
-            }
-
-
-            var posts = json.posts;
-            var additional_info = json.additional_info;
-            if(Object.keys(posts).length > 0)
-            {
-                $('#article_count').text(Object.keys(posts).length);
-                for (var key in posts) 
-                {
-                    if(posts[key].post_type == 'text')
-                    {
-                        postHtml += '<div class="panel">';
-                        postHtml += '<div class="panel-body">';
-                        postHtml += '<div class="list-group-item">';
-                        if(user_plan_code != 'free')
-                        {
-                            postHtml += '<div class="dropdown pull-xs-right m-l-1">';
-                            postHtml += '<button type="button" class="btn btn-xs btn-outline btn-outline-colorless dropdown-toggle" data-toggle="dropdown" aria-expanded="false"><i class="fa fa-reorder"></i></button>';
-                            postHtml += '<div class="dropdown-menu dropdown-menu-right">';
-                            postHtml += '<li>';
-                            postHtml += '<a href="javascript:void(0)" class="edit_post" data-post-id="'+posts[key].id+'" >';
-                            postHtml += '<i class="dropdown-icon fa fa-pencil"></i>&nbsp;&nbsp;Edit';
-                            postHtml += '</a>';
-                            postHtml += '</li>';
-                            postHtml += '<li>';
-                            postHtml += '<a href="javascript:void(0)" class="delete_post" data-post-id="'+posts[key].id+'" >';
-                            postHtml += '<i class="dropdown-icon fa fa-times text-danger"></i>&nbsp;&nbsp;Remove';
-                            postHtml += '</a>';
-                            postHtml += '</li>';
+                            postHtml += '<p class="list-group-item-text text-muted font-size-11">Post by <b>'+talent_name+'</b> on '+new Date(post_date).toDateString("yyyy-MM-dd")+'</p>';
                             postHtml += '</div>';
                             postHtml += '</div>';
-                        }
-                        postHtml += '<div class="blog-content">';
-                        postHtml += '<div class="post-meta">';
-                        postHtml += '<p>By <a href="javascript:void(0)">'+posts[key].user_name+'</a></p>';
-                        postHtml += '<p><i class="fa fa-clock-o"></i> <a href="javascript:void(0)">'+new Date(posts[key].created_at).toDateString("yyyy-MM-dd")+'</a></p>';
-                        postHtml += '<p>share:';
-                        postHtml += '<p class="addthis_inline_share_toolbox"></p>';
-                        // if(additional_info.hasOwnProperty('facebook'))
-                        // {
-                        //     postHtml += '<a href="'+additional_info.facebook+'" class="fa fa-facebook"></a>';
-                        // }
-                        // if(additional_info.hasOwnProperty('instagram'))
-                        // {
-                        //     postHtml += '<a href="'+additional_info.instagram+'" class="fa fa-instagram"></a>';
-                        // }
-                        // if(additional_info.hasOwnProperty('linkdin'))
-                        // {
-                        //     postHtml += '<a href="'+additional_info.linkdin+'" class="fa fa-linkedin"></a>';
-                        // }
-                        // if(additional_info.hasOwnProperty('twitter'))
-                        // {
-                        //     postHtml += '<a href="'+additional_info.twitter+'" class="fa fa-twitter"></a>';
-                        // }
-                        postHtml += '</p>';
-                        postHtml += '<p>';
-                        postHtml += strip_html_tags(posts[key].description)
-                        postHtml += '</p>';
-                        postHtml += '</div>';
-                        postHtml += '</div>';
-                        postHtml += '</div>';
-                        postHtml += '</div>';
-                        postHtml += '</div>';
+                            //
+                            postHtml += '</div>';
+                            postHtml += '</div>'; 
+                        }                
                     }
                 }
+                $('#photos_count').text(total_images);
             }
 
 
-            $('#photos_count').text(total_images);
-            $('#video_count').text(total_videos);
-            $('#posts').html(postHtml);
+
+            // here is an array console.log(Object.values(json.images));
+            if(json.hasOwnProperty('vedios'))
+            {
+                var vedios = Object.values(json.vedios);
+                var total_videos = 0;
+                for(var i = 0 ; i < vedios.length ; i++)
+                {
+                    for(var talent_video in vedios[i])
+                    {
+                        var keyArr = talent_video.split('_');
+                        var talent_name = keyArr[0];
+                        var talent_id = keyArr[1];
+
+                        total_videos += Object.keys(vedios[i][talent_video]).length;
+
+                        postHtml += '<div class="ps-block videos-list p-b-2">';
+                        for(var dates in vedios[i][talent_video])
+                        {
+                            var keyArr1 = dates.split('_');                        
+                            var post_date = keyArr1[0]; // posted date
+                            var post_id = keyArr1[1];   // post_id
+                            var video_info = vedios[i][talent_video][dates].videos;
+
+                            postHtml += '<div class="videos-list-item">';
+                            postHtml += '<a href="javascript:void(0)">';
+                            postHtml += '<div class="video_date">';
+                            postHtml += '<i class="fa fa-calendar"></i>&nbsp;'+new Date(post_date).toDateString("yyyy-MM-dd");
+                            postHtml += '</div>';
+
+                            if(video_info.vedio_type == 'youtube')
+                            {
+                                postHtml += '<img src="'+video_info.image_url+'" data-toggle="modal" data-target="#vedioModal" data-url="'+video_info.vedio_url+'" class="border-rounded vedio-modal">';
+                            }
+                            else if(video_info.vedio_type == 'dailymotion')
+                            {
+                                postHtml += '<img src="'+video_info.image_url+'" data-toggle="modal" data-target="#vedioModal" data-url="'+video_info.vedio_url+'"  class="border-rounded vedio-modal">';
+                            }
+                            else if(video_info.vedio_type == 'vimeo')
+                            {
+                                postHtml += '<img src="'+video_info.image_url+'" data-toggle="modal" data-target="#vedioModal" data-url="'+video_info.vedio_url+'" class="border-rounded vedio-modal">';
+                            }
+
+                            postHtml += '</a>';
+                            postHtml += '<div class="font-size-11 text-muted" style="margin-top: 5px;">';
+                            postHtml += '<div class="post_vedio_author">';
+                            postHtml += '<i class="fa fa-user"></i>&nbsp;'+talent_name;
+                            postHtml += '</div>';
+                            postHtml += '<div>';
+                            postHtml += '<i class="fa fa-video-camera"></i>&nbsp;'+video_info.vedio_type.charAt(0).toUpperCase()+video_info.vedio_type.slice(1);
+                            postHtml += '</div>';
+                            postHtml += '</div>';
+                            postHtml += '</div>';
+                        } 
+                        postHtml += '</div>';
+                    }        
+                }
+                $('#video_count').text(total_videos);
+            }
+
+
+            if(json.hasOwnProperty('posts'))
+            {
+                var posts = json.posts;
+                var additional_info = json.additional_info;
+                if(Object.keys(posts).length > 0)
+                {
+                    $('#article_count').text(Object.keys(posts).length);
+                    for (var key in posts) 
+                    {
+                        if(posts[key].post_type == 'text')
+                        {
+                            postHtml += '<div class="panel">';
+                            postHtml += '<div class="panel-body">';
+                            postHtml += '<div class="list-group-item">';
+                            if(user_plan_code != 'free')
+                            {
+                                postHtml += '<div class="dropdown pull-xs-right m-l-1">';
+                                postHtml += '<button type="button" class="btn btn-xs btn-outline btn-outline-colorless dropdown-toggle" data-toggle="dropdown" aria-expanded="false"><i class="fa fa-reorder"></i></button>';
+                                postHtml += '<div class="dropdown-menu dropdown-menu-right">';
+                                postHtml += '<li>';
+                                postHtml += '<a href="javascript:void(0)" class="edit_post" data-post-id="'+posts[key].id+'" >';
+                                postHtml += '<i class="dropdown-icon fa fa-pencil"></i>&nbsp;&nbsp;Edit';
+                                postHtml += '</a>';
+                                postHtml += '</li>';
+                                postHtml += '<li>';
+                                postHtml += '<a href="javascript:void(0)" class="delete_post" data-post-id="'+posts[key].id+'" >';
+                                postHtml += '<i class="dropdown-icon fa fa-times text-danger"></i>&nbsp;&nbsp;Remove';
+                                postHtml += '</a>';
+                                postHtml += '</li>';
+                                postHtml += '</div>';
+                                postHtml += '</div>';
+                            }
+                            postHtml += '<div class="blog-content">';
+                            postHtml += '<div class="post-meta">';
+                            postHtml += '<p>By <a href="javascript:void(0)">'+posts[key].user_name+'</a></p>';
+                            postHtml += '<p><i class="fa fa-clock-o"></i> <a href="javascript:void(0)">'+new Date(posts[key].created_at).toDateString("yyyy-MM-dd")+'</a></p>';
+                            postHtml += '<p>share:';
+                            postHtml += '<p class="addthis_inline_share_toolbox"></p>';
+                            // if(additional_info.hasOwnProperty('facebook'))
+                            // {
+                            //     postHtml += '<a href="'+additional_info.facebook+'" class="fa fa-facebook"></a>';
+                            // }
+                            // if(additional_info.hasOwnProperty('instagram'))
+                            // {
+                            //     postHtml += '<a href="'+additional_info.instagram+'" class="fa fa-instagram"></a>';
+                            // }
+                            // if(additional_info.hasOwnProperty('linkdin'))
+                            // {
+                            //     postHtml += '<a href="'+additional_info.linkdin+'" class="fa fa-linkedin"></a>';
+                            // }
+                            // if(additional_info.hasOwnProperty('twitter'))
+                            // {
+                            //     postHtml += '<a href="'+additional_info.twitter+'" class="fa fa-twitter"></a>';
+                            // }
+                            postHtml += '</p>';
+                            postHtml += '<p>';
+                            postHtml += strip_html_tags(posts[key].description)
+                            postHtml += '</p>';
+                            postHtml += '</div>';
+                            postHtml += '</div>';
+                            postHtml += '</div>';
+                            postHtml += '</div>';
+                            postHtml += '</div>';
+                        }
+                    }
+                }
+                $('#posts').html(postHtml);
+            }
 
         });
     }

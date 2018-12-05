@@ -5,6 +5,7 @@ namespace App\Models;
 use Eloquent as Model;
 
 
+
 use \MaddHatter\LaravelFullcalendar\Event as EventInterface;
 
 /**
@@ -126,5 +127,14 @@ class Event extends Model implements EventInterface
         return date("Y-m-d", strtotime($value));
     }
 
+
+
+    /**
+     * @return \Illuminate\Database\Eloquent\Relations\BelongsTo
+    **/
+    public function user()
+    {
+        return $this->hasOne(\App\User::class,'id','user_id');
+    }
     
 }

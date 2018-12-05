@@ -114,13 +114,23 @@ Route::get('/', function (\Illuminate\Http\Request $request) {
 });
 
 
+Route::get('subcription/check',['as' => 'subcription.check','uses'	=> 'CronController@index']);
 
-Route::get('creatifny', ['as'=> 'site.dashboard', 'uses' => 'User\UserController@index']);
+Route::get('creatifny', ['as'=> 'site.dashboard', 'uses' => 'User\SiteController@index']);
+Route::get('creatifny/feature', ['as'=> 'site.creatifny.feature', 'uses' => 'User\SiteController@feature']);
+Route::get('creatifny/discover', ['as'=> 'site.creatifny.discover', 'uses' => 'User\SiteController@discover']);
+Route::get('creatifny/crowd-pick', ['as'=> 'site.creatifny.crowd_pick', 'uses' => 'User\SiteController@crowd_pick']);
+Route::get('creatifny/show', ['as'=> 'site.creatifny.show', 'uses' => 'User\SiteController@show']);
+Route::get('creatifny/charts', ['as'=> 'site.creatifny.charts', 'uses' => 'User\SiteController@charts']);
+Route::get('creatifny/pricing', ['as'=> 'site.creatifny.pricing', 'uses' => 'User\SiteController@pricing']);
+Route::get('creatifny/about-us', ['as'=> 'site.creatifny.about_us', 'uses' => 'User\SiteController@about_us']);
+Route::get('creatifny/conditions', ['as'=> 'site.creatifny.conditions', 'uses' => 'User\SiteController@conditions']);
+Route::get('creatifny/privacy_policy', ['as'=> 'site.creatifny.privacy_policy', 'uses' => 'User\SiteController@privacy_policy']);
+
+
+
 Route::get('user/login',['as' => 'user.login','uses' => 'User\UserController@viewLogin']);
-
 Route::get('user/verify-account/{user_id}/{token}',['as' => 'user.verify.email','uses' => 'User\UserController@verify_account']);
-
-
 
 Route::get('user/forget-password',['as' => 'user.forget.password','uses' => 'User\UserController@forget_password']);
 Route::post('user/forget-password',['as' => 'user.password.request','uses' => 'User\UserController@password_request']);
@@ -132,8 +142,9 @@ Route::post('user/login',['as' => 'user.authenticate','uses' => 'User\UserContro
 Route::post('user/signup',['as' => 'user.signup','uses' => 'User\UserController@signUp']);
 Route::post('user/verify/email', ['as'=> 'user.email.verify', 'uses' => 'User\UserController@verifyEmail']);
 
+Route::get('user/account/confirmation',['as' => 'user.account.confirmation', 'uses'	=> 'User\UserController@accountConfirmation']);
 
-Route::any('fan/subcription/details', ['as'=> 'fan.subcription.details', 'uses' => 'User\FanController@subcription_details']);
+
 
 Route::group(['middleware' => ['user.auth']], function () {
 
@@ -164,6 +175,8 @@ Route::group(['middleware' => ['user.auth']], function () {
 		Route::get('talent/lists',['as' => 'talent.list','uses' => 'User\TalentController@talent_listing']);
 		
 		Route::get('talent/subcription/info',['as' => 'subcription.info','uses' => 'User\TalentController@subcription_info']);
+		Route::get('talent/subcription/re-new/request',['as' => 'subcription.renew.request','uses' => 'User\TalentController@subcription_renew_request']);
+		Route::any('talent/subcription/re-new/response',['as' => 'subcription.renew.response','uses' => 'User\TalentController@subcription_renew_response']);
 		
 		Route::get('/talent/events',['as' => 'talent.events','uses' => 'User\TalentController@event']);
 		Route::post('/talent/events',['as' => 'talent.events.store','uses' => 'User\TalentController@event_store']);
@@ -190,6 +203,7 @@ Route::group(['middleware' => ['user.auth']], function () {
 		Route::post('fan/unfollow/talent',['as' => 'fan.unfollow.talent','uses' => 'User\FanController@unfollow']);
 
 		Route::get('fan/subcription/message', ['as'=> 'fan.subcription.message', 'uses' => 'User\FanController@subcription_message']);
+		
 		Route::get('fan/subcription/plan', ['as'=> 'fan.subcription.plan', 'uses' => 'User\FanController@subcription_plan']);
 		Route::post('fan/subcription/plan', ['as'=> 'fan.subcription.request', 'uses' => 'User\FanController@subcription_request']);
 		Route::any('fan/subcription/response', ['as'=> 'fan.subcription.response', 'uses' => 'User\FanController@subcription_response']);

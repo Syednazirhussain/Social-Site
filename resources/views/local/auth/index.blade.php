@@ -23,7 +23,10 @@
             @if(Session::has('errorMsg'))
                 <div class="alert alert-danger alert-dark">
                     <button type="button" class="close" data-dismiss="alert">×</button>
-                    <strong>{{ Session::get('errorMsg') }}</strong> 
+                    <strong>{{ Session::get('errorMsg') }}</strong>
+                    @if(Session::has('sendMail'))
+                      <a href="{{ Session::get('sendMail') }}">Send Again</a>
+                    @endif
                 </div>
             @endif
             @if(Session::has('successMsg'))

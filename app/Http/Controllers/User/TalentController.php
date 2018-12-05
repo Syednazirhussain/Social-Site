@@ -20,14 +20,22 @@ use App\Models\Admin\PostCategory;
 use App\Models\Admin\PostMeta;
 use App\Models\Admin\Follow;
 use App\Models\Admin\SubscriptionOrder;
+use App\Models\Admin\MemberShipPlan;
 
+use Srmklive\PayPal\Services\ExpressCheckout;
+use Illuminate\Support\Facades\Log;
+
+use Mail;
 use Calendar;
 use App\Models\Event;
 
 class TalentController extends Controller
 {
-    public function __construct()
+    private $provider; 
+
+    public function __construct(ExpressCheckout $express)
     {
+        $this->provider = $express;
         $this->middleware('talent.route');
     }
 
@@ -217,13 +225,175 @@ class TalentController extends Controller
     {
         $user_id = Auth::user()->id;
 
-        $subscriptionOrders = SubscriptionOrder::where('user_id',$user_id)->get();
+        $subscription = Subscription::where('user_id',$user_id)->first();
 
-        $data = [
-            'subscriptionOrders'   => $subscriptionOrders
-        ];
+        if(!empty($subscription))
+        {
 
-        return view('local.talent.dashboard.subcription_info',$data);
+            // echo "user id ".$user_id." subcription_id ".$subscription->id;exit;
+
+            $subscriptionOrders = SubscriptionOrder::where('user_id',$user_id)
+                                                    ->where('subscription_plan_id',$subscription->id)
+                                                    ->get();
+            $data = [
+                'subscription'         => $subscription,
+                'subscriptionOrders'   => $subscriptionOrders
+            ];
+
+            // dd($data);
+
+            return view('local.talent.dashboard.subcription_info',$data);
+        }
+        else
+        {
+            return view('local.talent.dashboard.subcription_info');
+        }
+    }
+
+    public function subcription_renew_request()
+    {
+        $user = Auth::user();
+        if(!empty($user))
+        {
+            $user_id = $user->id;
+            $subcription = Subscription::where('user_id',$user->id)->first();
+
+            if(!empty($subcription))
+            {
+                $amount = MemberShipPlan::where('code','premium')->first()->price;
+                $status = 'pending';
+
+                $subscriptionOrder = new SubscriptionOrder;
+                $subscriptionOrder->user_id = $user_id;
+                $subscriptionOrder->subscription_plan_id = $subcription->id;
+                $subscriptionOrder->amount = $amount;
+                $subscriptionOrder->status = $status;
+                if($subscriptionOrder->save())
+                {
+                    $data = [];
+                    $data['items'] = [
+                        [
+                            'name' => 'Creatify premium offer',
+                            'price' => $amount,
+                            'qty' => 1
+                        ]
+                    ];
+                    $data['invoice_id'] = $subscriptionOrder->id;
+                    $data['invoice_description'] = "Order #{$data['invoice_id']} Invoice";
+                    $data['return_url'] = route('subcription.renew.response');
+                    $data['cancel_url'] = route('subcription.info');
+                    $data['total'] = $amount;
+                    $data['shipping_discount'] = round((10 / 100) * $amount, 2);
+                    $response = $this->provider->setExpressCheckout($data);
+                    return redirect($response['paypal_link']);
+                }
+                else
+                {
+                    Session::flash('errorMsg','Subcription order were not created');
+                    return redirect()->route('subcription.info');
+                }
+            }
+            else
+            {
+                Session::flash('errorMsg','User subcription were not found');
+                return redirect()->route('subcription.info');
+            }
+        }
+    }
+
+    public function subcription_renew_response(Request $request)
+    {
+        if($request->has('token') && $request->has('PayerID'))
+        {
+            $token = $request->input('token');
+            $payerID = $request->input('PayerID');
+
+            $response = $this->provider->getExpressCheckoutDetails($token);
+
+            if(isset($response['PAYMENTREQUEST_0_INVNUM']))
+            {
+                $subcription_order_id = $response['PAYMENTREQUEST_0_INVNUM'];
+                $subscriptionOrder = SubscriptionOrder::findOrFail($subcription_order_id);
+                if(!empty($subscriptionOrder))
+                {
+                    $subcription_id = $subscriptionOrder->subscription_plan_id;
+                    $user_id = $subscriptionOrder->user_id;
+
+                    $subscriptionOrder->transaction_id = $token;
+                    $subscriptionOrder->status = 'paid';
+                    if($subscriptionOrder->save())
+                    {
+                        if(Auth::user()->id = $user_id)
+                        {
+
+                            $subscription = Subscription::find($subcription_id);
+
+                            $renewal_date = $subscription->renewal_date;
+                            $renewed_date = $subscription->renewed_date;
+
+                            $current_date = date('Y-m-d');
+                            $current_date = strtotime($current_date);
+                            $exp_date = strtotime( $renewed_date );
+                            $diff = $exp_date - $current_date;
+                            $days = floor($diff/(60*60*24));
+
+                            $renewed_date  = date('Y-m-d', strtotime($renewed_date."+".$days." days"));
+
+
+                            $subscription->renewal_date = date('Y-m-d');
+                            $subscription->renewed_date = $renewed_date;
+
+                            if($subscription->save())
+                            {
+                                $user = Auth::user();
+                                // send Thank you email
+                                $data = [
+                                    'name'          => $user->name,
+                                    'email'         => $user->email,
+                                    'extented_date' => $renewed_date
+                                ];
+                                Mail::send('email.subcription_upgrade',$data,function($message) use($data){
+                                    $message->to($data['email'])->subject('Subcription extented');
+                                });
+
+                                Session::flash('successMsg','Thank for you to subcribe our platfrom');
+                                return redirect()->route('subcription.info');
+                            }
+                            else
+                            {
+                                Session::flash('errorMsg','There is some problem while updgrading subcription');
+                                return redirect()->route('subcription.info');
+                            }
+                        }
+                        else
+                        {
+                            Session::flash('errorMsg','User identity invalid');
+                            return redirect()->route('subcription.info');
+                        }
+                    }
+                    else
+                    {
+                        Session::flash('errorMsg','Subcription Order not found');
+                        return redirect()->route('subcription.info');
+                    }
+                }
+                else
+                {
+                    Session::flash('errorMsg','Payment were not successful');
+                    return redirect()->route('subcription.info');
+                }
+            }
+            else
+            {
+                Session::flash('errorMsg','OrderID not found');
+                return redirect()->route('subcription.info');
+            }
+        }
+        else
+        {
+            Session::flash('errorMsg','Payment were not successful');
+            return redirect()->route('subcription.info');
+        }
     }
 
 
