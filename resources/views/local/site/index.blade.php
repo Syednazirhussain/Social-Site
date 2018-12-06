@@ -115,7 +115,7 @@
                     @foreach($users as $user)
                     <div class="single-slide">
                         <div class="slide-img">
-                            <img src="{{ asset('storage/users/'.$user->image) }}" style="width: 150px;height: 100px">
+                            <img src="{{ asset('storage/users/'.$user->image) }}" style="width: 110px;height: 100px">
                         </div>
                         <div class="content">
                             <h4>{{ $user->name }}</h4>

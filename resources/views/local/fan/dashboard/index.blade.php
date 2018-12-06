@@ -113,9 +113,9 @@
     }
 
     .videos-list-item {
-        width: 32.33%;
+        width: 100%;
         display: inline-block;
-        margin: 0px 5px 15px 0px;
+        margin: 20px 0px 20px 0px;
         position: relative;
     }
 
@@ -124,16 +124,28 @@
         z-index: 9;
         background: #eb613e;
         color: white;
-        font-size: 9px;
+        font-size: 12px;
         right: 0px;
         top: 0px;
-        padding: 0px 10px;
+        padding: 0px 30px;
     }
 
     .post_vedio_author{
-        font-size: 17px;
+        font-size: 24px;
         color: #eb613e;
+        margin: 9px 0px;
     }
+
+    .vedio_detail{
+        font-size: 12px;
+    }
+
+    .ps-block{
+        position: relative;
+        width: 80% !important;
+        margin: 0 auto !important;
+    }
+
 </style>
 
 @endsection
@@ -174,7 +186,7 @@
 
                 <div class="pad_left">
                     <h2 class="h2_margin">{{ $user->name }}</h2>
-                    <h5 class="h2_margin">Developer</h5>
+                  <!--   <h5 class="h2_margin">Developer</h5> -->
                 </div>
 
                 <div style="margin-top:20px">
@@ -222,15 +234,15 @@
                         <div id="msg"></div>    
                         <div class="tab-pane active" id="article">
                             <div class="row">
-                                    <div class="col-sm-12 col-md-12">
-                                        <div id="posts"></div>
-                                    </div>
+                                <div class="col-sm-12 col-md-12">
+                                    <div id="posts"></div> 
+                                </div>
                             </div>
                         </div>
                         <div class="tab-pane" id="overview">
                             @if(isset($additional_info))
                                 @if($additional_info->about_us != null)
-                                    {{ $additional_info->about_us }}
+                                    <?php echo html_entity_decode($additional_info->about_us); ?>
                                 @else
                                     <p class="lead"><em>Write something about us</em></p>
                                 @endif
@@ -441,6 +453,7 @@
                         var talent_name = keyArr[0];
                         var talent_id = keyArr[1];
 
+                        var profile_url = "{{ route('fan.view.talent.profile',['']) }}/"+talent_id;
 
                         for(var dates in images[i][talent_image])
                         {
@@ -482,7 +495,7 @@
                             }
 
                             postHtml += '</div>';
-                            postHtml += '<p class="list-group-item-text text-muted font-size-11">Post by <b>'+talent_name+'</b> on '+new Date(post_date).toDateString("yyyy-MM-dd")+'</p>';
+                            postHtml += '<p class="list-group-item-text text-muted font-size-11">Post by <a href="'+profile_url+'"><b>'+talent_name+'</b></a> on '+new Date(post_date).toDateString("yyyy-MM-dd")+'</p>';
                             postHtml += '</div>';
                             postHtml += '</div>';
                             //
@@ -494,67 +507,52 @@
                 $('#photos_count').text(total_images);
             }
 
-
-
             // here is an array console.log(Object.values(json.images));
-            if(json.hasOwnProperty('vedios'))
+
+            //console.log(json.vedios);
+
+            var vedios = json.vedios;
+            var vedios_arr = Object.values(vedios)[0];
+
+
+            if(vedios_arr.length > 0)
             {
-                var vedios = Object.values(json.vedios);
-                var total_videos = 0;
-                for(var i = 0 ; i < vedios.length ; i++)
+                for(var i = 0 ; i < vedios_arr.length ; i++)
                 {
-                    for(var talent_video in vedios[i])
+                    var profile_url = "{{ route('fan.view.talent.profile',['']) }}/"+vedios_arr[i].user_id;
+
+                    postHtml += '<div class="ps-block videos-list">';
+                    postHtml += '<div class="videos-list-item">';
+                    postHtml += '<a href="javascript:void(0)">';
+                    postHtml += '<div class="video_date">';
+                    postHtml += '<i class="fa fa-calendar"></i>&nbsp;'+new Date(vedios_arr[i].posted_date).toDateString("yyyy-MM-dd");
+                    postHtml += '</div>';
+                    if(vedios_arr[i].vedio_type == 'youtube')
                     {
-                        var keyArr = talent_video.split('_');
-                        var talent_name = keyArr[0];
-                        var talent_id = keyArr[1];
+                        postHtml += '<img src="'+vedios_arr[i].image_url+'" data-toggle="modal" data-target="#vedioModal" data-url="'+vedios_arr[i].vedio_url+'" class="border-rounded vedio-modal">';
+                    }
+                    else if(vedios_arr[i].vedio_type == 'dailymotion')
+                    {
+                        postHtml += '<img src="'+vedios_arr[i].image_url+'" data-toggle="modal" data-target="#vedioModal" data-url="'+vedios_arr[i].vedio_url+'"  class="border-rounded vedio-modal">';
+                    }
+                    else if(vedios_arr[i].vedio_type == 'vimeo')
+                    {
+                        postHtml += '<img src="'+vedios_arr[i].image_url+'" data-toggle="modal" data-target="#vedioModal" data-url="'+vedios_arr[i].vedio_url+'" class="border-rounded vedio-modal">';
+                    }
+                    postHtml += '</a>';
+                    postHtml += '<div class="font-size-11 text-muted" style="margin-top: 5px;">';
+                    postHtml += '<div class="post_vedio_author">';
+                    postHtml += vedios_arr[i].title;
+                    postHtml += '</div>';
+                    postHtml += '<div class="vedio_detail">';
+                    postHtml += '<a href="'+profile_url+'"><i class="fa fa-user"></i>&nbsp;'+vedios_arr[i].user_name+'</a>&nbsp;&nbsp;&nbsp;&nbsp;<i class="fa fa-video-camera"></i>&nbsp;'+vedios_arr[i].vedio_type.charAt(0).toUpperCase()+vedios_arr[i].vedio_type.slice(1);
+                    postHtml += '</div>';
+                    postHtml += '</div>';
+                    postHtml += '</div>';
+                    postHtml += '</div>';
 
-                        total_videos += Object.keys(vedios[i][talent_video]).length;
-
-                        postHtml += '<div class="ps-block videos-list p-b-2">';
-                        for(var dates in vedios[i][talent_video])
-                        {
-                            var keyArr1 = dates.split('_');                        
-                            var post_date = keyArr1[0]; // posted date
-                            var post_id = keyArr1[1];   // post_id
-                            var video_info = vedios[i][talent_video][dates].videos;
-
-                            postHtml += '<div class="videos-list-item">';
-                            postHtml += '<a href="javascript:void(0)">';
-                            postHtml += '<div class="video_date">';
-                            postHtml += '<i class="fa fa-calendar"></i>&nbsp;'+new Date(post_date).toDateString("yyyy-MM-dd");
-                            postHtml += '</div>';
-
-                            if(video_info.vedio_type == 'youtube')
-                            {
-                                postHtml += '<img src="'+video_info.image_url+'" data-toggle="modal" data-target="#vedioModal" data-url="'+video_info.vedio_url+'" class="border-rounded vedio-modal">';
-                            }
-                            else if(video_info.vedio_type == 'dailymotion')
-                            {
-                                postHtml += '<img src="'+video_info.image_url+'" data-toggle="modal" data-target="#vedioModal" data-url="'+video_info.vedio_url+'"  class="border-rounded vedio-modal">';
-                            }
-                            else if(video_info.vedio_type == 'vimeo')
-                            {
-                                postHtml += '<img src="'+video_info.image_url+'" data-toggle="modal" data-target="#vedioModal" data-url="'+video_info.vedio_url+'" class="border-rounded vedio-modal">';
-                            }
-
-                            postHtml += '</a>';
-                            postHtml += '<div class="font-size-11 text-muted" style="margin-top: 5px;">';
-                            postHtml += '<div class="post_vedio_author">';
-                            postHtml += '<i class="fa fa-user"></i>&nbsp;'+talent_name;
-                            postHtml += '</div>';
-                            postHtml += '<div>';
-                            postHtml += '<i class="fa fa-video-camera"></i>&nbsp;'+video_info.vedio_type.charAt(0).toUpperCase()+video_info.vedio_type.slice(1);
-                            postHtml += '</div>';
-                            postHtml += '</div>';
-                            postHtml += '</div>';
-                        } 
-                        postHtml += '</div>';
-                    }        
                 }
-                $('#video_count').text(total_videos);
             }
-
 
             if(json.hasOwnProperty('posts'))
             {
@@ -567,6 +565,7 @@
                     {
                         if(posts[key].post_type == 'text')
                         {
+                            var profile_url = "{{ route('fan.view.talent.profile',['']) }}/"+posts[key].user_id;
                             postHtml += '<div class="panel">';
                             postHtml += '<div class="panel-body">';
                             postHtml += '<div class="list-group-item">';
@@ -590,7 +589,7 @@
                             }
                             postHtml += '<div class="blog-content">';
                             postHtml += '<div class="post-meta">';
-                            postHtml += '<p>By <a href="javascript:void(0)">'+posts[key].user_name+'</a></p>';
+                            postHtml += '<p>By <a href="'+profile_url+'">'+posts[key].user_name+'</a></p>';
                             postHtml += '<p><i class="fa fa-clock-o"></i> <a href="javascript:void(0)">'+new Date(posts[key].created_at).toDateString("yyyy-MM-dd")+'</a></p>';
                             postHtml += '<p>share:';
                             postHtml += '<p class="addthis_inline_share_toolbox"></p>';

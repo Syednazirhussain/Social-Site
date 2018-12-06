@@ -6,7 +6,7 @@
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <meta name="description" content="">
     <meta name="author" content="">
-    <title>Home | Creatifny</title>
+    <title>@if(isset($title)){{ $title }}@endif</title>
 
 
     <link href="{{ asset('/theme/css/bootstrap.min.css') }}" rel="stylesheet">

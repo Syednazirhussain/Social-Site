@@ -95,9 +95,6 @@
                 <a href="{{ route('site.creatifny.discover') }}">Discover</a>
             </li>
             <li>
-                <a href="{{ route('site.creatifny.crowd_pick') }}">Crowd Picks</a>
-            </li>
-            <li>
                 <a href="{{ route('site.creatifny.show') }}">Shows</a>
             </li>
             @role('Talents')
@@ -106,7 +103,7 @@
                 </li>            
             @else
                 <li>
-                    <a href="{{ route('fan.talent.list') }}">Charts</a>
+                    <a href="{{ route('site.creatifny.charts') }}">Charts</a>
                 </li>
             @endrole
             <li>
@@ -125,12 +122,12 @@
                         <li><a href="{{ route('talent.user.dashboard') }}">Profile</a></li>
                         <li><a href="{{ route('talent.events') }}">Events</a></li>
                         <li><a href="{{ route('subcription.info') }}">Subcription</a></li>
-                        <li><a href="{{ route('talent.account.setting',['']) }}/@if(isset( Auth::user()->id )){{ Auth::user()->id }}@endif">Setting</a></li>
+                        <li><a href="{{ route('talent.account.setting',['']) }}/@if(isset( Auth::user()->id )){{ Auth::user()->id }}@endif">Account Settings</a></li>
                         <li><a href="{{ route('talent.logout') }}">Log Out</a></li>
                     @else
                         <li><a href="{{ route('fan.user.dashboard') }}">Profile</a></li>
                         <li><a href="{{ route('fan.subcription.plan') }}">Subscription</a></li>
-                        <li><a href="{{ route('fan.account.setting',['']) }}/@if(isset( Auth::user()->id )){{ Auth::user()->id }}@endif">Setting</a></li>
+                        <li><a href="{{ route('fan.account.setting',['']) }}/@if(isset( Auth::user()->id )){{ Auth::user()->id }}@endif">Account Settings</a></li>
                         <li><a href="{{ route('fan.logout') }}">Log Out</a></li>
                     @endrole
                 </ul>

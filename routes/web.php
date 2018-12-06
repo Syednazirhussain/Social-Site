@@ -198,7 +198,7 @@ Route::group(['middleware' => ['user.auth']], function () {
 		Route::get('fan/talent_profile_preview/{talent_id}',['as' => 'fan.view.talent.profile','uses' => 'User\FanController@preview_talent_profile']);
 		Route::get('fan/talent_profile_detail/{talent_id}',['as' => 'fan.view.talent.detail','uses' => 'User\FanController@preview_talent_detail']);
 
-		Route::get('fan/talent/lists',['as' => 'fan.talent.list','uses' => 'User\FanController@talent_listing']);
+		
 		Route::post('fan/follow/talent',['as' => 'fan.follow.talent','uses' => 'User\FanController@follow']);
 		Route::post('fan/unfollow/talent',['as' => 'fan.unfollow.talent','uses' => 'User\FanController@unfollow']);
 

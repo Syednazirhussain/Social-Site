@@ -160,7 +160,6 @@
 
                 <div class="pad_left">
                     <h2 class="h2_margin">{{ $user->name }}</h2>
-                    <h5 class="h2_margin">Developer</h5>
                 </div>
 
                 <div style="margin-top:20px">
@@ -207,7 +206,6 @@
                                 Videos
                             </a>
                         </li>
-                        <!-- <li><a href="#event" data-toggle="tab">Events</a></li> -->
                     </ul>
                     <div class="tab-content"> 
                         <div id="msg"></div>    
@@ -236,7 +234,7 @@
                                                     </div>
                                                 </div>
                                                 <div class="panel-footer text-right">
-                                                    <button type="submit" id="articleSubmit" class="btn btn-primary">Post</button>
+                                                    <i class="loader fa fa-spinner fa-3x fa-spin"></i>&nbsp;<button type="submit" id="articleSubmit" class="btn btn-primary">Save</button>
                                                 </div>
                                             </form>
                                         </div>
@@ -252,7 +250,7 @@
                         <div class="tab-pane" id="overview">
                             @if(isset($additional_info))
                                 @if($additional_info->about_us != null)
-                                    {{ $additional_info->about_us }}
+                                    <?php echo html_entity_decode($additional_info->about_us,ENT_HTML401); ?>
                                 @else
                                     <p class="lead"><em>Write some thing about us</em></p>
                                 @endif
@@ -276,7 +274,9 @@
                                                 </div>
                                             </div>
                                             <div class="panel-footer text-right">
-                                                <button type="submit" id="imagesSubmit" class="btn btn-primary">Submit</button>
+                                                <span>
+                                                    <i class="loader fa fa-spinner fa-3x fa-spin"></i>&nbsp;<button type="submit" id="imagesSubmit" class="btn btn-primary">Save</button>
+                                                </span>
                                             </div>
                                         </form>
                                     </div>
@@ -321,7 +321,7 @@
                                                     </div>
                                                 </div>
                                                 <div class="panel-footer text-right">
-                                                    <button type="submit" id="videoSubmit" class="btn btn-primary">Add</button>
+                                                    <i class="loader fa fa-spinner fa-3x fa-spin"></i>&nbsp;<button type="submit" id="videoSubmit" class="btn btn-primary">Save</button>
                                                 </div>
                                             </form>
                                         </div>
@@ -333,11 +333,11 @@
                                 </div>
                             </div>
                         </div>
-                        <!-- <div class="tab-pane" id="event"></div> -->
                     </div>
                 </div>
             </div>
         </div>
+
         <!-- Vedio -->
         <div class="modal fade" id="vedioModal" role="dialog">
             <div class="modal-dialog">
@@ -363,7 +363,7 @@
             </div>
         </div>
 
-        <!-- Modal -->
+        <!-- Image -->
         <div class="modal fade" id="myModal" role="dialog">
             <div class="modal-dialog">
                   <div class="modal-content">
@@ -468,7 +468,7 @@
 
 <script type="text/javascript">
 
-    //$('.loader').css("visibility", "hidden");
+    $('.loader').css("visibility", "hidden");
 
     var user_plan_code = "@if(isset(Auth::user()->plan_code)){{ Auth::user()->plan_code }}@endif";
 
@@ -502,7 +502,7 @@
                 {
                     var html = errorMessage('There is some problem while deleting post');
                     $('#msg').html(html);
-                        setTimeout(function(){
+                    setTimeout(function(){
                             $('#msg').html('');                          
                     }, 3000);
                 }
@@ -512,10 +512,9 @@
                     {
                         var html = errorMessage(response.message);
                         $('#msg').html(html);
-                            setTimeout(function(){
+                        setTimeout(function(){
                                 $('#msg').html('');                          
                         }, 3000);
-                        page_refresh();
                     }
                     else
                     {
@@ -524,9 +523,9 @@
                             setTimeout(function(){
                                 $('#msg').html('');                          
                         }, 3000);
-                        page_refresh();
                     }
                 }
+                page_refresh();
             });
         }
     });
@@ -559,7 +558,16 @@
             if(post_id == 0)
             {
                 var data = $(this).serializeArray();
-                $.post("{{ route('add.single.post') }}",data,function(response){
+
+                $.ajax({
+                    url : "{{ route('add.single.post') }}",
+                    type: "POST",
+                    data : data,
+                    beforeSend: function(){
+                        $('.loader').css("visibility", "visible");
+                    }
+                }).done(function(response){
+                    $('.loader').css("visibility", "hidden");
                     $('#articleSubmit').prop('disabled',false);
                     if(response.status == 'success')
                     {
@@ -580,6 +588,7 @@
                     $('#post_article').summernote('reset');
                     page_refresh();
                 });
+
             }
             else
             {
@@ -588,9 +597,13 @@
                     url: "{{ route('update.single.post',['']) }}/"+post_id,
                     type: "PUT",
                     dataType: "json",
-                    data : data
+                    data : data,
+                    beforeSend : function(){
+                        $('.loader').css("visibility", "visible");
+                    }
                 }).done(function(response){
-                    $('#articleSubmit').text('Post');
+                    $('.loader').css("visibility", "hidden");
+                    $('#articleSubmit').text('Save');
                     $('#articleSubmit').prop('disabled',false);
                     if(response.hasOwnProperty('errors'))
                     {
@@ -630,35 +643,48 @@
     page_refresh();
 
 
-    $( "#post-image-form" ).submit(function( event ) {
-
-        $('#imagesSubmit').prop('disabled',true);
+    $("#post-image-form" ).submit(function( event ) {
 
         var data = new FormData();
-        $.each($('#file')[0].files, function(i, file) {
-            data.append(i, file);
-        });
 
-        $.ajax({
-              url: "{{ route('add.multiple.images') }}",
-              data: data,
-              cache: false,
-              contentType: false,
-              processData: false,
-              type: 'POST',
-        }).done(function(response){
-            $('#imagesSubmit').prop('disabled',false);
-            if(response.status == 'success')
-            {
-                $('.fileuploader-items-list').children(".file-type-image").remove();
-                page_refresh();
-                alert(data.message);
-            }
-            else
-            {
-                alert(data.message);
-            }
-        });
+        if($('#file')[0].files.length > 0)
+        {
+            $.each($('#file')[0].files, function(i, file) {
+                data.append(i, file);
+            });
+
+            $.ajax({
+                  url: "{{ route('add.multiple.images') }}",
+                  data: data,
+                  cache: false,
+                  contentType: false,
+                  processData: false,
+                  type: 'POST',
+                  beforeSend : function(){
+                    $('#imagesSubmit').prop('disabled',true);
+                    $('.loader').css("visibility", "visible");
+                  }
+            }).done(function(response){
+                $('.loader').css("visibility", "hidden");
+                $('#imagesSubmit').prop('disabled',false);
+                if(response.status == 'success')
+                {
+                    $('.fileuploader-items-list').children(".file-type-image").remove();
+                    page_refresh();
+                    alert('Images upload successfully.');
+                }
+                else
+                {
+                    $('.fileuploader-items-list').children(".file-type-image").remove();
+                    page_refresh();
+                    alert('There is some problem while uploading images.');
+                }
+            });
+        }
+        else
+        {
+            alert('Please upload atleast single image');
+        }
 
        event.preventDefault();
     });
@@ -757,11 +783,6 @@
             dataType: "json",
         }).done(function(response){
             var json =  response;
-
-            //console.log(json.posts);
-            // console.log(json.postCategories);
-            //console.log(json.additional_info);
-            
             var imagesHtml = '';
             var post_images_path = "{{ asset('storage/posts/') }}";
 
@@ -890,14 +911,13 @@
             $('#video_count').text(total_videos);
             $('#post-video').html(vedioHtml);
 
-
+            var postHtml = '';
             if(json.hasOwnProperty('posts'))
             {
                 var posts = json.posts;
+                $('#article_count').text(Object.keys(posts).length);
                 if(Object.keys(posts).length > 0)
                 {
-                    var postHtml = '';
-                    $('#article_count').text(Object.keys(posts).length);
                     for (var key in posts) 
                     {
                         if(posts[key].post_type == 'text')
@@ -954,18 +974,21 @@
                             postHtml += '</div>';
                         }
                     }
-                    $('#posts').html(postHtml);
                 }
             }
-
+            else
+            {
+                $('#article_count').text(0);
+            }
+            $('#posts').html(postHtml);
 
 
 
             var additional_info = json.additional_info;
-            if(additional_info.hasOwnProperty('about_us'))
-            {
-                $('#overview').text(strip_html_tags(additional_info.about_us));
-            }
+            // if(additional_info.hasOwnProperty('about_us'))
+            // {
+            //     $('#overview').text(strip_html_tags(additional_info.about_us));
+            // }
 
             $('#social_links').html('');
             if(additional_info.hasOwnProperty('facebook'))
@@ -1016,19 +1039,19 @@
                 }
             }
 
-            if(additional_info.hasOwnProperty('about_us'))
-            {
-                if(additional_info.about_us == null)
-                {
-                    $('#overview').html('Write something about us...');
-                }
-                else
-                {
-                    var html = '<p>'+ strip_html_tags(additional_info.about_us) +'</p>';
-                    $('#overview').html('');
-                    $('#overview').html(html);
-                }
-            }
+            // if(additional_info.hasOwnProperty('about_us'))
+            // {
+            //     if(additional_info.about_us == null)
+            //     {
+            //         $('#overview').html('Write something about us...');
+            //     }
+            //     else
+            //     {
+            //         var html = '<p>'+ strip_html_tags(additional_info.about_us) +'</p>';
+            //         $('#overview').html('');
+            //         $('#overview').html(html);
+            //     }
+            // }
 
             var postCategoryHtml = '';
             var postCategory = json.postCategories;
@@ -1047,7 +1070,6 @@
                     }
                 }
             }
-
         });
     }
 
@@ -1073,6 +1095,29 @@
         });
     });
 
+    $('#post_vedio').validate({
+        focusInvalid: false,
+        rules: {
+          'title': {
+            required: true,
+            minlength: 3,
+            maxlength: 20,
+          },
+          'vedio_url': {
+            required: true,
+            url: true
+          }
+        },
+        messages: {
+          'title': {
+            required: "Please enter title",
+          },
+          'vedio_url': {
+            required: "Please provide vedio url",
+          }
+        }
+    });
+
     $('#post_vedio').submit(function(e){
 
         var formData  = $(this).serializeArray();
@@ -1087,10 +1132,11 @@
                     dataType: "json",
                     data : formData,
                     beforeSend: function(){
-                        $('#videoSubmit').prop('disabled', false);                    
+                        $('.loader').css("visibility", "visible");                  
                     }
             }).done(function(response){
-
+                $('.loader').css("visibility", "hidden");
+                $('#videoSubmit').prop('disabled', false);
                 if(response.status == 'success')
                 {
                     $('#vedio_title').val('');
@@ -1200,7 +1246,7 @@
           ['color', ['color']],
           ['para', ['ul', 'ol', 'paragraph']],
           ['height', ['height']],
-          ['insert', ['picture', 'link', 'video', 'table', 'hr']],
+          ['insert', [ 'link', 'table', 'hr']],
           ['history', ['undo', 'redo']],
           ['misc', ['codeview', 'fullscreen']],
           ['help', ['help']]
@@ -1209,28 +1255,7 @@
       });
     });
 
-    $('#post_vedio').validate({
-        focusInvalid: false,
-        rules: {
-          'title': {
-            required: true,
-            minlength: 3,
-            maxlength: 12,
-          },
-          'vedio_url': {
-            required: true,
-            url: true
-          }
-        },
-        messages: {
-          'title': {
-            required: "Please enter title",
-          },
-          'vedio_url': {
-            required: "Please provide vedio url",
-          }
-        }
-    });
+
 
     // Initialize Select2
     $(function() {

@@ -18,7 +18,7 @@ use App\Models\Admin\MemberShipPlan;
 use App\Models\Admin\Post;
 use App\Models\Admin\PostMeta;
 use App\Models\Event;
-
+use App\Models\Admin\Follow;
 
 
 class SiteController extends Controller
@@ -29,6 +29,7 @@ class SiteController extends Controller
         $users = User::where('plan_code','premium')->get()->take(5);
 
         $data = [
+            'title'     => 'Home',
             'users'     => $users
         ];
 
@@ -40,6 +41,7 @@ class SiteController extends Controller
         $users = User::where('plan_code','premium')->get()->take(5);
 
         $data = [
+            'title'     => 'Feature',
             'users'     => $users
         ];
 
@@ -133,6 +135,7 @@ class SiteController extends Controller
 
 
         $data = [
+            'title'     => 'Discover',
             'users'     => $users,
             'images'    => $images,
             'vedios'    => $vedios
@@ -147,11 +150,8 @@ class SiteController extends Controller
         $users = User::where('plan_code','premium')->get()->take(5);
         $events = Event::whereDate('start', '>=', date('Y-m-d'))->get();
 
-
-/*        echo $events[0]->user->image;exit;*/
-
-
         $data = [
+            'title'     => 'Shows',
             'users'     => $users,
             'events'    => $events
         ];
@@ -175,12 +175,36 @@ class SiteController extends Controller
 
         $additionalInfo = AdditionalInfo::whereIn('user_id',$users_id)->get();
 
-            
         $data = [
+            'title'             => 'Charts',
             'users'             => $users,
             'additionalInfo'    => $additionalInfo
         ];
 
+        if(Auth::check())
+        {
+            $follows = Follow::all();
+            $followers = [];
+            $userz = User::all();
+            foreach ($userz as $u) 
+            {
+                if(Auth::user()->id != $u->id)
+                {
+                    foreach ($follows as $follow) 
+                    {
+                        if($follow->follower_id == Auth::user()->id)
+                        {
+                            if(!in_array($follow->followed_id, $followers))
+                            {
+                                array_push($followers, $follow->followed_id);
+                            }
+                        }
+                    }
+                }
+            }
+
+            $data['follows']  = $followers;
+        }
 
         return view('local.site.charts',$data);
     }
@@ -191,6 +215,7 @@ class SiteController extends Controller
         $memberShipPlan = MemberShipPlan::where('code','premium')->first();
 
         $data = [
+            'title'             => 'Pricing',
             'users'             => $users,
             'memberShipPlan'    => $memberShipPlan
         ];
@@ -203,6 +228,7 @@ class SiteController extends Controller
         $users = User::where('plan_code','premium')->get()->take(5);
 
         $data = [
+            'title'     => 'About us',
             'users'     => $users
         ];
 
@@ -214,6 +240,7 @@ class SiteController extends Controller
         $users = User::where('plan_code','premium')->get()->take(5);
 
         $data = [
+            'title'     => 'Term n Conditions',
             'users'     => $users
         ];
 
@@ -225,6 +252,7 @@ class SiteController extends Controller
         $users = User::where('plan_code','premium')->get()->take(5);
 
         $data = [
+            'title'     => 'Privacy Policy',
             'users'     => $users
         ];
 

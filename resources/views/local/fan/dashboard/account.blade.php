@@ -125,7 +125,8 @@
 
                 <div class="col-md-6 col-lg-6">
                   <div class="fileinput fileinput-new" id="fileinput" data-provides="fileinput">
-                            <div class="fileinput-new thumbnail" style="width: 200px; height: 150px;">
+                            <div class="fileinput-new thumbnail" style="width: 200px; height: 180px;">
+                              <p class="text-center"> <strong>Cover Image</strong> </p>
                                   @if(isset($user))
                                     @if($user->image != null)
                                       <img class="img-responsive" src="{{ asset('storage/users/'.$user->image ) }}" data-src="{{ asset('storage/users/'.$user->image) }}" alt="{{ $user->name}}" />
@@ -145,12 +146,12 @@
                             <a href="#" class="btn btn-default fileinput-exists" data-dismiss="fileinput">Remove</a>
                           </div>
                     </div>  
-                    <label class="control-label pull-left m-l-4" for="name">Profile Image</label>
                 </div>
 
                 <div class="col-md-6 col-lg-6">
                     <div class="fileinput fileinput-new" id="fileinput" data-provides="fileinput">
-                            <div class="fileinput-new thumbnail" style="width: 200px; height: 150px;">
+                            <div class="fileinput-new thumbnail" style="width: 200px; height: 180px;">
+                              <p class="text-center"> <strong>Cover Image</strong> </p>
                                   @if(isset($additional_info))
                                     @if($additional_info->cover_image != null)
                                       <img class="img-responsive" src="{{ asset('storage/users/'.$additional_info->cover_image ) }}" data-src="{{ asset('storage/users/'.$user->image) }}" alt="{{ $user->name}}" />
@@ -166,11 +167,11 @@
                             <span class="btn btn-default btn-file">
                                 <span class="fileinput-new">Select image</span>
                                 <span class="fileinput-exists">Change</span>
-                            <input type="file" name="cover_image"></span>
+                                <input type="file" name="cover_image">
+                            </span>
                             <a href="#" class="btn btn-default fileinput-exists" data-dismiss="fileinput">Remove</a>
                           </div>
                     </div> 
-                    <label class="control-label pull-left m-l-4" for="name">Cover Image</label> 
                 </div>
               </div>
 
@@ -387,7 +388,7 @@ $(document).ready(function() {
           ['color', ['color']],
           ['para', ['ul', 'ol', 'paragraph']],
           ['height', ['height']],
-          ['insert', ['picture', 'link', 'video', 'table', 'hr']],
+          ['insert', [ 'link', 'table', 'hr']],
           ['history', ['undo', 'redo']],
           ['misc', ['codeview', 'fullscreen']],
           ['help', ['help']]
