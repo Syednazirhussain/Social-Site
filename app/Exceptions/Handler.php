@@ -5,6 +5,7 @@ namespace App\Exceptions;
 use Exception;
 use Illuminate\Foundation\Exceptions\Handler as ExceptionHandler;
 use Flash;
+use Session;
 
 class Handler extends ExceptionHandler
 {
@@ -50,11 +51,13 @@ class Handler extends ExceptionHandler
     public function render($request, Exception $exception)
     {
         if ($exception instanceof \Spatie\Permission\Exceptions\UnauthorizedException) {
-            Flash::error('Permission Denied');
+            Session::error('Permission Denied');
             return redirect()->back();
         }
 
         return parent::render($request, $exception);
-        // return parent::render($request, $exception);
+
     }
+
+
 }

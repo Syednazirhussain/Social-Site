@@ -1,9 +1,19 @@
 @extends('admin.auth.default')
 
+@section('css')
+<style type="text/css">
+    .errorTxt, .error { 
+            color: #dc3545 !important;
+            font-weight: unset !important;
+        }
+</style>
+
+@endsection
+
 @section('content')
 
 
-<h2 class="m-t-0 m-b-4 text-xs-center font-weight-semibold color-white">SOCIAL SITE</h2>
+<h2 class="m-t-0 m-b-4 text-xs-center font-weight-semibold color-white">Creatifny</h2>
 <h4 class="m-t-0 m-b-4 text-xs-center font-weight-semibold  color-white">ADMIN LOGIN</h4>
 
 
@@ -29,7 +39,7 @@
     <input type="password" name="password" class="form-control" placeholder="Password">
   </fieldset>
   <div class="clearfix">
-    <a href="{{ route('admin.forget.password') }}" class="text-primary">Forgot password</a>
+<!--     <a href="{{ route('admin.forget.password') }}" class="text-primary">Forgot password</a> -->
   </div>
   <button type="submit" class="btn btn-block btn-lg btn-primary m-t-3">LOGIN</button>
 </form>
@@ -50,9 +60,9 @@
       $('#loginForm').validate({
         focusInvalid: false,
         rules: {
-          'login_id': {
+          'email': {
             required: true,
-            maxlength: 100,
+            email: true
           },
           'password': {
             required: true,
@@ -62,8 +72,8 @@
         },
 
         messages: {
-          'login_id': {
-            required: "Please enter username",
+          'email': {
+            required: "Please enter email",
           },
           'password': {
             required: "Please enter password",

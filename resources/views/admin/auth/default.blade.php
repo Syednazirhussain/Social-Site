@@ -5,9 +5,9 @@
         <meta http-equiv="X-UA-Compatible" content="IE=edge,chrome=1">
         <meta name="viewport" content="width=device-width, initial-scale=1.0, user-scalable=no, minimum-scale=1.0, maximum-scale=1.0">
         <meta name="csrf-token" content="{{ csrf_token() }}" />
-
-        <title>Social Site</title>
-
+        
+        <title>Creatifny</title>
+        <link rel="shortcut icon" href="{{ asset('/theme/images/lock.png') }}">
         <link href="http://fonts.googleapis.com/css?family=Open+Sans:300italic,400italic,600italic,700italic,400,600,700,300&subset=latin" rel="stylesheet" type="text/css">
         <link href="http://code.ionicframework.com/ionicons/2.0.1/css/ionicons.min.css" rel="stylesheet" type="text/css">
         <link href="http://maxcdn.bootstrapcdn.com/font-awesome/4.7.0/css/font-awesome.min.css" rel="stylesheet" integrity="sha384-wvfXpqpZZVQGK6TAh5PVlGOfQNHSoD2xbE+QkPxCAFlNEevoEH3Sl0sibVcOQVnN" crossorigin="anonymous">
@@ -17,8 +17,6 @@
         <link href="{{ asset('/skin-1/assets/css/themes/candy-orange.min.css') }}" rel="stylesheet">
         <link href="{{ asset('/skin-1/assets/plugins/jasny-bootstrap/css/jasny-bootstrap.min.css') }}" rel="stylesheet">
 
-        
- 
 
         <link href="{{ asset('/skin-1/assets/css/custom.css') }}" rel="stylesheet">
         <!-- holder.js -->
@@ -84,7 +82,7 @@
   </div>
   <div class="m-t-4 p-b-4" id="empty-space"></div>
   <footer  class="px-footer px-footer-bottom text-center m-t-4 ">
-      <span class="">Copyright © 2018 Stallyons. All rights reserved.</span>
+      <span class="">Copyright © <?php echo date('Y'); ?> <a href="{{ route('site.dashboard') }}">Creatifny.</a> All rights reserved.</span>
   </footer>
 </section>
 

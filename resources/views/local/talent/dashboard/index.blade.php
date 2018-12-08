@@ -550,9 +550,6 @@
     $('#post-article').on('submit', function(e) {
 
         e.preventDefault();
-
-        $('#articleSubmit').prop('disabled',true);
-
         if( $(this).validate().form() ) 
         {
             if(post_id == 0)
@@ -564,6 +561,7 @@
                     type: "POST",
                     data : data,
                     beforeSend: function(){
+                        $('#articleSubmit').prop('disabled',true);
                         $('.loader').css("visibility", "visible");
                     }
                 }).done(function(response){
@@ -599,6 +597,7 @@
                     dataType: "json",
                     data : data,
                     beforeSend : function(){
+                        $('#articleSubmit').prop('disabled',true);
                         $('.loader').css("visibility", "visible");
                     }
                 }).done(function(response){
@@ -1120,61 +1119,65 @@
 
     $('#post_vedio').submit(function(e){
 
-        var formData  = $(this).serializeArray();
-
-        $('#videoSubmit').prop('disabled', true);
-
-        if(vedio_post_id == 0 && post_meta_id == 0)
+        if($(this).validate().form()) 
         {
-            $.ajax({
-                    url: "{{ route('add.single.vedio') }}",
-                    type: "POST",
-                    dataType: "json",
-                    data : formData,
-                    beforeSend: function(){
-                        $('.loader').css("visibility", "visible");                  
+            var formData  = $(this).serializeArray();
+            if(vedio_post_id == 0 && post_meta_id == 0)
+            {
+                $.ajax({
+                        url: "{{ route('add.single.vedio') }}",
+                        type: "POST",
+                        dataType: "json",
+                        data : formData,
+                        beforeSend: function(){
+                            $('#videoSubmit').prop('disabled', true);
+                            $('.loader').css("visibility", "visible");                  
+                        }
+                }).done(function(response){
+                    $('.loader').css("visibility", "hidden");
+                    $('#videoSubmit').prop('disabled', false);
+                    if(response.status == 'success')
+                    {
+                        $('#video_title').val('');
+                        $('#vedio_url').val('');
+                        alert(response.message);
+                        page_refresh();
                     }
-            }).done(function(response){
-                $('.loader').css("visibility", "hidden");
-                $('#videoSubmit').prop('disabled', false);
-                if(response.status == 'success')
-                {
-                    $('#vedio_title').val('');
-                    $('#vedio_url').val('');
-                    alert(response.message);
-                    page_refresh();
-                }
-                else
-                {
-                    alert(response.message);
-                }
-            });
-        }
-        else
-        {
-            $.ajax({
-                    url: "{{ route('update.single.vedio',['']) }}/"+post_meta_id,
-                    type: "PUT",
-                    dataType: "json",
-                    data : formData,
-                    beforeSend: function(){
-                        $('#videoSubmit').prop('disabled', false);                    
+                    else
+                    {
+                        alert(response.message);
                     }
-            }).done(function(response){
-                if(response.status == 'success')
-                {
-                    $('#videoSubmit').text('Add');
-                    $('#video_title').val('');
-                    $('#vedio_type option:selected').remove();
-                    $('#vedio_url').val('');
-                    alert(response.message);
-                    page_refresh();
-                }
-                else
-                {
-                    alert(response.message);
-                }
-            });
+                });
+            }
+            else
+            {
+                $.ajax({
+                        url: "{{ route('update.single.vedio',['']) }}/"+post_meta_id,
+                        type: "PUT",
+                        dataType: "json",
+                        data : formData,
+                        beforeSend: function(){
+                            $('#videoSubmit').prop('disabled', true);
+                            $('.loader').css("visibility", "visible");                    
+                        }
+                }).done(function(response){
+                    $('.loader').css("visibility", "hidden");
+                    $('#videoSubmit').prop('disabled', false);
+                    if(response.status == 'success')
+                    {
+                        $('#videoSubmit').text('Add');
+                        $('#video_title').val('');
+                        $('#vedio_type option:selected').remove();
+                        $('#vedio_url').val('');
+                        alert(response.message);
+                        page_refresh();
+                    }
+                    else
+                    {
+                        alert(response.message);
+                    }
+                });
+            }
         }
         e.preventDefault();
     });

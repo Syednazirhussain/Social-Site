@@ -36,7 +36,6 @@
 	}
 
 	.panel-heading .title{
-		border-bottom: 1px solid #ddd;
 	    margin: 0 0 10px 0;
 	    text-align: center;
 	    padding: 5px 0px 10px 0px;
@@ -50,9 +49,9 @@
 	    background: white;
 	}
 	.fc-event, .fc-event-dot {
-    background-color: #e94e27;
-    border-color: #e94e27;
-}
+	    background-color: #e94e27;
+	    border-color: #e94e27;
+	}
 </style>
 
 @endsection

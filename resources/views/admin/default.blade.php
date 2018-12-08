@@ -5,7 +5,7 @@
         <meta http-equiv="X-UA-Compatible" content="IE=edge,chrome=1">
         <meta name="viewport" content="width=device-width, initial-scale=1.0, user-scalable=no, minimum-scale=1.0, maximum-scale=1.0">
         <meta name="csrf-token" content="{{ csrf_token() }}" />
-        <title>Social Site</title>
+        <title>Creatifny</title>
         <link href="http://fonts.googleapis.com/css?family=Open+Sans:300italic,400italic,600italic,700italic,400,600,700,300&subset=latin" rel="stylesheet" type="text/css">
         <link href="http://code.ionicframework.com/ionicons/2.0.1/css/ionicons.min.css" rel="stylesheet" type="text/css">
         <link href="http://maxcdn.bootstrapcdn.com/font-awesome/4.7.0/css/font-awesome.min.css" rel="stylesheet" integrity="sha384-wvfXpqpZZVQGK6TAh5PVlGOfQNHSoD2xbE+QkPxCAFlNEevoEH3Sl0sibVcOQVnN" crossorigin="anonymous">
@@ -139,7 +139,7 @@
     <nav class="navbar px-navbar">
         <!-- Header -->
         <div class="navbar-header">
-            <a class="navbar-brand px-demo-brand" href="{{route('admin.dashboard')}}"><span class="px-demo-logo bg-primary"><span class="px-demo-logo-1"></span><span class="px-demo-logo-2"></span><span class="px-demo-logo-3"></span><span class="px-demo-logo-4"></span><span class="px-demo-logo-5"></span><span class="px-demo-logo-6"></span><span class="px-demo-logo-7"></span><span class="px-demo-logo-8"></span><span class="px-demo-logo-9"></span></span>Social Site</a>
+            <a class="navbar-brand px-demo-brand" href="{{route('admin.dashboard')}}"><span class="px-demo-logo bg-primary"><span class="px-demo-logo-1"></span><span class="px-demo-logo-2"></span><span class="px-demo-logo-3"></span><span class="px-demo-logo-4"></span><span class="px-demo-logo-5"></span><span class="px-demo-logo-6"></span><span class="px-demo-logo-7"></span><span class="px-demo-logo-8"></span><span class="px-demo-logo-9"></span></span>Creatifny</a>
         </div>
         <!-- Navbar togglers -->
         <button type="button" class="navbar-toggle collapsed" data-toggle="collapse" data-target="#px-demo-navbar-collapse" aria-expanded="false"><i class="navbar-toggle-icon"></i></button>
@@ -181,7 +181,7 @@
 
         <div class="m-t-4 p-b-4" id="empty-space"></div>
         <footer  class="px-footer px-footer-bottom text-center m-t-4 ">
-            <span class="">Copyright © 2018 Stallyons. All rights reserved.</span>
+            <span class="">Copyright © <?php echo date('Y'); ?> <a href="{{ route('site.dashboard') }}">Creatifny.</a> All rights reserved.</span>
         </footer>
         <!-- jQuery -->
         <script src="http://ajax.googleapis.com/ajax/libs/jquery/3.2.1/jquery.min.js"></script>

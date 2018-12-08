@@ -77,15 +77,9 @@
     <nav class="navbar navbar-inverse">
       <div class="container">
         <div class="navbar-header">
-            @role('Talents')
-            <a class="navbar-brand" href="{{ route('talent.user.dashboard') }}">
+            <a class="navbar-brand" href="{{ route('site.dashboard') }}">
                 <img src="{{ asset('/theme/images/logo1.png') }}" style="max-width: 115px;max-height: 52px" alt="logo">
             </a>
-            @else
-            <a class="navbar-brand" href="{{ route('fan.user.dashboard') }}">
-                <img src="{{ asset('/theme/images/logo1.png') }}" style="max-width: 115px;max-height: 52px" alt="logo">
-            </a>
-            @endrole
         </div>
         <ul class="nav navbar-nav">
             <li>

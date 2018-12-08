@@ -116,16 +116,16 @@ Route::get('/', function (\Illuminate\Http\Request $request) {
 
 Route::get('subcription/check',['as' => 'subcription.check','uses'	=> 'CronController@index']);
 
-Route::get('creatifny', ['as'=> 'site.dashboard', 'uses' => 'User\SiteController@index']);
-Route::get('creatifny/feature', ['as'=> 'site.creatifny.feature', 'uses' => 'User\SiteController@feature']);
-Route::get('creatifny/discover', ['as'=> 'site.creatifny.discover', 'uses' => 'User\SiteController@discover']);
-Route::get('creatifny/crowd-pick', ['as'=> 'site.creatifny.crowd_pick', 'uses' => 'User\SiteController@crowd_pick']);
-Route::get('creatifny/show', ['as'=> 'site.creatifny.show', 'uses' => 'User\SiteController@show']);
-Route::get('creatifny/charts', ['as'=> 'site.creatifny.charts', 'uses' => 'User\SiteController@charts']);
-Route::get('creatifny/pricing', ['as'=> 'site.creatifny.pricing', 'uses' => 'User\SiteController@pricing']);
-Route::get('creatifny/about-us', ['as'=> 'site.creatifny.about_us', 'uses' => 'User\SiteController@about_us']);
-Route::get('creatifny/conditions', ['as'=> 'site.creatifny.conditions', 'uses' => 'User\SiteController@conditions']);
-Route::get('creatifny/privacy_policy', ['as'=> 'site.creatifny.privacy_policy', 'uses' => 'User\SiteController@privacy_policy']);
+Route::get('home', ['as'=> 'site.dashboard', 'uses' => 'User\SiteController@index']);
+Route::get('home/feature', ['as'=> 'site.creatifny.feature', 'uses' => 'User\SiteController@feature']);
+Route::get('home/discover', ['as'=> 'site.creatifny.discover', 'uses' => 'User\SiteController@discover']);
+Route::get('home/crowd-pick', ['as'=> 'site.creatifny.crowd_pick', 'uses' => 'User\SiteController@crowd_pick']);
+Route::get('home/show', ['as'=> 'site.creatifny.show', 'uses' => 'User\SiteController@show']);
+Route::get('home/charts', ['as'=> 'site.creatifny.charts', 'uses' => 'User\SiteController@charts']);
+Route::get('home/pricing', ['as'=> 'site.creatifny.pricing', 'uses' => 'User\SiteController@pricing']);
+Route::get('home/about-us', ['as'=> 'site.creatifny.about_us', 'uses' => 'User\SiteController@about_us']);
+Route::get('home/conditions', ['as'=> 'site.creatifny.conditions', 'uses' => 'User\SiteController@conditions']);
+Route::get('home/privacy_policy', ['as'=> 'site.creatifny.privacy_policy', 'uses' => 'User\SiteController@privacy_policy']);
 
 
 

@@ -23,6 +23,7 @@ use App\User;
 use App\Models\Admin\MemberShipPlan;
 use App\Models\Admin\AdditionalInfo;
 use App\Models\Admin\Subscription;
+use App\Models\Admin\Post;
 
 class UserController extends Controller
 {
@@ -32,6 +33,23 @@ class UserController extends Controller
     public function __construct(UserRepository $userRepo)
     {
         $this->userRepository = $userRepo;
+    }
+
+    public function dashboard() 
+    {
+        $post_count = Post::where('post_type','text')->get()->count();
+        $post_image_count = Post::where('post_type','image')->get()->count();
+        $post_video_count = Post::where('post_type','vedio')->get()->count();
+        $user_count = User::all()->count();
+
+        $data = [
+            'posts'     => $post_count,
+            'images'    => $post_image_count,
+            'videos'    => $post_video_count,
+            'users'     => $user_count
+        ];
+
+        return view('admin.dashboard.dashboard',$data);
     }
 
     public function account_setting($user_id)
@@ -206,10 +224,8 @@ class UserController extends Controller
             'email' => 'required|email',
             'password' => 'required|string|min:6|max:20',
         ]);
-
         $email    = $request->get("email");
         $password = $request->get("password");
-
         if (Auth::attempt(['email' => $email, 'password' => $password])) 
         {
             $user = Auth::user();
@@ -221,27 +237,23 @@ class UserController extends Controller
                 }
                 else
                 {
+                    Auth::logout();
                     Session::flash('errorMsg', 'Access Denied');
-                    return view('admin.login');
+                    return redirect()->route('admin.login');
                 }
             }
             else
             {
-                Session::flash('errorMsg', 'Please verify your password');
-                return view('admin.login');
+                Auth::logout();
+                Session::flash('errorMsg', 'Invalid Credentials');
+                return redirect()->route('admin.login');
             }
-        } 
+        }
         else
         {
             Session::flash('errorMsg', 'Invalid Login Credentials.');
             return redirect()->route('admin.login');
         }
-
-    }
-
-    public function dashboard() 
-    {
-        return view('admin.dashboard.dashboard');
     }
 
     /**
